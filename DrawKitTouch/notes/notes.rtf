@@ -1,0 +1,29 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf290
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;}
+\deftab720
+\pard\pardeftab720\ql\qnatural
+
+\f0\fs20 \cf0 //\
+// Project notes\
+//\
+\
+To produce the DrawKitTouch kinda-sorta-framework, select the 'Create Framework' target and 'Debug' or 'Release' configuration.\
+\
+Note that you should NOT override the 'Use Base SDK' setting in the DrawKitTouch project. Apparently, that's how Xcode makes subprojects compile transparently for the selected target and SDK in the enclosing projects, but it has the side effect of only making the particular architecture supported by that SDK compile. Rather, change the "SDKROOT" line in "DKTTargetDevice.xcconfig" and "DKTTargetSimulatorDevice.xcconfig" to use different base SDKs.\
+\
+If all goes according to plan, 'DrawKitTouch.framework' and a zipped copy will be created in /build/Framework-Debug/ or /build/Framework-Release. Drill down into it, and you will see the various symlinks and headers and resources in the folders you would expect to see them in a proper desktop framework, and if you do lipo -info on the top level link to the library file (named 'DrawKitTouch' same as the framework) you should see the output\
+\
+Architectures in the fat file: <path>DrawKitTouch.framework/DrawKitTouch are: armv6 armv7 i386 \
+\
+In theory, that means we've produced a library that can be linked with any kind of iDevice or Simulator executable with no cross-project references needed to get things right. (Unless you're compiling for 2.x, in which case no armv7 is available apparently.)\
+\
+\
+See DrawTouchDemo.xcodeproj for an example of how to use this kinda-sorta-framework, which simply displays its version, the version of the linked kinda-sorta-framework drawn from a UIApplication category, and a bundled .png file.\
+\
+- If you drag a 'DrawKitTouch.framework' folder into the linking project, Xcode will be somewhat fooled into thinking the "framework" therein is an actual framework; it'll have the framework icon, it'll add an access path to the target's FRAMEWORK_SEARCH_PATHS so angle bracket includes will work in your source, and linking generally proceeds as expected. Note that in the products/ folder there's a selection compiled with appropriate Xcodes from SDK 2.2 through SDK 4.0b3.\
+\
+- However, it seems you must add -ObjC to OTHER_LD_FLAGS in the linking project as well as the framework project for categories to show up at runtime. There is discussion to be found of using -all_load (or -force_load in Xcode 3.2+) in the library project to avoid this, but that apparently has the side effect of making your app compilation SDK dependent. As well, it seems to be trickier to convince a device build to link than an SDK build -- at present DrawTouchDemo has -all_load set to sidestep that issue for the moment. Updates to follow on this subject.\
+\
+- However, unlike real frameworks bundled resources do not get transparently included, and there appears to be no easy solution to that issue other than not bundling resources. At the moment the workaround is to manually drag the /Resources folder from the linked .framework into the project file.\
+}
