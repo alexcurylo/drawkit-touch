@@ -96,7 +96,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				FAC6892C11A037AD0042569C /* products-3.1.3-Debug */,
+				FAC6892C11A037AD0042569C /* DrawKitTouch_build_Framework-Debug */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -135,14 +135,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		FAC6892C11A037AD0042569C /* products-3.1.3-Debug */ = {
+		FAC6892C11A037AD0042569C /* DrawKitTouch_build_Framework-Debug */ = {
 			isa = PBXGroup;
 			children = (
 				FAC6892F11A038460042569C /* DrawKitTouch.framework */,
 				FAC6893511A038510042569C /* Resources */,
 			);
-			name = "products-3.1.3-Debug";
-			path = "../products/DrawKitTouch_sdk_3.1.3/Framework-Debug";
+			name = "DrawKitTouch_build_Framework-Debug";
+			path = "../DrawKitTouch/build/Framework-Debug";
 			sourceTree = SOURCE_ROOT;
 		};
 		FAC6893511A038510042569C /* Resources */ = {
@@ -247,7 +247,7 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../products/DrawKitTouch_sdk_3.1.3/Framework-Debug\"",
+					"\"$(SRCROOT)/../DrawKitTouch/build/Framework-Debug\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -265,7 +265,7 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../products/DrawKitTouch_sdk_3.1.3/Framework-Debug\"",
+					"\"$(SRCROOT)/../DrawKitTouch/build/Framework-Debug\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = DrawTouchDemo_Prefix.pch;

@@ -8,10 +8,17 @@
 #import <TargetConditionals.h>
 
 #ifdef __OBJC__
+#import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #endif __OBJC__
+
+#import "DKDrawKit_Prefix.pch"
 
 // Alex's development utilities, not for shipping
 
-#import <TWDebugging.h>
+#ifdef __OBJC__
+#import "DKTDesktopPlaceholders.h"
+#endif __OBJC__
 
+#import <TWDebugging.h>

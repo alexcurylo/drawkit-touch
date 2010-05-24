@@ -10,7 +10,7 @@
 
 - (NSString *)dktVersion
 {
-   return @"DrawKitTouch 1.0(1) 100515"; 
+   return @"DrawKitTouch 1.0(2) 100522";
 }
 
 @end
