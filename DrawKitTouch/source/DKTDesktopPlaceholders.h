@@ -10,7 +10,64 @@
 // (and straightforward patches like removing inappropriate #imports).
 //
 
-// not existing
+
+// with pre-3.0 SDKs, NSUndoManager is not available
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 30000 // __IPHONE_3_0
+@interface NSUndoManager : NSObject
+- (void)setLevelsOfUndo:(NSUInteger)levels;
+- (void)setActionName:(NSString *)actionName;
+- (id)prepareWithInvocationTarget:(id)target;
+- (void)removeAllActionsWithTarget:(id)target;
+- (BOOL)isUndoing;
+- (BOOL)isRedoing;
+- (void)beginUndoGrouping;
+- (void)endUndoGrouping;
+- (void)registerUndoWithTarget:(id)target selector:(SEL)selector object:(id)anObject;
+- (void)disableUndoRegistration;
+- (void)enableUndoRegistration;
+- (BOOL)isUndoRegistrationEnabled;
+- (void)removeAllActions;
+@end
+enum { NSUndoCloseGroupingRunLoopOrdering = 350000 };
+FOUNDATION_EXPORT NSString * const NSUndoManagerCheckpointNotification;
+FOUNDATION_EXPORT NSString * const NSUndoManagerWillUndoChangeNotification;
+FOUNDATION_EXPORT NSString * const NSUndoManagerWillRedoChangeNotification;
+FOUNDATION_EXPORT NSString * const NSUndoManagerDidUndoChangeNotification;
+FOUNDATION_EXPORT NSString * const NSUndoManagerDidRedoChangeNotification;
+FOUNDATION_EXPORT NSString * const NSUndoManagerDidOpenUndoGroupNotification;
+FOUNDATION_EXPORT NSString * const NSUndoManagerWillCloseUndoGroupNotification;
+#endif __IPHONE_OS_VERSION_MAX_ALLOWED < 30000
+
+// with pre-3.2 SDKs, NSAttributedString is not available
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 30200 // __IPHONE_3_2
+@interface NSAttributedString : NSObject
+- (id)initWithString:(NSString *)str attributes:(NSDictionary *)attrs;
+- (id)initWithAttributedString:(NSAttributedString *)attrStr;
+- (NSString *)string;
+- (NSUInteger)length;
+- (NSAttributedString *)attributedSubstringFromRange:(NSRange)range;
+- (id)attribute:(NSString *)attrName atIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range;
+- (id)attribute:(NSString *)attrName atIndex:(NSUInteger)location longestEffectiveRange:(NSRangePointer)range inRange:(NSRange)rangeLimit;
+- (NSDictionary *)attributesAtIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range;
+- (NSDictionary *)attributesAtIndex:(NSUInteger)location longestEffectiveRange:(NSRangePointer)range inRange:(NSRange)rangeLimit;
+- (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)str;
+- (BOOL)isEqualToAttributedString:(NSAttributedString *)other;
+@end
+@interface NSMutableAttributedString : NSAttributedString
+- (void)beginEditing;
+- (void)endEditing;
+- (void)setAttributes:(NSDictionary *)attrs range:(NSRange)range;
+- (void)addAttribute:(NSString *)name value:(id)value range:(NSRange)range;
+- (void)addAttributes:(NSDictionary *)attrs range:(NSRange)range;
+- (void)removeAttribute:(NSString *)name range:(NSRange)range;
+- (void)appendAttributedString:(NSAttributedString *)attrString;
+@end
+#endif __IPHONE_OS_VERSION_MAX_ALLOWED < 30200
+
+
+
+// not existing in any iPhone SDK
+// (although Simulator 2.x SDKs' CoreServices.framework erroneously #imports many)
 
 typedef struct CGPoint NSPoint;
 typedef NSPoint *NSPointArray;
@@ -460,40 +517,6 @@ extern const double_t pi;
 - (id <NSApplicationDelegate>)delegate;
 - (NSWindow *)keyWindow;
 - (NSWindow *)mainWindow;
-@end
-
-@interface NSAttributedString : NSObject
-- (id)initWithString:(NSString *)str attributes:(NSDictionary *)attrs;
-- (id)initWithAttributedString:(NSAttributedString *)attrStr;
-- (id)initWithRTF:(NSData *)data documentAttributes:(NSDictionary **)dict;
-- (id)initWithRTFD:(NSData *)data documentAttributes:(NSDictionary **)dict;
-- (id)initWithHTML:(NSData *)data documentAttributes:(NSDictionary **)dict;
-- (NSString *)string;
-- (NSUInteger)length;
-- (NSAttributedString *)attributedSubstringFromRange:(NSRange)range;
-- (id)attribute:(NSString *)attrName atIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range;
-- (id)attribute:(NSString *)attrName atIndex:(NSUInteger)location longestEffectiveRange:(NSRangePointer)range inRange:(NSRange)rangeLimit;
-- (NSDictionary *)attributesAtIndex:(NSUInteger)location effectiveRange:(NSRangePointer)range;
-- (NSDictionary *)attributesAtIndex:(NSUInteger)location longestEffectiveRange:(NSRangePointer)range inRange:(NSRange)rangeLimit;
-- (void)replaceCharactersInRange:(NSRange)range withString:(NSString *)str;
-- (BOOL)isEqualToAttributedString:(NSAttributedString *)other;
-- (NSSize)size;
-- (void)drawAtPoint:(NSPoint)point;
-- (BOOL)drawInRect:(NSRect)rect;
-- (NSData *)RTFFromRange:(NSRange)range documentAttributes:(NSDictionary *)dict;
-@end
-
-@interface NSMutableAttributedString : NSAttributedString
-- (void)beginEditing;
-- (void)endEditing;
-- (void)setAttributes:(NSDictionary *)attrs range:(NSRange)range;
-- (void)addAttribute:(NSString *)name value:(id)value range:(NSRange)range;
-- (void)addAttributes:(NSDictionary *)attrs range:(NSRange)range;
-- (void)removeAttribute:(NSString *)name range:(NSRange)range;
-- (void)fixAttributesInRange:(NSRange)range;
-- (void)fixFontAttributeInRange:(NSRange)range;
-- (void)appendAttributedString:(NSAttributedString *)attrString;
-- (void)setAlignment:(NSTextAlignment)alignment range:(NSRange)range;
 @end
 
 @interface NSTextStorage : NSMutableAttributedString
@@ -1082,6 +1105,23 @@ extern bool CGImageDestinationFinalize(CGImageDestinationRef idst);
 - (void)drawAtPoint:(NSPoint)point withAttributes:(NSDictionary *)attrs;
 - (void)drawInRect:(NSRect)rect withAttributes:(NSDictionary *)attrs;
 - (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options attributes:(NSDictionary *)attributes;
+@end
+
+@interface NSAttributedString (NotInIPadSDK)
+- (id)initWithRTF:(NSData *)data documentAttributes:(NSDictionary **)dict;
+- (id)initWithRTFD:(NSData *)data documentAttributes:(NSDictionary **)dict;
+- (id)initWithHTML:(NSData *)data documentAttributes:(NSDictionary **)dict;
+- (NSData *)RTFFromRange:(NSRange)range documentAttributes:(NSDictionary *)dict;
+// NSStringDrawing
+- (NSSize)size;
+- (void)drawAtPoint:(NSPoint)point;
+- (BOOL)drawInRect:(NSRect)rect;
+@end
+
+@interface NSMutableAttributedString (NotInIPadSDK)
+- (void)fixAttributesInRange:(NSRange)range;
+- (void)fixFontAttributeInRange:(NSRange)range;
+- (void)setAlignment:(NSTextAlignment)alignment range:(NSRange)range;
 @end
 
 @interface NSDate (NSCalendarDateExtras)

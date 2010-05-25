@@ -76,8 +76,9 @@ GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES
 // in your project file by editing DKT_GENERAL_WARNING_CFLAGS and only 
 // including the warning levels that you currently are compiling against. 
 // GTM should always compile with full warnings.
-DKT_GENERAL_WARNING_CFLAGS1 = -Wall -Wendif-labels -Winvalid-pch -Wformat=2 -Wmissing-format-attribute -Wwrite-strings -Wstack-protector -Wstrict-aliasing=2
+DKT_GENERAL_WARNING_CFLAGS1 = -Wall -Wendif-labels -Winvalid-pch -Wwrite-strings -Wstack-protector -Wstrict-aliasing=2
 // -Wglobal-constructors new in 3.2.2: "Global Construction or Destruction Required"
+// -Wformat=2 -Wmissing-format-attribute we could add
 DKT_GENERAL_WARNING_CFLAGS2 = -Wpacked -Wmissing-field-initializers
       // not using -Wglobal-constructors for now; causes warnings in DrawKit's CurveFit source
 //DKT_EXTRA_WARNING_OVERRIDE_CFLAGS = -Wno-unused-parameter -Wno-sign-compare
@@ -94,7 +95,6 @@ GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES
 GCC_WARN_ABOUT_RETURN_TYPE = YES
 GCC_WARN_MISSING_PARENTHESES = YES
 GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES
-GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES
 GCC_WARN_UNKNOWN_PRAGMAS = YES
 GCC_WARN_UNUSED_LABEL = YES
 GCC_WARN_UNUSED_FUNCTION = YES
@@ -120,6 +120,7 @@ GCC_WARN_PROTOTYPE_CONVERSION = NO // may catch implicit casts, but lots of nois
 GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = NO
 GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO // freaks on Cocoa
 GCC_WARN_STRICT_SELECTOR_MATCH = NO // freaks on Cocoa, -objectForKey: specifically
+GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO // 4.0b4 SDK warns on every -stringWithFormat:
 
 // merge flag settings with possible previous configuration file flag settings
 
