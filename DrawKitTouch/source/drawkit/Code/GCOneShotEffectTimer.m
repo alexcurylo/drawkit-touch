@@ -53,7 +53,11 @@
 		[mDelegate oneShotWillBegin];
 	
 	mTimer = [NSTimer scheduledTimerWithTimeInterval:1/48.0f target:self selector:@selector(osfx_callback:) userInfo:nil repeats:YES];
+#if TARGET_OS_IPHONE
+	[[NSRunLoop currentRunLoop] addTimer:mTimer forMode:NSRunLoopCommonModes];
+#else
 	[[NSRunLoop currentRunLoop] addTimer:mTimer forMode:NSEventTrackingRunLoopMode];
+#endif TARGET_OS_IPHONE
 	mStart = [NSDate timeIntervalSinceReferenceDate];
 
 	return self;

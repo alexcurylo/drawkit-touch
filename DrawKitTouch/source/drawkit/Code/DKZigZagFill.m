@@ -104,7 +104,8 @@
 }
 
 
-- (NSBezierPath*)	renderingPathForObject:(id<DKRenderable>) object
+//- (NSBezierPath*)	renderingPathForObject:(id<DKRenderable>) object
+- (DKBezierPath*)	renderingPathForObject:(id<DKRenderable>) object
 {
 	return [[super renderingPathForObject:object] bezierPathWithWavelength:[self wavelength] amplitude:[self amplitude] spread:[self spread]];
 }

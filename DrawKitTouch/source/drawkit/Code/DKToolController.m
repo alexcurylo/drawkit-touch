@@ -15,7 +15,11 @@
 #import "DKObjectDrawingLayer.h"
 #import "DKDrawableObject.h"
 #import "DKDrawing.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKUndoManager.h"
 #import "LogEvent.h"
 
@@ -493,6 +497,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)			selectDrawingToolByRepresentedObject:(id) sender
 {
 	if( sender != nil && [sender respondsToSelector:@selector(representedObject)])
@@ -509,6 +514,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 			[NSException raise:NSInternalInconsistencyException format:@"represented object of sender %@ was not a valid DKDrawingTool", [sender description]];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -676,7 +682,8 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithView:(NSView*) aView
+//- (id)					initWithView:(NSView*) aView
+- (id)					initWithView:(DKDrawingView*) aView
 {
 	self = [super initWithView:aView];
 	if( self != nil )
@@ -742,7 +749,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					ensure that autscrolling and targeting of other layer types works normally.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDown:(NSEvent*) event
 {
 	LogEvent_( kInfoEvent, @"tool controller mouse down");
@@ -812,7 +819,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 		[super mouseDown:event];
 	}
 }
-
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -829,7 +836,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					ensure that other layer types work normally.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDragged:(NSEvent*) event
 {
 	if( mAbortiveMouseDown )
@@ -865,7 +872,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 		}
 	}
 }
-
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -882,7 +889,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					ensure that other layer types work normally.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseUp:(NSEvent*) event
 {
 	if( mAbortiveMouseDown )
@@ -946,6 +953,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 	[mDragEvent release];
 	mDragEvent = nil;
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -962,7 +970,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 /// notes:			passes the event to the current tool
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				flagsChanged:(NSEvent*) event
 {
 	if ([self drawingTool] != nil && [[self drawingTool] isValidTargetLayer:[self activeLayer]])
@@ -970,6 +978,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 	else
 		[super flagsChanged:event];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -985,7 +994,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 /// notes:			passes the event to the current tool or active layer, depending on which, if any, can respond.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseMoved:(NSEvent*) event
 {
 	if([[self drawingTool] respondsToSelector:@selector(mouseMoved:inView:)])
@@ -996,6 +1005,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 			[[self activeLayer] mouseMoved:event inView:[self view]];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1011,7 +1021,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)			cursor
 {
 	if ([self drawingTool] != nil && [[self drawingTool] isValidTargetLayer:[self activeLayer]])
@@ -1019,6 +1029,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 	else
 		return [super cursor];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1038,7 +1049,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					to the layer.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				keyDown:(NSEvent*) event
 {
 	DKDrawingTool* tool = [DKDrawingTool drawingToolWithKeyboardEquivalent:event];
@@ -1062,6 +1073,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 		}
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1173,6 +1185,7 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	if([item action] == @selector(toggleAutoRevertAction:))
@@ -1191,5 +1204,6 @@ static DKDrawingTool*		sGlobalTool = nil;
 	
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 @end

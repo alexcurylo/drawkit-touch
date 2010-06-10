@@ -7,7 +7,15 @@
 //
 
 #import "DKMetadataItem.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
 
+@interface NSObject (PossibleMetadataIntrospection)
+- (NSDate *)dateValue;
+- (NSRect)rect;
+- (NSAttributedString *)attributedString;
+@end
+#endif TARGET_OS_IPHONE
 
 NSString*		DKSingleMetadataItemPBoardType = @"com.apptree.dk.meta";
 NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
@@ -42,7 +50,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 			return [NSURL class];
 			
 		case DKMetadataTypeColour:
-			return [NSColor class];
+			//return [NSColor class];
+			return [DKColor class];
 			
 		case DKMetadataTypeData:
 		case DKMetadataTypeImageData:
@@ -52,7 +61,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 			return [NSDate class];
 			
 		case DKMetadataTypeImage:
-			return [NSImage class];
+			//return [NSImage class];
+			return [DKImage class];
 			
 		case DKMetadataTypeAttributedString:
 			return [NSAttributedString class];
@@ -170,7 +180,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 
 
 
-+ (DKMetadataItem*)		metadataItemWithImage:(NSImage*) image
+//+ (DKMetadataItem*)		metadataItemWithImage:(NSImage*) image
++ (DKMetadataItem*)		metadataItemWithImage:(DKImage*) image
 {
    // added cast to avoid conflict with iPhone SDK function ...alex
 	return [[(DKMetadataItem*)[self alloc] initWithImage:image] autorelease];
@@ -199,7 +210,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 
 
 
-+ (DKMetadataItem*)		metadataItemWithColour:(NSColor*) colour
+//+ (DKMetadataItem*)		metadataItemWithColour:(NSColor*) colour
++ (DKMetadataItem*)		metadataItemWithColour:(DKColor*) colour
 {
 	return [[[self alloc] initWithColour:colour] autorelease];
 }
@@ -242,9 +254,11 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 		return [self metadataItemWithString:value];
 	else if([value isKindOfClass:[NSAttributedString class]])
 		return [self metadataItemWithAttributedString:value];
-	else if([value isKindOfClass:[NSColor class]])
+	//else if([value isKindOfClass:[NSColor class]])
+	else if([value isKindOfClass:[DKColor class]])
 		return [self metadataItemWithColour:value];
-	else if([value isKindOfClass:[NSImage class]])
+	//else if([value isKindOfClass:[NSImage class]])
+	else if([value isKindOfClass:[DKImage class]])
 		return [self metadataItemWithImage:value];
 	else if([value isKindOfClass:[NSURL class]])
 		return [self metadataItemWithURL:value];
@@ -290,14 +304,18 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 }
 
 
-+ (DKMetadataItem*)		metadataItemWithPasteboard:(NSPasteboard*) pb
+//+ (DKMetadataItem*)		metadataItemWithPasteboard:(NSPasteboard*) pb
++ (DKMetadataItem*)		metadataItemWithPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"can't read from nil pasteboard");
 	
+#ifndef TARGET_OS_IPHONE
 	NSString* type = [pb availableTypeFromArray:[NSArray arrayWithObject:DKSingleMetadataItemPBoardType]];
 	if( type )
+#endif TARGET_OS_IPHONE
 	{
-		NSData* data = [pb dataForType:DKSingleMetadataItemPBoardType];
+		//NSData* data = [pb dataForType:DKSingleMetadataItemPBoardType];
+		NSData* data = [pb dataForPasteboardType:DKSingleMetadataItemPBoardType];
 		
 		if( data )
 			return [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -356,17 +374,21 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 }
 
 
-+ (NSDictionary*)		metadataItemsWithPasteboard:(NSPasteboard*) pb
+//+ (NSDictionary*)		metadataItemsWithPasteboard:(NSPasteboard*) pb
++ (NSDictionary*)		metadataItemsWithPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"can't read from nil pasteboard");
 	
 	// multiple items are written to the pasteboard as an archived dictionary having key/item pairs of items. These can be
 	// added to an object's metadata with its -addMetadata: method.
 		
+#ifndef TARGET_OS_IPHONE
 	NSString* type = [pb availableTypeFromArray:[NSArray arrayWithObject:DKMultipleMetadataItemsPBoardType]];
 	if( type )
+#endif TARGET_OS_IPHONE
 	{
-		NSData* data = [pb dataForType:DKMultipleMetadataItemsPBoardType];
+		//NSData* data = [pb dataForType:DKMultipleMetadataItemsPBoardType];
+		NSData* data = [pb dataForPasteboardType:DKMultipleMetadataItemsPBoardType];
 		
 		if( data )
 			return [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -376,7 +398,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 }
 
 
-+ (BOOL)				writeMetadataItems:(NSArray*) items forKeys:(NSArray*) keys toPasteboard:(NSPasteboard*) pb
+//+ (BOOL)				writeMetadataItems:(NSArray*) items forKeys:(NSArray*) keys toPasteboard:(NSPasteboard*) pb
++ (BOOL)				writeMetadataItems:(NSArray*) items forKeys:(NSArray*) keys toPasteboard:(DKPasteboard*) pb
 {
 	// convenience method for writing a set of items and keys to the pasteboard
 	
@@ -385,7 +408,9 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 	
 	NSDictionary* dict = [NSDictionary dictionaryWithObjects:items forKeys:keys];
 	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:dict];
+#ifndef TARGET_OS_IPHONE
 	[pb addTypes:[NSArray arrayWithObjects:DKMultipleMetadataItemsPBoardType, NSTabularTextPboardType, NSStringPboardType, nil] owner:self];
+#endif TARGET_OS_IPHONE
 	
 	// add the items as TSV text for other apps to make use of
 	
@@ -405,10 +430,16 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 		[tabText appendString:[item typeDisplayName]];
 		[tabText appendString:@"\t\r"];
 	}
+#if TARGET_OS_IPHONE
+	pb.string = tabText;
+	[pb setData:data forPasteboardType:DKMultipleMetadataItemsPBoardType];
+   return YES;
+#else
 	[pb setString:tabText forType:NSTabularTextPboardType];
 	[pb setString:tabText forType:NSStringPboardType];
 	
-	return [pb setData:data forType:DKMultipleMetadataItemsPBoardType];
+	return [pb setData:data forPasteboardType:DKMultipleMetadataItemsPBoardType];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -508,7 +539,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 
 
 
-- (id)					initWithImage:(NSImage*) image
+//- (id)					initWithImage:(NSImage*) image
+- (id)					initWithImage:(DKImage*) image
 {
 	self = [self initWithType:DKMetadataTypeImage];
 	if( self )
@@ -560,7 +592,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 
 
 
-- (id)					initWithColour:(NSColor*) colour
+//- (id)					initWithColour:(NSColor*) colour
+- (id)					initWithColour:(DKColor*) colour
 {
 	self = [self initWithType:DKMetadataTypeColour];
 	if( self )
@@ -752,7 +785,8 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 }
 
 
-- (NSColor*)			colourValue
+//- (NSColor*)			colourValue
+- (DKColor*)			colourValue
 {
 	return [self convertValue:[self value] toType:DKMetadataTypeColour wasLossy:NULL];
 }
@@ -782,12 +816,18 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 }
 
 
-- (BOOL)				writeToPasteboard:(NSPasteboard*) pb
+//- (BOOL)				writeToPasteboard:(NSPasteboard*) pb
+- (BOOL)				writeToPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"can't write to nil pasteboard");
 	
+#if TARGET_OS_IPHONE
+	[pb setData:[self data] forPasteboardType:DKSingleMetadataItemPBoardType];
+   return YES;
+#else
 	[pb addTypes:[NSArray arrayWithObject:DKSingleMetadataItemPBoardType] owner:self];
-	return [pb setData:[self data] forType:DKSingleMetadataItemPBoardType];
+	return [pb setData:[self data] forPasteboardType:DKSingleMetadataItemPBoardType];
+#endif TARGET_OS_IPHONE
 }
 
 #pragma mark -
@@ -897,13 +937,15 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 			else if([inValue respondsToSelector:@selector(colourValue)])
 				return [inValue colourValue];
 			else if([inValue respondsToSelector:@selector(floatValue)])
-				return [NSColor colorWithCalibratedWhite:[inValue floatValue] alpha:1.0];
+				//return [NSColor colorWithCalibratedWhite:[inValue floatValue] alpha:1.0];
+				return [DKColor colorWithCalibratedWhite:[inValue floatValue] alpha:1.0];
 			else
 			{
 				if( lossy )
 					*lossy = YES;
 				
-				return [NSColor blackColor];			// unable to convert - return black
+				//return [NSColor blackColor];			// unable to convert - return black
+				return [DKColor blackColor];			// unable to convert - return black
 			}
 			
 		case DKMetadataTypeURL:
@@ -927,10 +969,24 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 			else if([inValue respondsToSelector:@selector(date)])
 				return [inValue date];
 			else if([inValue respondsToSelector:@selector(stringValue)])
-				return [NSDate dateWithNaturalLanguageString:[inValue stringValue]];
-			else if([inValue isKindOfClass:[NSString class]])
-				return [NSDate dateWithNaturalLanguageString:inValue];
-			else if([inValue respondsToSelector:@selector(floatValue)])
+			{
+#if TARGET_OS_IPHONE
+            NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+            return [dateFormatter dateFromString:[inValue stringValue]];
+#else
+            return [NSDate dateWithNaturalLanguageString:[inValue stringValue]];
+#endif TARGET_OS_IPHONE
+			}
+         else if([inValue isKindOfClass:[NSString class]])
+			{
+#if TARGET_OS_IPHONE
+            NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+            return [dateFormatter dateFromString:inValue];
+#else
+            return [NSDate dateWithNaturalLanguageString:inValue];
+#endif TARGET_OS_IPHONE
+			}
+         else if([inValue respondsToSelector:@selector(floatValue)])
 				return [NSDate dateWithTimeIntervalSinceReferenceDate:[inValue floatValue]];
 			else
 			{
@@ -961,11 +1017,14 @@ NSString*		DKMultipleMetadataItemsPBoardType = @"com.apptree.dk.multimeta";
 			if([inValue respondsToSelector:@selector(image)])
 				return [inValue image];
 			else if([inValue isKindOfClass:[NSData class]])
-				return [[[NSImage alloc] initWithData:inValue] autorelease];
+				//return [[[NSImage alloc] initWithData:inValue] autorelease];
+				return [[[DKImage alloc] initWithData:inValue] autorelease];
 			else if([inValue isKindOfClass:[NSURL class]])
-				return [[[NSImage alloc] initWithContentsOfURL:inValue] autorelease];
+				//return [[[NSImage alloc] initWithContentsOfURL:inValue] autorelease];
+				return [[[DKImage alloc] initWithContentsOfURL:inValue] autorelease];
 			else if([inValue isKindOfClass:[NSString class]])
-				return [[[NSImage alloc] initWithContentsOfFile:inValue] autorelease];
+				//return [[[NSImage alloc] initWithContentsOfFile:inValue] autorelease];
+				return [[[DKImage alloc] initWithContentsOfFile:inValue] autorelease];
 			else
 			{
 				if( lossy )

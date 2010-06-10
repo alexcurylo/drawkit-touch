@@ -14,7 +14,12 @@
 #import "DKStyle.h"
 #import "DKStyleRegistry.h"
 #import "DKDrawingTool.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#import "FVCGColorSpaceDescription.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKDrawKitMacros.h"
 #import "DKGridLayer.h"
 #import "DKGuideLayer.h"
@@ -192,7 +197,8 @@ static id	sDearchivingHelper = nil;
 	[dr setMarginsLeft:5.0 top:5.0 right:5.0 bottom:5.0];	
 	
 	// attach a grid layer
-	[DKGridLayer setDefaultGridThemeColour:[[NSColor brownColor] colorWithAlphaComponent:0.5]];
+	//[DKGridLayer setDefaultGridThemeColour:[[NSColor brownColor] colorWithAlphaComponent:0.5]];
+	[DKGridLayer setDefaultGridThemeColour:[[DKColor brownColor] colorWithAlphaComponent:0.5]];
 	DKGridLayer* grid = [DKGridLayer standardMetricGridLayer];
 	[dr addLayer:grid];
 	[grid tweakDrawingMargins];
@@ -571,7 +577,8 @@ static id	sDearchivingHelper = nil;
 		mControllers = [[NSMutableSet alloc] init];
 
 		[self setKnobs:[DKKnob standardKnobs]];
-		[self setPaperColour:[NSColor whiteColor]];
+		//[self setPaperColour:[NSColor whiteColor]];
+		[self setPaperColour:[DKColor whiteColor]];
 		[self setDrawingInfo:[[self class] defaultDrawingInfo]];
 		
 		m_snapsToGrid = ![[NSUserDefaults standardUserDefaults] boolForKey:kDKDrawingSnapToGridUserDefault];
@@ -712,7 +719,7 @@ static id	sDearchivingHelper = nil;
 /// notes:			can be used to synchronise a drawing size to the settings for a printer
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				setDrawingSizeWithPrintInfo:(NSPrintInfo*) printInfo
 {
 	NSAssert( printInfo != nil, @"unable to set drawing size - print info was nil");
@@ -720,6 +727,7 @@ static id	sDearchivingHelper = nil;
 	[self setDrawingSize:[printInfo paperSize]];
 	[self setMarginsWithPrintInfo:printInfo];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -777,7 +785,7 @@ static id	sDearchivingHelper = nil;
 /// notes:			setDrawingSizeFromPrintInfo: will also call this for you
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				setMarginsWithPrintInfo:(NSPrintInfo*) printInfo
 {
 	[self setMarginsLeft:	[printInfo leftMargin]
@@ -785,6 +793,7 @@ static id	sDearchivingHelper = nil;
 					right:	[printInfo rightMargin]
 					bottom:	[printInfo bottomMargin]];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -983,12 +992,21 @@ static id	sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)					setColourSpace:(CGColorSpaceRef) cSpace
+{
+   CGColorSpaceRetain(cSpace);
+   CGColorSpaceRelease(mColourSpace);
+	mColourSpace = cSpace;
+}
+#else
 - (void)					setColourSpace:(NSColorSpace*) cSpace
 {
 	[cSpace retain];
 	[mColourSpace release];
 	mColourSpace = cSpace;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1006,7 +1024,11 @@ static id	sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (CGColorSpaceRef)			colourSpace
+#else
 - (NSColorSpace*)			colourSpace
+#endif TARGET_OS_IPHONE
 {
 	return mColourSpace;
 }
@@ -1475,6 +1497,10 @@ static id	sDearchivingHelper = nil;
 
 - (void)				checkIfLowQualityRequired
 {
+#if TARGET_OS_IPHONE
+   twlog("implement checkIfLowQualityRequired");
+   [self setLowRenderingQuality:NO];
+#else
 	// if this is being called frequently, set low quality and start a timer to restore high quality after a delay. If the timer is
 	// already running, retrigger it.
 	
@@ -1496,7 +1522,11 @@ static id	sDearchivingHelper = nil;
 			// start the timer:
 			
 			m_renderQualityTimer = [[NSTimer scheduledTimerWithTimeInterval:mTriggerPeriod target:self selector:@selector(qualityTimerCallback:) userInfo:nil repeats:YES] retain];
+#if TARGET_OS_IPHONE
+			[[NSRunLoop currentRunLoop] addTimer:m_renderQualityTimer forMode:NSRunLoopCommonModes];
+#else
 			[[NSRunLoop currentRunLoop] addTimer:m_renderQualityTimer forMode:NSEventTrackingRunLoopMode];
+#endif TARGET_OS_IPHONE
 		}
 		else
 		{
@@ -1507,6 +1537,7 @@ static id	sDearchivingHelper = nil;
 	}
 	else
 		[self setLowRenderingQuality:NO];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1654,7 +1685,8 @@ static id	sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)				setPaperColour:(NSColor*) colour
+//- (void)				setPaperColour:(NSColor*) colour
+- (void)				setPaperColour:(DKColor*) colour
 {
 	if( colour != [self paperColour])
 	{
@@ -1685,7 +1717,8 @@ static id	sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)			paperColour
+//- (NSColor*)			paperColour
+- (DKColor*)			paperColour
 {
 	return m_paperColour;
 }
@@ -2241,7 +2274,12 @@ static id	sDearchivingHelper = nil;
 	// size, otherwise it returns 1, 1. Note that an actual nudge may want to take steps to actually align the object to the grid.
 	
 	DKGridLayer*	grid = [self gridLayer];
+#if TARGET_OS_IPHONE
+   twlog("implement some nudgeOffset equivalent of holding down control?");
+	BOOL			ctrl = NO;
+#else
 	BOOL			ctrl = ([[NSApp currentEvent] modifierFlags] & NSControlKeyMask) != 0;
+#endif TARGET_OS_IPHONE
 	
 	if ( grid != nil && [self snapsToGrid] && !ctrl )
 	{
@@ -2820,19 +2858,27 @@ static id	sDearchivingHelper = nil;
 
 - (void)				drawRect:(NSRect) rect inView:(DKDrawingView*) aView
 {
+#ifndef TARGET_OS_IPHONE
 	// save the graphics context on entry so that we can restore it when we return. This allows recovery from an exception
 	// that could leave the context stack unbalanced.
 	
 	NSGraphicsContext* topContext = [[NSGraphicsContext currentContext] retain];
+#endif TARGET_OS_IPHONE
 	
 	@try
 	{
 		// paint the paper colour over the view area. Not printed unless explictly set to do so.
 		
+#ifndef TARGET_OS_IPHONE
 		if([NSGraphicsContext currentContextDrawingToScreen] || [self paperColourIsPrinted])
+#endif TARGET_OS_IPHONE
 		{
 			[[self paperColour] set];
+#if TARGET_OS_IPHONE
+			UIRectFillUsingBlendMode( rect, kCGBlendModeNormal );
+#else
 			NSRectFillUsingOperation( rect, NSCompositeSourceOver );
+#endif TARGET_OS_IPHONE
 		}
 		
 		// if no layers, nothing to draw
@@ -2872,8 +2918,10 @@ static id	sDearchivingHelper = nil;
 		m_isForcedHQUpdate = NO;
 	}
 	
+#ifndef TARGET_OS_IPHONE
 	[NSGraphicsContext setCurrentContext:topContext];
 	[topContext release];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -3088,7 +3136,11 @@ static id	sDearchivingHelper = nil;
 	}
 	
 	[m_paperColour release];
+#if TARGET_OS_IPHONE
+	CGColorSpaceRelease(mColourSpace);
+#else
 	[mColourSpace release];
+#endif TARGET_OS_IPHONE
 	[m_units release];
 	[mImageManager release];
 	
@@ -3132,7 +3184,12 @@ static id	sDearchivingHelper = nil;
 	[coder encodeDouble:[self bottomMargin] forKey:@"bottomMargin"];
 	[coder encodeObject:[self drawingUnits] forKey:@"drawing_units"];
 	[coder encodeDouble:[self unitToPointsConversionFactor] forKey:@"utp_conv"];
+#if TARGET_OS_IPHONE
+   FVCGColorSpaceDescription *spaceDescription = [[[FVCGColorSpaceDescription alloc] initWithColorSpace:self.colourSpace] autorelease];
+	[coder encodeObject:spaceDescription forKey:@"DKDrawing_colourspace"];
+#else
 	[coder encodeObject:[self colourSpace] forKey:@"DKDrawing_colourspace"];
+#endif TARGET_OS_IPHONE
 	[coder encodeObject:[self paperColour] forKey:@"papercolour"];
 	[coder encodeBool:[self paperColourIsPrinted] forKey:@"DKDrawing_printPaperColour"];
 	
@@ -3188,7 +3245,12 @@ static id	sDearchivingHelper = nil;
 		
 		mControllers = [[NSMutableSet alloc] init];
 		
+#if TARGET_OS_IPHONE
+      FVCGColorSpaceDescription *spaceDescription = [coder decodeObjectForKey:@"DKDrawing_colourspace"];
+		[self setColourSpace:[spaceDescription newColorSpace]];
+#else
 		[self setColourSpace:[coder decodeObjectForKey:@"DKDrawing_colourspace"]];
+#endif TARGET_OS_IPHONE
 		[self setPaperColour:[coder decodeObjectForKey:@"papercolour"]];
 		[self setPaperColourIsPrinted:[coder decodeBoolForKey:@"DKDrawing_printPaperColour"]];
 		
@@ -3244,6 +3306,7 @@ static id	sDearchivingHelper = nil;
 @end
 
 #pragma mark -
+#ifndef TARGET_OS_IPHONE
 
 @implementation DKDrawing (UISupport)
 
@@ -3281,4 +3344,5 @@ static id	sDearchivingHelper = nil;
 
 
 @end
+#endif TARGET_OS_IPHONE
 

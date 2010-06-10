@@ -19,25 +19,33 @@
 @private
 	DKQuartzCache*		mCache;
 	NSSize				mSize;
-	NSColor*			mColour;
+	//NSColor*			mColour;
+	DKColor*			mColour;
 }
 
 + (DKKnobType)			type;
-+ (DKHandle*)			handleForType:(DKKnobType) type size:(NSSize) size colour:(NSColor*) colour;
+//+ (DKHandle*)			handleForType:(DKKnobType) type size:(NSSize) size colour:(NSColor*) colour;
++ (DKHandle*)			handleForType:(DKKnobType) type size:(NSSize) size colour:(DKColor*) colour;
 + (void)				setHandleClass:(Class) hClass forType:(DKKnobType) type;
 
-+ (NSColor*)			fillColour;
-+ (NSColor*)			strokeColour;
-+ (NSBezierPath*)		pathWithSize:(NSSize) size;
+//+ (NSColor*)			fillColour;
+//+ (NSColor*)			strokeColour;
+//+ (NSBezierPath*)		pathWithSize:(NSSize) size;
++ (DKColor*)			fillColour;
++ (DKColor*)			strokeColour;
++ (DKBezierPath*)		pathWithSize:(NSSize) size;
 + (CGFloat)				strokeWidth;
 + (CGFloat)				scaleFactor;
 
 - (id)					initWithSize:(NSSize) size;
-- (id)					initWithSize:(NSSize) size colour:(NSColor*) colour;
+//- (id)					initWithSize:(NSSize) size colour:(NSColor*) colour;
+- (id)					initWithSize:(NSSize) size colour:(DKColor*) colour;
 - (NSSize)				size;
 
-- (void)				setColour:(NSColor*) colour;
-- (NSColor*)			colour;
+//- (void)				setColour:(NSColor*) colour;
+//- (NSColor*)			colour;
+- (void)				setColour:(DKColor*) colour;
+- (DKColor*)			colour;
 
 - (void)				drawAtPoint:(NSPoint) point;
 - (void)				drawAtPoint:(NSPoint) point angle:(CGFloat) radians;

@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKImageShape.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 23/08/2006.
 ///
@@ -26,12 +26,17 @@ DKImageCroppingOptions;
 {
 @private
 	NSString*				mImageKey;				// key in the image manager holding original data for this image
-	NSImage*				m_image;				// the image the shape displays
+	//NSImage*				m_image;				// the image the shape displays
+	DKImage*				m_image;				// the image the shape displays
 	CGFloat					m_opacity;				// its opacity
 	CGFloat					m_imageScale;			// its scale (currently ignored, but set to 1.0)
 	NSPoint					m_imageOffset;			// the offset of the image within the bounds
 	BOOL					m_drawnOnTop;			// YES if image drawn after style, NO for before
+#if TARGET_OS_IPHONE
+	CGBlendMode	m_op;
+#else
 	NSCompositingOperation	m_op;					// the Quartz compositing mode to apply
+#endif TARGET_OS_IPHONE
 	DKImageCroppingOptions	mImageCropping;			// whether the image is scaled or cropped to the bounds
 	NSInteger				mImageOffsetPartcode;	// the partcode of the image offset hotspot
 	NSData*					mOriginalImageData;		// original image data (shared with image manager)
@@ -39,18 +44,24 @@ DKImageCroppingOptions;
 
 + (DKStyle*)				imageShapeDefaultStyle;
 
-- (id)						initWithImage:(NSImage*) anImage;
+//- (id)						initWithImage:(NSImage*) anImage;
+- (id)						initWithImage:(DKImage*) anImage;
 - (id)						initWithImageData:(NSData*) imageData;
 - (id)						initWithContentsOfFile:(NSString*) filepath;
 
-- (void)					setImage:(NSImage*) anImage;
-- (NSImage*)				image;
-- (NSImage*)				imageAtRenderedSize;
+//- (void)					setImage:(NSImage*) anImage;
+//- (NSImage*)				image;
+//- (NSImage*)				imageAtRenderedSize;
+- (void)					setImage:(DKImage*) anImage;
+- (DKImage*)				image;
+- (DKImage*)				imageAtRenderedSize;
 - (void)					setImageWithKey:(NSString*) key coder:(NSCoder*) coder;
 - (void)					transferImageKeyToNewContainer:(id<DKDrawableContainer>) container;
 
-- (BOOL)					setImageWithPasteboard:(NSPasteboard*) pb;
-- (BOOL)					writeImageToPasteboard:(NSPasteboard*) pb;
+//- (BOOL)					setImageWithPasteboard:(NSPasteboard*) pb;
+//- (BOOL)					writeImageToPasteboard:(NSPasteboard*) pb;
+- (BOOL)					setImageWithPasteboard:(DKPasteboard*) pb;
+- (BOOL)					writeImageToPasteboard:(DKPasteboard*) pb;
 
 - (void)					setImageKey:(NSString*) key;
 - (NSString*)				imageKey;
@@ -64,8 +75,13 @@ DKImageCroppingOptions;
 - (void)					setImageDrawsOnTop:(BOOL) onTop;
 - (BOOL)					imageDrawsOnTop;
 
+#if TARGET_OS_IPHONE
+- (void)				setCompositingOperation:(CGBlendMode) op;
+- (CGBlendMode) compositingOperation;
+#else
 - (void)					setCompositingOperation:(NSCompositingOperation) op;
 - (NSCompositingOperation)	compositingOperation;
+#endif TARGET_OS_IPHONE
 
 - (void)					setImageScale:(CGFloat) scale;
 - (CGFloat)					imageScale;

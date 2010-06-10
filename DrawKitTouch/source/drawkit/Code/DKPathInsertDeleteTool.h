@@ -43,9 +43,11 @@ DKPathToolMode;
 
 @end
 
+#ifndef TARGET_OS_IPHONE
 extern NSString*	kDKInsertPathPointCursorImageName;
 extern NSString*	kDKDeletePathPointCursorImageName;
 extern NSString*	kDKDeletePathElementCursorImageName;
+#endif TARGET_OS_IPHONE
 
 
 /*

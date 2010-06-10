@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKReshapableShape.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 20/10/2006.
 ///
@@ -27,7 +27,8 @@
 - (void)			setOptionalParameter:(id) objParam;
 - (id)				optionalParameter;
 
-- (NSBezierPath*)	providedShapeForRect:(NSRect) r;
+//- (NSBezierPath*)	providedShapeForRect:(NSRect) r;
+- (DKBezierPath*)	providedShapeForRect:(NSRect) r;
 
 @end
 
@@ -35,7 +36,8 @@
 // - (NSBezierPath*)	someShapeInRect:(NSRect) r otherParameters:(id) object;
 // this is actually called by a C function call internally, so the following is the real prototype:
 
-typedef NSBezierPath* (*shapeProviderFunction)( id, SEL, NSRect, id );
+//typedef NSBezierPath* (*shapeProviderFunction)( id, SEL, NSRect, id );
+typedef DKBezierPath* (*shapeProviderFunction)( id, SEL, NSRect, id );
 
 // the <otherParameters> part is optional but must be an object - for example an NSValue, NSNumber or NSDictionary are all valid, but
 // the provider and the providee need to informally agree on what to expect here.

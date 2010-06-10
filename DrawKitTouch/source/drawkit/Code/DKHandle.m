@@ -13,7 +13,11 @@
 #import "DKTargetHandle.h"
 #import "DKGeometryUtilities.h"
 #import "DKQuartzCache.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#else
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 
 @interface DKHandle (Private)
 
@@ -61,7 +65,8 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 
 
 
-+ (DKHandle*)			handleForType:(DKKnobType) type size:(NSSize) size colour:(NSColor*) colour
+//+ (DKHandle*)			handleForType:(DKKnobType) type size:(NSSize) size colour:(NSColor*) colour
++ (DKHandle*)			handleForType:(DKKnobType) type size:(NSSize) size colour:(DKColor*) colour
 {
 	NSString*	classKey = [self keyForKnobType:type];
 	NSString*	key;
@@ -116,23 +121,29 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
+	//return [NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
+	return [DKColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
 }
 
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor blackColor];
+	//return [NSColor blackColor];
+	return [DKColor blackColor];
 }
 
 
 
-+ (NSBezierPath*)		pathWithSize:(NSSize) size
+//+ (NSBezierPath*)		pathWithSize:(NSSize) size
++ (DKBezierPath*)		pathWithSize:(NSSize) size
 {
-	return [NSBezierPath bezierPathWithRect:NSMakeRect( 0, 0, size.width - [self strokeWidth], size.height - [self strokeWidth])];
+	//return [NSBezierPath bezierPathWithRect:NSMakeRect( 0, 0, size.width - [self strokeWidth], size.height - [self strokeWidth])];
+	return [DKBezierPath bezierPathWithRect:NSMakeRect( 0, 0, size.width - [self strokeWidth], size.height - [self strokeWidth])];
 }
 
 
@@ -156,7 +167,8 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 }
 
 
-- (id)					initWithSize:(NSSize) size colour:(NSColor*) colour
+//- (id)					initWithSize:(NSSize) size colour:(NSColor*) colour
+- (id)					initWithSize:(NSSize) size colour:(DKColor*) colour
 {
 	self = [super init];
 	if( self )
@@ -183,7 +195,8 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 }
 
 
-- (void)				setColour:(NSColor*) colour
+//- (void)				setColour:(NSColor*) colour
+- (void)				setColour:(DKColor*) colour
 {
 	[colour retain];
 	[mColour release];
@@ -191,7 +204,8 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 }
 
 
-- (NSColor*)			colour
+//- (NSColor*)			colour
+- (DKColor*)			colour
 {
 	return mColour;
 }
@@ -211,8 +225,10 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 		
 		[mCache lockFocus];
 		
-		NSBezierPath* path = [[self class] pathWithSize:[self size]];
-		NSColor* c = [self colour];
+		//NSBezierPath* path = [[self class] pathWithSize:[self size]];
+		//NSColor* c = [self colour];
+		DKBezierPath* path = [[self class] pathWithSize:[self size]];
+		DKColor* c = [self colour];
 		
 		if( c == nil )
 			c = [[self class] fillColour];
@@ -241,7 +257,11 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 	// because handles are cached at the real screen size, they must be drawn to a scale of 1.0 regardless. Thus the context scale must be
 	// forced to 1.0 at this point. This is harder than it looks because the translation must not be affected.
 	
+#if TARGET_OS_IPHONE
+	CGContextRef context = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	CGAffineTransform ctm = CGContextGetCTM( context );
 	CGAffineTransform newTfm = CGAffineTransformIdentity;
 	
@@ -270,7 +290,8 @@ static NSMutableDictionary*		s_handleInstancesTable = nil;
 	relPoint.x = point.x - hp.x;
 	relPoint.y = point.y - hp.y;
 	
-	NSBezierPath* path = [[self class] pathWithSize:[self size]];
+	//NSBezierPath* path = [[self class] pathWithSize:[self size]];
+	DKBezierPath* path = [[self class] pathWithSize:[self size]];
 	return [path containsPoint:relPoint];
 }
 

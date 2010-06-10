@@ -8,6 +8,10 @@
 ///
 ///**********************************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+#error DKDrawingView is NSView-based; use DKTDrawingView in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 
 #import "DKDrawingView.h"
 #import "DKToolController.h"

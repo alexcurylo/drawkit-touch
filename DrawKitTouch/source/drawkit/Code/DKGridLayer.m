@@ -11,10 +11,14 @@
 #import "DKGridLayer.h"
 #import "DKDrawing.h"
 #import "NSBezierPath+Geometry.h"
-#import "NSColor+DKAdditions.h"
 #import "DKDrawKitMacros.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#import "UIColor+DKTAdditions.h"
+#else
 #import "DKDrawingView.h"
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 #import "LogEvent.h"
 
 
@@ -25,9 +29,12 @@ NSString*	kDKGridDrawingLayerStandardImperialPCB = @"DK_std_imperial_pcb";
 
 
 #pragma mark Static Vars
-static NSColor*		sSpanColour = nil;
-static NSColor*		sDivisionColour = nil;
-static NSColor*		sMajorColour = nil;
+//static NSColor*		sSpanColour = nil;
+//static NSColor*		sDivisionColour = nil;
+//static NSColor*		sMajorColour = nil;
+static DKColor*		sSpanColour = nil;
+static DKColor*		sDivisionColour = nil;
+static DKColor*		sMajorColour = nil;
 
 
 #pragma mark -
@@ -48,7 +55,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (void)			setDefaultSpanColour:(NSColor*) colour
+//+ (void)			setDefaultSpanColour:(NSColor*) colour
++ (void)			setDefaultSpanColour:(DKColor*) colour
 {
 	[colour retain];
 	[sSpanColour release];
@@ -70,10 +78,12 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSColor*)		defaultSpanColour
+//+ (NSColor*)		defaultSpanColour
++ (DKColor*)		defaultSpanColour
 {
 	if ( sSpanColour == nil )
-		[self setDefaultSpanColour:[NSColor colorWithCalibratedRed:0.5 green:0.4 blue:1.0 alpha:0.7]];
+		//[self setDefaultSpanColour:[NSColor colorWithCalibratedRed:0.5 green:0.4 blue:1.0 alpha:0.7]];
+		[self setDefaultSpanColour:[DKColor colorWithCalibratedRed:0.5 green:0.4 blue:1.0 alpha:0.7]];
 	
 	return sSpanColour;
 }
@@ -93,7 +103,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (void)			setDefaultDivisionColour:(NSColor*) colour
+//+ (void)			setDefaultDivisionColour:(NSColor*) colour
++ (void)			setDefaultDivisionColour:(DKColor*) colour
 {
 	[colour retain];
 	[sDivisionColour release];
@@ -115,10 +126,12 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSColor*)		defaultDivisionColour
+//+ (NSColor*)		defaultDivisionColour
++ (DKColor*)		defaultDivisionColour
 {
 	if ( sDivisionColour == nil )
-		[self setDefaultDivisionColour:[NSColor colorWithCalibratedRed:0.5 green:0.5 blue:1.0 alpha:0.7]];
+		//[self setDefaultDivisionColour:[NSColor colorWithCalibratedRed:0.5 green:0.5 blue:1.0 alpha:0.7]];
+		[self setDefaultDivisionColour:[DKColor colorWithCalibratedRed:0.5 green:0.5 blue:1.0 alpha:0.7]];
 	
 	return sDivisionColour;
 }
@@ -138,7 +151,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (void)			setDefaultMajorColour:(NSColor*) colour
+//+ (void)			setDefaultMajorColour:(NSColor*) colour
++ (void)			setDefaultMajorColour:(DKColor*) colour
 {
 	[colour retain];
 	[sMajorColour release];
@@ -160,10 +174,12 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSColor*)		defaultMajorColour
+//+ (NSColor*)		defaultMajorColour
++ (DKColor*)		defaultMajorColour
 {
 	if ( sMajorColour == nil )
-		[self setDefaultMajorColour:[NSColor colorWithCalibratedRed:0.5 green:0.2 blue:1.0 alpha:0.7]];
+		//[self setDefaultMajorColour:[NSColor colorWithCalibratedRed:0.5 green:0.2 blue:1.0 alpha:0.7]];
+		[self setDefaultMajorColour:[DKColor colorWithCalibratedRed:0.5 green:0.2 blue:1.0 alpha:0.7]];
 	
 	return sMajorColour;
 }
@@ -184,7 +200,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (void)			setDefaultGridThemeColour:(NSColor*) colour
+//+ (void)			setDefaultGridThemeColour:(NSColor*) colour
++ (void)			setDefaultGridThemeColour:(DKColor*) colour
 {
 	// sets up the three seperate grid colours based on the one theme colour passed. The colour itself is used for the span, a darker
 	// version for majors and a lighter version for divs.
@@ -683,10 +700,14 @@ static NSColor*		sMajorColour = nil;
 	
 	LogEvent_( kReactiveEvent, @"registering ruler units '%@', abbr: '%@'", units, abbr);
 	
+#if TARGET_OS_IPHONE
+   twlog("implement synchronizeRulers");
+#else
 	[NSRulerView registerUnitWithName:units abbreviation:abbr
 					unitToPointsConversionFactor:conversionFactor
 					stepUpCycle:upCycle stepDownCycle:downCycle];
-					
+#endif TARGET_OS_IPHONE
+				
 	[[self drawing] synchronizeRulersWithUnits:units];
 }
 
@@ -763,7 +784,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)					setSpanColour:(NSColor*) colour
+//- (void)					setSpanColour:(NSColor*) colour
+- (void)					setSpanColour:(DKColor*) colour
 {
 	if( ![self locked] )
 	{
@@ -790,7 +812,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)		spanColour
+//- (NSColor*)		spanColour
+- (DKColor*)		spanColour
 {
 	return m_spanColour;
 }
@@ -811,7 +834,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)					setDivisionColour:(NSColor*) colour
+//- (void)					setDivisionColour:(NSColor*) colour
+- (void)					setDivisionColour:(DKColor*) colour
 {
 	if( ![self locked] )
 	{
@@ -823,7 +847,8 @@ static NSColor*		sMajorColour = nil;
 }
 
 
-- (NSColor*)				divisionColour
+//- (NSColor*)				divisionColour
+- (DKColor*)				divisionColour
 {
 	return m_divisionColour;
 }
@@ -843,7 +868,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)					setMajorColour:(NSColor*) colour
+//- (void)					setMajorColour:(NSColor*) colour
+- (void)					setMajorColour:(DKColor*) colour
 {
 	if( ![self locked] )
 	{
@@ -855,7 +881,8 @@ static NSColor*		sMajorColour = nil;
 }
 
 
-- (NSColor*)				majorColour
+//- (NSColor*)				majorColour
+- (DKColor*)				majorColour
 {
 	return m_majorColour;
 }
@@ -878,7 +905,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)					setGridThemeColour:(NSColor*) colour
+//- (void)					setGridThemeColour:(NSColor*) colour
+- (void)					setGridThemeColour:(DKColor*) colour
 {
 	if( ![self locked] )
 	{
@@ -888,7 +916,8 @@ static NSColor*		sMajorColour = nil;
 	}
 }
 
-- (NSColor*)				themeColour
+//- (NSColor*)				themeColour
+- (DKColor*)				themeColour
 {
 	return m_spanColour;
 }
@@ -1228,7 +1257,8 @@ static NSColor*		sMajorColour = nil;
 	{
 		//float divsDash[2] = { divs * 0.5f, divs * 0.5f };
 		
-		m_divsCache = [[NSBezierPath bezierPath] retain];
+		//m_divsCache = [[NSBezierPath bezierPath] retain];
+		m_divsCache = [[DKBezierPath bezierPath] retain];
 		//[m_divsCache setLineDash:divsDash count:2 phase:divs * 0.25f];
 	}
 	
@@ -1236,7 +1266,8 @@ static NSColor*		sMajorColour = nil;
 	{
 		//float spanDash[2] = { divs * 2, m_spanDistance - ( divs * 2 )};
 		
-		m_spanCache = [[NSBezierPath bezierPath] retain];
+		//m_spanCache = [[NSBezierPath bezierPath] retain];
+		m_spanCache = [[DKBezierPath bezierPath] retain];
 		//[m_spanCache setLineDash:spanDash count:2 phase:divs];
 	}
 	
@@ -1244,7 +1275,8 @@ static NSColor*		sMajorColour = nil;
 	{
 		//float majDash[2] = { divs * 4, m_spansPerMajor * m_spanDistance - (divs * 4)};
 		
-		m_majorsCache = [[NSBezierPath bezierPath] retain];
+		//m_majorsCache = [[NSBezierPath bezierPath] retain];
+		m_majorsCache = [[DKBezierPath bezierPath] retain];
 		//[m_majorsCache setLineDash:majDash count:2 phase:divs * 2];
 	}	
 	// first all the vertical lines
@@ -1338,10 +1370,12 @@ static NSColor*		sMajorColour = nil;
 		mlw = 0;
 	
 	[m_majorColour set];
-	[NSBezierPath setDefaultLineWidth:mlw];
+	//[NSBezierPath setDefaultLineWidth:mlw];
+	[DKBezierPath setDefaultLineWidth:mlw];
 	
 	NSRect mr = [[self drawing] interior];
-	[NSBezierPath strokeRect:mr];
+	//[NSBezierPath strokeRect:mr];
+	[DKBezierPath strokeRect:mr];
 }
 
 
@@ -1413,8 +1447,10 @@ static NSColor*		sMajorColour = nil;
 	// be smart about colour: if the drawing has a dark background, switch the divs and majors colours to give better contrast
 	// this is very rarely required but for some unusual situations gives a more usable/visible grid.
 	
-	NSColor*	dc = m_divisionColour;
-	NSColor*	mc = m_majorColour;
+	//NSColor*	dc = m_divisionColour;
+	//NSColor*	mc = m_majorColour;
+	DKColor*	dc = m_divisionColour;
+	DKColor*	mc = m_majorColour;
 	
 	CGFloat lum = [[[self drawing] paperColour] luminosity];
 	
@@ -1482,7 +1518,8 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)		selectionColour
+//- (NSColor*)		selectionColour
+- (DKColor*)		selectionColour
 {
 	return nil;
 }
@@ -1544,6 +1581,7 @@ static NSColor*		sMajorColour = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu *)		menuForEvent:(NSEvent *)theEvent inView:(NSView*) view
 {
 	NSMenu* menu = [super menuForEvent:theEvent inView:view];
@@ -1556,6 +1594,7 @@ static NSColor*		sMajorColour = nil;
 	
 	return menu;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (BOOL)			supportsMetadata
@@ -1706,6 +1745,7 @@ static NSColor*		sMajorColour = nil;
 #pragma mark -
 #pragma mark As part of NSMenuValidation protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)					validateMenuItem:(NSMenuItem*) item
 {
 	SEL		action = [item action];
@@ -1722,6 +1762,7 @@ static NSColor*		sMajorColour = nil;
 	
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 
 @end

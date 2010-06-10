@@ -11,9 +11,12 @@
 
 // bezier path category:
 
-@interface NSBezierPath (TextOnPath)
+//@interface NSBezierPath (TextOnPath)
+@interface DKBezierPath (TextOnPath)
 
+#ifndef TARGET_OS_IPHONE
 + (NSLayoutManager*)	textOnPathLayoutManager;
+#endif TARGET_OS_IPHONE
 + (NSDictionary*)		textOnPathDefaultAttributes;
 + (void)				setTextOnPathDefaultAttributes:(NSDictionary*) attrs;
 
@@ -27,19 +30,25 @@
 // cache each time, text-on-path rendering avoids recalculating several things. The caller is responsible for invalidating the cache if the actual string
 // content to be drawn has changed, but the path will detect changes to itself automatically.
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				drawTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy layoutManager:(NSLayoutManager*) lm cache:(NSMutableDictionary*) cache;
+#endif TARGET_OS_IPHONE
 
 // obtaining the paths of the glyphs laid out on the path
 
 - (NSArray*)			bezierPathsWithGlyphsOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy;
-- (NSBezierPath*)		bezierPathWithTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy;
+//- (NSBezierPath*)		bezierPathWithTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy;
+- (DKBezierPath*)		bezierPathWithTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy;
 
-- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str;
-- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str attributes:(NSDictionary*) attrs;
+//- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str;
+//- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str attributes:(NSDictionary*) attrs;
+- (DKBezierPath*)		bezierPathWithStringOnPath:(NSString*) str;
+- (DKBezierPath*)		bezierPathWithStringOnPath:(NSString*) str attributes:(NSDictionary*) attrs;
 
 // low-level glyph layout method called by all other methods to generate the glyphs. The result depends on the helper object which must conform
 // to the textOnPathPlacement informal protocol (see below)
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				layoutStringOnPath:(NSTextStorage*) str
 								   yOffset:(CGFloat) dy
 						 usingLayoutHelper:(id) helperObject
@@ -56,9 +65,11 @@
 - (void)				drawUnderlinePathForLayoutManager:(NSLayoutManager*) lm range:(NSRange) range yOffset:(CGFloat) dy cache:(NSMutableDictionary*) cache;
 - (void)				drawStrikethroughPathForLayoutManager:(NSLayoutManager*) lm range:(NSRange) range yOffset:(CGFloat) dy cache:(NSMutableDictionary*) cache;
 
+#endif TARGET_OS_IPHONE
 - (void)				pathPosition:(CGFloat*) start andLength:(CGFloat*) length forCharactersOfString:(NSAttributedString*) str inRange:(NSRange) range;
 - (NSArray*)			descenderBreaksForString:(NSAttributedString*) str range:(NSRange) range underlineOffset:(CGFloat) offset;
-- (NSBezierPath*)		textLinePathWithMask:(NSInteger) mask
+//- (NSBezierPath*)		textLinePathWithMask:(NSInteger) mask
+- (DKBezierPath*)		textLinePathWithMask:(NSInteger) mask
 						  startPosition:(CGFloat) sp
 								 length:(CGFloat) length
 								 offset:(CGFloat) offset
@@ -76,9 +87,12 @@
 // drawing/placing/moving anything along a path:
 
 - (NSArray*)			placeObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo;
-- (NSBezierPath*)		bezierPathWithObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo;
-- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval;
-- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval phase:(CGFloat) phase alternate:(BOOL) alt taperDelegate:(id) taperDel;
+//- (NSBezierPath*)		bezierPathWithObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo;
+//- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval;
+//- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval phase:(CGFloat) phase alternate:(BOOL) alt taperDelegate:(id) taperDel;
+- (DKBezierPath*)		bezierPathWithObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo;
+- (DKBezierPath*)		bezierPathWithPath:(DKBezierPath*) path atInterval:(CGFloat) interval;
+- (DKBezierPath*)		bezierPathWithPath:(DKBezierPath*) path atInterval:(CGFloat) interval phase:(CGFloat) phase alternate:(BOOL) alt taperDelegate:(id) taperDel;
 
 // placing "chain links" along a path:
 
@@ -104,9 +118,11 @@
 
 @interface NSObject (BezierPlacement)
 
-- (id)					placeObjectAtPoint:(NSPoint) p onPath:(NSBezierPath*) path position:(CGFloat) pos slope:(CGFloat) slope userInfo:(void*) userInfo;
+//- (id)					placeObjectAtPoint:(NSPoint) p onPath:(NSBezierPath*) path position:(CGFloat) pos slope:(CGFloat) slope userInfo:(void*) userInfo;
+- (id)					placeObjectAtPoint:(NSPoint) p onPath:(DKBezierPath*) path position:(CGFloat) pos slope:(CGFloat) slope userInfo:(void*) userInfo;
 - (BOOL)				moveObjectTo:(NSPoint) p position:(CGFloat) pos slope:(CGFloat) slope userInfo:(id) userInfo;
-- (id)					placeLinkFromPoint:(NSPoint) pa toPoint:(NSPoint) pb onPath:(NSBezierPath*) path linkNumber:(NSInteger) lkn userInfo:(void*) userInfo;
+//- (id)					placeLinkFromPoint:(NSPoint) pa toPoint:(NSPoint) pb onPath:(NSBezierPath*) path linkNumber:(NSInteger) lkn userInfo:(void*) userInfo;
+- (id)					placeLinkFromPoint:(NSPoint) pa toPoint:(NSPoint) pb onPath:(DKBezierPath*) path linkNumber:(NSInteger) lkn userInfo:(void*) userInfo;
 
 @end
 
@@ -119,7 +135,9 @@
 
 @interface NSObject (TextOnPathPlacement)
 
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -130,7 +148,8 @@
 
 @interface NSObject (TaperPathDelegate)
 
-- (CGFloat)				taperFactorAtDistance:(CGFloat) distance onPath:(NSBezierPath*) path ofLength:(CGFloat) length;
+//- (CGFloat)				taperFactorAtDistance:(CGFloat) distance onPath:(NSBezierPath*) path ofLength:(CGFloat) length;
+- (CGFloat)				taperFactorAtDistance:(CGFloat) distance onPath:(DKBezierPath*) path ofLength:(CGFloat) length;
 @end
 
 
@@ -145,7 +164,9 @@
 }
 
 - (NSArray*)			glyphs;
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -157,7 +178,9 @@
 
 @interface DKTextOnPathGlyphDrawer	: NSObject
 
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -177,7 +200,9 @@
 - (void)				setCharacterRange:(NSRange) range;
 - (CGFloat)				length;
 - (CGFloat)				position;
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -207,7 +232,8 @@
 // category on NSFont used to fudge the underline offset for invalid fonts. Apparently this is what Apple do also, though currently the
 // definition of "invalid font" is not known with any precision. Currently underline offsets of 0 will use this value instead
 
-@interface NSFont (DKUnderlineCategory)
+//@interface NSFont (DKUnderlineCategory)
+@interface DKFont (DKUnderlineCategory)
 
 - (CGFloat)	valueForInvalidUnderlinePosition;
 - (CGFloat)	valueForInvalidUnderlineThickness;

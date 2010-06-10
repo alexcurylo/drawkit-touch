@@ -34,9 +34,11 @@
 }
 
 
-+ (DKPasteboardInfo*)	pasteboardInfoWithPasteboard:(NSPasteboard*) pb
+//+ (DKPasteboardInfo*)	pasteboardInfoWithPasteboard:(NSPasteboard*) pb
++ (DKPasteboardInfo*)	pasteboardInfoWithPasteboard:(DKPasteboard*) pb
 {
-	NSData* data = [pb dataForType:kDKDrawableObjectInfoPasteboardType];
+	//NSData* data = [pb dataForType:kDKDrawableObjectInfoPasteboardType];
+	NSData* data = [pb dataForPasteboardType:kDKDrawableObjectInfoPasteboardType];
 	
 	if( data )
 		return [self pasteboardInfoWithData:data];
@@ -130,11 +132,17 @@
 }
 
 
-- (BOOL)				writeToPasteboard:(NSPasteboard*) pb
+//- (BOOL)				writeToPasteboard:(NSPasteboard*) pb
+- (BOOL)				writeToPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"pasteboard was nil");
 	
-	return [pb setData:[self data] forType:kDKDrawableObjectInfoPasteboardType];
+#if TARGET_OS_IPHONE
+	[pb setData:[self data] forPasteboardType:kDKDrawableObjectInfoPasteboardType];
+   return YES;
+#else
+	return [pb setData:[self data] forPasteboardType:kDKDrawableObjectInfoPasteboardType];
+#endif TARGET_OS_IPHONE
 }
 
 

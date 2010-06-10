@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKRasterizer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 23/11/2006.
 ///
@@ -37,7 +37,8 @@ DKClippingOption;
 	DKClippingOption	mClipping;			// set path clipping to this
 }
 
-+ (DKRasterizer*)	rasterizerFromPasteboard:(NSPasteboard*) pb;
+//+ (DKRasterizer*)	rasterizerFromPasteboard:(NSPasteboard*) pb;
++ (DKRasterizer*)	rasterizerFromPasteboard:(DKPasteboard*) pb;
 
 - (DKRastGroup*)	container;
 - (void)			setContainer:(DKRastGroup*) container;
@@ -56,9 +57,11 @@ DKClippingOption;
 - (void)			setClippingWithoutNotifying:(DKClippingOption) clipping;
 - (DKClippingOption) clipping;
 
-- (NSBezierPath*)	renderingPathForObject:(id<DKRenderable>) object;
+//- (NSBezierPath*)	renderingPathForObject:(id<DKRenderable>) object;
+- (DKBezierPath*)	renderingPathForObject:(id<DKRenderable>) object;
 
-- (BOOL)			copyToPasteboard:(NSPasteboard*) pb;
+//- (BOOL)			copyToPasteboard:(NSPasteboard*) pb;
+- (BOOL)			copyToPasteboard:(DKPasteboard*) pb;
 
 @end
 
@@ -88,7 +91,8 @@ extern NSString*	kDKRasterizerChangedPropertyKey;
 
 @interface NSObject (DKRendererDelegate)
 
-- (NSBezierPath*)	renderer:(DKRasterizer*) aRenderer willRenderPath:(NSBezierPath*) aPath;
+//- (NSBezierPath*)	renderer:(DKRasterizer*) aRenderer willRenderPath:(NSBezierPath*) aPath;
+- (DKBezierPath*)	renderer:(DKRasterizer*) aRenderer willRenderPath:(DKBezierPath*) aPath;
 
 @end
 

@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKDrawingTool.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 23/09/2006.
 ///
@@ -12,6 +12,7 @@
 
 
 @class DKToolController;
+@class DKDrawingView;
 
 @interface DKDrawingTool : NSObject <DKDrawingTool>
 {
@@ -26,8 +27,11 @@
 + (id)					firstResponderAbleToSetTool;
 
 - (NSString*)			registeredName;
-- (void)				drawRect:(NSRect) aRect inView:(NSView*) aView;
+//- (void)				drawRect:(NSRect) aRect inView:(NSView*) aView;
+- (void)				drawRect:(NSRect) aRect inView:(DKDrawingView*) aView;
+#ifndef TARGET_OS_IPHONE
 - (void)				flagsChanged:(NSEvent*) event inLayer:(DKLayer*) layer;
+#endif TARGET_OS_IPHONE
 - (BOOL)				isValidTargetLayer:(DKLayer*) aLayer;
 - (BOOL)				isSelectionTool;
 
@@ -35,7 +39,9 @@
 - (void)				toolControllerDidSetTool:(DKToolController*) aController;
 - (void)				toolControllerWillUnsetTool:(DKToolController*) aController;
 - (void)				toolControllerDidUnsetTool:(DKToolController*) aController;
+#ifndef TARGET_OS_IPHONE
 - (void)				setCursorForPoint:(NSPoint) mp targetObject:(DKDrawableObject*) obj inLayer:(DKLayer*) aLayer event:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
 // if a keyboard equivalent is set, the tool controller will set the tool if the keyboard equivalent is received in keyDown:
 // the tool must be registered for this to function.
@@ -54,7 +60,9 @@
 
 @interface DKDrawingTool	(OptionalMethods)
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseMoved:(NSEvent*) event inView:(NSView*) view;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -68,7 +76,9 @@
 + (NSDictionary*)		sharedToolRegistry;
 + (DKDrawingTool*)		drawingToolWithName:(NSString*) name;
 + (void)				registerDrawingTool:(DKDrawingTool*) tool withName:(NSString*) name;
+#ifndef TARGET_OS_IPHONE
 + (DKDrawingTool*)		drawingToolWithKeyboardEquivalent:(NSEvent*) keyEvent;
+#endif TARGET_OS_IPHONE
 
 + (void)				registerStandardTools;
 + (NSArray*)			toolNames;

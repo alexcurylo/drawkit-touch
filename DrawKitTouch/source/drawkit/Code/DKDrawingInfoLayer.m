@@ -11,7 +11,11 @@
 #import "DKDrawingInfoLayer.h"
 
 #import "DKDrawing.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKGridLayer.h"
 
 
@@ -59,13 +63,15 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 
 
 #pragma mark -
-- (void)		setBackgroundColour:(NSColor*) colour
+//- (void)		setBackgroundColour:(NSColor*) colour
+- (void)		setBackgroundColour:(DKColor*) colour
 {
 	[self setSelectionColour:colour];
 }
 
 
-- (NSColor*)	backgroundColour
+//- (NSColor*)	backgroundColour
+- (DKColor*)	backgroundColour
 {
 	return [self selectionColour];
 }
@@ -131,6 +137,10 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	// draws the info, labels, subdivisions, etc. <br> is the bounds of the info box. The border and background are drawn by the time
 	// this is called.
 	
+#if TARGET_OS_IPHONE
+   (void)br;
+   twlog("implement drawInfoInRect");
+#else
 	NSDictionary*			di = [[self drawing] drawingInfo];
 	NSString*				infos;
 	NSAttributedString*		label;
@@ -182,7 +192,13 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	[bp appendBezierPathWithRect:lr];
 	r.origin.x += lr.size.width;
 	dt = [di objectForKey:kDKDrawingInfoCreationDate];
+#if TARGET_OS_IPHONE
+   NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+   [dateFormatter setDateFormat:@"%B %e, %Y"];
+   infos = [dateFormatter stringFromDate:dt];
+#else
 	infos = [dt descriptionWithCalendarFormat:@"%B %e, %Y" timeZone:nil locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
+#endif TARGET_OS_IPHONE
 	//if ( _editingKey != kDKDrawingInfoCreationDate )
 		[self drawString:infos inRect:r withAttributes:[self attributesForDrawingInfoItem:kDKDrawingInfoCreationDate]];
 	[label drawInRect:NSOffsetRect( lr, 1.5, 0 )];
@@ -199,6 +215,7 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 
 	[[DKGridLayer defaultMajorColour] set];
 	[bp stroke];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -209,21 +226,29 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	
 	NSMutableDictionary* ad = nil;
 	
+#if TARGET_OS_IPHONE
+   (void)key;
+   twlog("implement attributesForDrawingInfoItem");
+#else
 	if ([key isEqualToString:kDKDrawingInfoDrawingNumber])
 	{
 		ad = [[[NSMutableDictionary alloc] init] autorelease];
-		[ad setObject:[NSFont fontWithName:@"Helvetica" size:24 ] forKey:NSFontAttributeName];
+		//[ad setObject:[NSFont fontWithName:@"Helvetica" size:24 ] forKey:NSFontAttributeName];
+		[ad setObject:[DKFont fontWithName:@"Helvetica" size:24 ] forKey:NSFontAttributeName];
 	}
 	else if ([key isEqualToString:kDKDrawingInfoDrawingRevision])
 	{
 		ad = [[[NSMutableDictionary alloc] init] autorelease];
-		[ad setObject:[NSFont fontWithName:@"Helvetica" size:24 ] forKey:NSFontAttributeName];
+		//[ad setObject:[NSFont fontWithName:@"Helvetica" size:24 ] forKey:NSFontAttributeName];
+		[ad setObject:[DKFont fontWithName:@"Helvetica" size:24 ] forKey:NSFontAttributeName];
 	}
 	else if ([key isEqualToString:kDKDrawingInfoTextLabelAttributes])
 	{
 		ad = [[[NSMutableDictionary alloc] init] autorelease];
-		[ad setObject:[NSFont fontWithName:@"Helvetica" size:7 ] forKey:NSFontAttributeName];
+		//[ad setObject:[NSFont fontWithName:@"Helvetica" size:7 ] forKey:NSFontAttributeName];
+		[ad setObject:[DKFont fontWithName:@"Helvetica" size:7 ] forKey:NSFontAttributeName];
 	}
+#endif TARGET_OS_IPHONE
 	
 	return ad;
 }
@@ -237,7 +262,12 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	{
 		NSAttributedString* as = [[NSAttributedString alloc] initWithString:str attributes:attr];
 		
+#if TARGET_OS_IPHONE
+      (void)r;
+      twlog("implement drawString");
+#else
 		[as drawInRect:NSOffsetRect( r, 4, 2 )];
+#endif TARGET_OS_IPHONE
 		[as release];
 	}
 }
@@ -316,9 +346,14 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 {
 	NSRect r = itemRect;
 	
+#if TARGET_OS_IPHONE
+   (void)ls;
+   twlog("implement labelRectInRect");
+#else
 	r.size = [ls size];
 	r.size.width += 4.0;
-	
+#endif TARGET_OS_IPHONE
+
 	return r;
 }
 
@@ -350,6 +385,10 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 {
 	// the editable text changed. Get the text from the editor and set the dictionary's entry for the current key
 	
+#if TARGET_OS_IPHONE
+   (void)aNotification;
+   twlog("implement textViewDidChangeSelection");
+#else
 	NSTextView*		tv = [aNotification object];
 	NSTextStorage*	text = [[tv layoutManager] textStorage]; 
 	NSString*		str = [text string];
@@ -361,23 +400,28 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	[di setObject:str forKey:m_editingKeyRef];
 	NSRect r = [self layoutRectForDrawingInfoItem:m_editingKeyRef inRect:[self infoBoxRect]];
 	[self setNeedsDisplayInRect:r];
+#endif TARGET_OS_IPHONE
 }
 
 
 #pragma mark -
 #pragma mark As a DKLayer
+
+#ifndef TARGET_OS_IPHONE
 - (NSRect)			activeCursorRect
 {
 	// return the rect that the layer's cursor will be set when the mouse is within.
 	
 	return [self infoBoxRect];
 }
+#endif TARGET_OS_IPHONE
 
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor
 {
 	return [NSCursor IBeamCursor];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)		drawRect:(NSRect) rect inView:(DKDrawingView*) aView
@@ -391,12 +435,16 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 		// draw the info box
 		
 		[[self backgroundColour] set];
+#if TARGET_OS_IPHONE
+      UIRectFillUsingBlendMode( rect, kCGBlendModeSourceAtop );
+#else
 		NSRectFillUsingOperation( diRect, NSCompositeSourceAtop );
+#endif TARGET_OS_IPHONE
 		
 		// draw the box border using the major grid colour:
 		
 		[[DKGridLayer defaultMajorColour] set];
-		NSFrameRectWithWidth( diRect, 0.6 );
+		DKFrameRectWithWidth( diRect, 0.6 );
 		
 		// divide up the box and label each one:
 		
@@ -406,7 +454,7 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	if ([self drawsBorder])
 	{
 		[[DKGridLayer defaultMajorColour] set];
-		NSFrameRectWithWidth([[self drawing] interior], 0.6 );
+		DKFrameRectWithWidth([[self drawing] interior], 0.6 );
 	}
 }
 
@@ -426,7 +474,7 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	}
 }
 
-
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDown:(NSEvent*) event inView:(NSView*) view
 {
 	// if we are not locked, we can edit the drawing info. This is handled by the view's text editing utility methods which
@@ -459,7 +507,7 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 		}
 	}
 }
-
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -474,7 +522,8 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 		[self setPlacement:kDKDrawingInfoPlaceBottomLeft];
 		[self setSize:sz];
 		NSAssert(m_editingKeyRef == nil, @"Expected init to zero");
-		[self setBackgroundColour:[NSColor whiteColor]];
+		//[self setBackgroundColour:[NSColor whiteColor]];
+		[self setBackgroundColour:[DKColor whiteColor]];
 		m_drawBorder = YES;
 	}
 	if (self != nil)

@@ -18,7 +18,8 @@
 
 @interface DKRegularPolygonPath (Private)
 
-- (NSBezierPath*)	calculatePath;
+//- (NSBezierPath*)	calculatePath;
+- (DKBezierPath*)	calculatePath;
 - (void)			movePart:(NSInteger) pc toPoint:(NSPoint) mp constrainAngle:(BOOL) constrain;
 - (CGFloat)			angleForVertexPartcode:(NSInteger) pc;
 - (void)			updateInfoForPartcode:(NSInteger) pc atPoint:(NSPoint) p;
@@ -161,15 +162,18 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 #pragma mark - private
 
-- (NSBezierPath*)	calculatePath
+//- (NSBezierPath*)	calculatePath
+- (DKBezierPath*)	calculatePath
 {
 	NSInteger				i, pc;
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 	NSPoint			p, fp, pp;
 	BOOL			hadFirstPoint = NO, isStar = NO;
 	CGFloat			pa, lpa, tip, valley, halfPi;
 	
-	halfPi = pi * 0.5f;
+	//halfPi = pi * 0.5f;
+	halfPi = M_PI_2;
 	p = fp = pp = NSZeroPoint;
 	lpa = 0;
 	
@@ -428,7 +432,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
-- (void)		drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs
+//- (void)		drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs
+- (void)		drawControlPointsOfPath:(DKBezierPath*) path usingKnobs:(DKKnob*) knobs
 {
 	#pragma unused(path)
 	
@@ -463,7 +468,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 		
 		if([self showsSpreadControls])
 		{
-			NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSColor yellowColor], kDKKnobPreferredHighlightColour, nil ];
+			//NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSColor yellowColor], kDKKnobPreferredHighlightColour, nil ];
+			NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[DKColor yellowColor], kDKKnobPreferredHighlightColour, nil ];
 			
 			kp = [self pointForPartcode:kDKRegularPolyTipSpreadPart];
 			[knobs drawKnobAtPoint:kp ofType:kDKBoundingRectKnobType angle:[self angle] userInfo:options];
@@ -608,7 +614,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 		default:
 		{
 			NSInteger i = pc - kDKRegularPolyFirstVertexPart;
-			angle = (( 2 * pi * i) / [self numberOfSides]) + [self angle];
+			//angle = (( 2 * pi * i) / [self numberOfSides]) + [self angle];
+			angle = (( 2 * M_PI * i) / [self numberOfSides]) + [self angle];
 	
 			if(( mInnerRadius >= 0.0 ) && ( i & 1 ) == 1 )
 				radius *= [self innerRadius];
@@ -642,6 +649,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	[[self layer] setInfoWindowBackgroundColour:[[self class]infoWindowBackgroundColour]];
@@ -663,6 +671,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 			break;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -682,6 +691,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	BOOL shift	= (([evt modifierFlags] & NSShiftKeyMask ) != 0 );
@@ -712,6 +722,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 	[self setMouseHasMovedSinceStartOfTracking:YES];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -893,7 +904,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	NSPoint loc = [self location];
 	loc = [aTransform transformPoint:loc];
@@ -942,7 +954,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 	return result;
 }
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu
 {
 	NSMenu* sidesMenu = [[NSMenu alloc] initWithTitle:@"Sides"];
@@ -964,9 +976,10 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 	
 	return [super populateContextualMenu:theMenu];
 }
+#endif TARGET_OS_IPHONE
 
-
-- (void)				applyTransform:(NSAffineTransform*) transform
+//- (void)				applyTransform:(NSAffineTransform*) transform
+- (void)				applyTransform:(DKAffineTransform*) transform
 {
 	[super applyTransform:transform];
 	mCentre = [transform transformPoint:mCentre];
@@ -1103,6 +1116,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL	action = [item action];
@@ -1122,6 +1136,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 
 @end

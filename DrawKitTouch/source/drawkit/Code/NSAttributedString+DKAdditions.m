@@ -8,8 +8,10 @@
 //
 
 #import "NSAttributedString+DKAdditions.h"
+#ifndef TARGET_OS_IPHONE
 #import "DKBezierTextContainer.h"
 #import "DKBezierLayoutManager.h"
+#endif TARGET_OS_IPHONE
 #import "NSAffineTransform+DKAdditions.h"
 #import "NSBezierPath+Geometry.h"
 #import "DKDrawKitMacros.h"
@@ -27,6 +29,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 NSLayoutManager*		sharedDrawingLayoutManager( void )
 {
     // This method returns an NSLayoutManager that can be used to draw the contents of a DKTextShape.
@@ -58,6 +61,7 @@ NSLayoutManager*		sharedDrawingLayoutManager( void )
 	[tc setLineFragmentPadding:0];
 	return sharedLM;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -73,6 +77,7 @@ NSLayoutManager*		sharedDrawingLayoutManager( void )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 NSLayoutManager*		sharedCaptureLayoutManager( void )
 {
     static DKBezierLayoutManager*	sharedLM = nil;
@@ -101,6 +106,7 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	[tc setLineFragmentPadding:0];
 	return sharedLM;
 }
+#endif TARGET_OS_IPHONE
 
 @implementation NSAttributedString (DKAdditions)
 
@@ -126,7 +132,8 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 
 - (void)	drawInRect:(NSRect) destRect withLayoutSize:(NSSize) layoutSize atAngle:(CGFloat) radians
 {
-	[self drawInRect:destRect withLayoutPath:[NSBezierPath bezierPathWithRect:NSMakeRect( 0, 0, layoutSize.width, layoutSize.height)] atAngle:radians];
+	//[self drawInRect:destRect withLayoutPath:[NSBezierPath bezierPathWithRect:NSMakeRect( 0, 0, layoutSize.width, layoutSize.height)] atAngle:radians];
+	[self drawInRect:destRect withLayoutPath:[DKBezierPath bezierPathWithRect:NSMakeRect( 0, 0, layoutSize.width, layoutSize.height)] atAngle:radians];
 }
 
 
@@ -150,7 +157,8 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 ///********************************************************************************************************************
 
 
-- (void)	drawInRect:(NSRect) destRect withLayoutPath:(NSBezierPath*) layoutPath atAngle:(CGFloat) radians
+//- (void)	drawInRect:(NSRect) destRect withLayoutPath:(NSBezierPath*) layoutPath atAngle:(CGFloat) radians
+- (void)	drawInRect:(NSRect) destRect withLayoutPath:(DKBezierPath*) layoutPath atAngle:(CGFloat) radians
 {
 	[self drawInRect:destRect withLayoutPath:layoutPath atAngle:radians verticalPositioning:kDKTextShapeVerticalAlignmentTop verticalOffset:0];
 }
@@ -177,7 +185,8 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 ///********************************************************************************************************************
 
 - (void)	drawInRect:(NSRect) destRect
-			withLayoutPath:(NSBezierPath*) layoutPath
+			//withLayoutPath:(NSBezierPath*) layoutPath
+			withLayoutPath:(DKBezierPath*) layoutPath
 			atAngle:(CGFloat) radians
 			verticalPositioning:(DKVerticalTextAlignment) vAlign
 			verticalOffset:(CGFloat) vPos
@@ -188,6 +197,11 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	
 	vPos = LIMIT( vPos, 0, 1 );
 	
+#if TARGET_OS_IPHONE
+   (void)radians;
+   (void)vAlign;
+   twlog("implement drawInRect");
+#else
 	NSTextStorage *contents = [[NSTextStorage alloc] initWithAttributedString:self];
 
 	if ([contents length] > 0)
@@ -258,6 +272,7 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 		[textContainer setBezierPath:nil];
 	}
 	[contents release];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -267,6 +282,9 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	// expensive than -size. However, it is a lot more accurate!
 	
 	NSSize			as = NSZeroSize;
+#if TARGET_OS_IPHONE
+   twlog("implement accurateSize");
+#else
 	NSTextStorage*	contents = [[NSTextStorage alloc] initWithAttributedString:self];
 	
 	if ([contents length] > 0)
@@ -286,6 +304,7 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 		[contents removeLayoutManager:layoutMgr];
 	}
 	[contents release];
+#endif TARGET_OS_IPHONE
 	
 	return as;
 }
@@ -367,7 +386,9 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 		rangeLimit = NSMakeRange( NSMaxRange( effectiveRange ), [self length] - NSMaxRange( effectiveRange ));
 	}
 	
+#ifndef TARGET_OS_IPHONE
 	[self fixAttributesInRange:NSMakeRange( 0, [self length])];
+#endif TARGET_OS_IPHONE
 	[self endEditing];
 }
 
@@ -390,7 +411,9 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 		rangeLimit = NSMakeRange( NSMaxRange( effectiveRange ), [self length] - NSMaxRange( effectiveRange ));
 	}
 
+#ifndef TARGET_OS_IPHONE
 	[self fixAttributesInRange:NSMakeRange( 0, [self length])];
+#endif TARGET_OS_IPHONE
 	[self endEditing];
 }
 
@@ -413,16 +436,23 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 		rangeLimit = NSMakeRange( NSMaxRange( effectiveRange ), [self length] - NSMaxRange( effectiveRange ));
 	}
 	
+#ifndef TARGET_OS_IPHONE
 	[self fixAttributesInRange:NSMakeRange( 0, [self length])];
+#endif TARGET_OS_IPHONE
 	[self endEditing];
 }
 
 
 - (void)	convertFontsToFace:(NSString*) face
 {
+#if TARGET_OS_IPHONE
+   (void)face;
+   twlog("implement convertFontsToFace");
+#else
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
-	NSFont*			font;
+	//NSFont*			font;
+	DKFont*			font;
 	NSFontManager*	fm = [NSFontManager sharedFontManager];
 	
 	[self beginEditing];
@@ -431,7 +461,8 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	{
 		font = [self attribute:NSFontAttributeName atIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
 		
-		NSFont* newFont = [fm convertFont:font toFace:face];
+		//NSFont* newFont = [fm convertFont:font toFace:face];
+		DKFont* newFont = [fm convertFont:font toFace:face];
 		
 		if( newFont != font )
 			[self addAttribute:NSFontAttributeName value:newFont range:effectiveRange];
@@ -441,12 +472,17 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
+#endif TARGET_OS_IPHONE
 }
 
 
 
 - (void)	convertFontsToFamily:(NSString*) family
 {
+#if TARGET_OS_IPHONE
+   (void)family;
+   twlog("implement convertFontsToFamily");
+#else
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
 	NSFont*			font;
@@ -468,16 +504,24 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
+#endif TARGET_OS_IPHONE
 }
 
 
 
 - (void)	convertFontsToSize:(CGFloat) aSize
 {
+#if TARGET_OS_IPHONE
+   (void)aSize;
+   twlog("implement convertFontsToSize");
+#else
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
-	NSFont*			font;
+	//NSFont*			font;
+	DKFont*			font;
+#ifndef TARGET_OS_IPHONE
 	NSFontManager*	fm = [NSFontManager sharedFontManager];
+#endif TARGET_OS_IPHONE
 	
 	[self beginEditing];
 	
@@ -485,7 +529,11 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	{
 		font = [self attribute:NSFontAttributeName atIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
 		
+#if TARGET_OS_IPHONE
+		UIFont* newFont = [newFont fontWithSize:aSize];
+#else
 		NSFont* newFont = [fm convertFont:font toSize:aSize];
+#endif TARGET_OS_IPHONE
 		
 		if( newFont != font )
 			[self addAttribute:NSFontAttributeName value:newFont range:effectiveRange];
@@ -495,16 +543,24 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
+#endif TARGET_OS_IPHONE
 }
 
 
 
 - (void)	convertFontsByAddingSize:(CGFloat) aSize
 {
+#if TARGET_OS_IPHONE
+   (void)aSize;
+   twlog("implement convertFontsByAddingSize");
+#else
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
-	NSFont*			font;
+	//NSFont*			font;
+	DKFont*			font;
+#ifndef TARGET_OS_IPHONE
 	NSFontManager*	fm = [NSFontManager sharedFontManager];
+#endif TARGET_OS_IPHONE
 	
 	[self beginEditing];
 	
@@ -512,7 +568,11 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	{
 		font = [self attribute:NSFontAttributeName atIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
 		
+#if TARGET_OS_IPHONE
+		UIFont* newFont = [font fontWithSize:[font pointSize] + aSize];
+#else
 		NSFont* newFont = [fm convertFont:font toSize:[font pointSize] + aSize];
+#endif TARGET_OS_IPHONE
 		
 		if( newFont != font )
 			[self addAttribute:NSFontAttributeName value:newFont range:effectiveRange];
@@ -522,10 +582,12 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
+#endif TARGET_OS_IPHONE
 }
 
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)	convertFontsToHaveTrait:(NSFontTraitMask) traitMask
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
@@ -550,9 +612,10 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
 }
+#endif TARGET_OS_IPHONE
 
 
-
+#ifndef TARGET_OS_IPHONE
 - (void)	convertFontsToNotHaveTrait:(NSFontTraitMask) traitMask
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
@@ -577,8 +640,10 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)	changeFont:(id) sender
 {
 	// this allows any mutable attributed string to make use of the font panel directly. It applies the font change to the entire string but in chunks such that
@@ -605,8 +670,10 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	[self fixFontAttributeInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)	changeAttributes:(id) sender
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
@@ -630,6 +697,7 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	[self fixAttributesInRange:NSMakeRange( 0, [self length])];
 	[self endEditing];
 }
+#endif TARGET_OS_IPHONE
 
 
 

@@ -27,7 +27,9 @@
 // convenience methods that set up the property dictionaries for you:
 
 - (NSData*)				JPEGDataWithResolution:(NSInteger) dpi quality:(CGFloat) quality progressive:(BOOL) progressive;
+#ifndef TARGET_OS_IPHONE
 - (NSData*)				TIFFDataWithResolution:(NSInteger) dpi compressionType:(NSTIFFCompression) compType;
+#endif TARGET_OS_IPHONE
 - (NSData*)				PNGDataWithResolution:(NSInteger) dpi gamma:(CGFloat) gamma interlaced:(BOOL) interlaced;
 
 - (NSData*)				thumbnailData;

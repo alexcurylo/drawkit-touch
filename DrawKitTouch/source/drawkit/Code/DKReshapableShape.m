@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKReshapableShape.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 20/10/2006.
 ///
@@ -66,7 +66,8 @@
 
 
 #pragma mark -
-- (NSBezierPath*)	providedShapeForRect:(NSRect) r
+//- (NSBezierPath*)	providedShapeForRect:(NSRect) r
+- (DKBezierPath*)	providedShapeForRect:(NSRect) r
 {
 	shapeProviderFunction sp;
 	
@@ -81,7 +82,8 @@
 
 #pragma mark -
 #pragma mark As a DKDrawableShape
-- (void)		adoptPath:(NSBezierPath*) path
+//- (void)		adoptPath:(NSBezierPath*) path
+- (void)		adoptPath:(DKBezierPath*) path
 {
 	// overrides standard shape so that if a new path is adopted directly, the shape provider is discarded.
 	
@@ -118,7 +120,8 @@
 		
 		// ask provider for the path.
 		
-		NSBezierPath* p = [self providedShapeForRect:r];
+		//NSBezierPath* p = [self providedShapeForRect:r];
+		DKBezierPath* p = [self providedShapeForRect:r];
 		
 		if ( p != nil && ![p isEmpty])
 		{
@@ -134,7 +137,8 @@
 			
 			if( r.size.width != 0.0 && r.size.height != 0.0 )
 			{
-				NSAffineTransform*  tfm = [NSAffineTransform transform];
+				//NSAffineTransform*  tfm = [NSAffineTransform transform];
+				DKAffineTransform*  tfm = [DKAffineTransform transform];
 				[tfm translateXBy:[self location].x yBy:[self location].y];
 				[tfm scaleXBy:r.size.width yBy:r.size.height];
 				[tfm invert];

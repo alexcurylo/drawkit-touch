@@ -8,6 +8,10 @@
 ///
 ///**********************************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+#error GCZoomView is NSView-based; use DKTZoomView in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 // not in iPhone SDK, should be left to .pch ...alex
 //#import <Cocoa/Cocoa.h>
 

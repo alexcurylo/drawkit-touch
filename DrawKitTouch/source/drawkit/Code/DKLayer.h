@@ -16,11 +16,16 @@
 
 // generic layer class:
 
-@interface DKLayer : NSObject <NSCoding, DKKnobOwner, NSUserInterfaceValidations>
+@interface DKLayer : NSObject <NSCoding, DKKnobOwner
+#ifndef TARGET_OS_IPHONE
+, NSUserInterfaceValidations
+#endif TARGET_OS_IPHONE
+>
 {
 @private
 	NSString*				m_name;					// layer name
-	NSColor*				m_selectionColour;		// colour preference for selection highlights in this layer
+	//NSColor*				m_selectionColour;		// colour preference for selection highlights in this layer
+	DKColor*				m_selectionColour;		// colour preference for selection highlights in this layer
 	DKKnob*					m_knobs;				// knobs helper object if set - normally nil to defer to drawing
 	BOOL					m_knobsAdjustToScale;	// YES if knobs allow for the view scale
 	BOOL					m_visible;				// is the layer visible?
@@ -38,7 +43,8 @@
 
 + (void)			setSelectionColours:(NSArray*) listOfColours;
 + (NSArray*)		selectionColours;
-+ (NSColor*)		selectionColourForIndex:(NSUInteger) index;
+//+ (NSColor*)		selectionColourForIndex:(NSUInteger) index;
++ (DKColor*)		selectionColourForIndex:(NSUInteger) index;
 
 // owning drawing:
 
@@ -69,14 +75,21 @@
 - (void)			beginDrawing;
 - (void)			endDrawing;
 
-- (void)			setSelectionColour:(NSColor*) colour;
-- (NSColor*)		selectionColour;
+//- (void)			setSelectionColour:(NSColor*) colour;
+//- (NSColor*)		selectionColour;
+- (void)			setSelectionColour:(DKColor*) colour;
+- (DKColor*)		selectionColour;
 
-- (NSImage*)		thumbnailImageWithSize:(NSSize) size;
-- (NSImage*)		thumbnail;
+//- (NSImage*)		thumbnailImageWithSize:(NSSize) size;
+//- (NSImage*)		thumbnail;
+- (DKImage*)		thumbnailImageWithSize:(NSSize) size;
+- (DKImage*)		thumbnail;
 - (NSData*)			pdf;
-- (BOOL)			writePDFDataToPasteboard:(NSPasteboard*) pb;
+//- (BOOL)			writePDFDataToPasteboard:(NSPasteboard*) pb;
+- (BOOL)			writePDFDataToPasteboard:(DKPasteboard*) pb;
+#ifndef TARGET_OS_IPHONE
 - (NSBitmapImageRep*) bitmapRepresentationWithDPI:(NSUInteger) dpi;
+#endif TARGET_OS_IPHONE
 
 - (void)			setClipsDrawingToInterior:(BOOL) clip;
 - (BOOL)			clipsDrawingToInterior;
@@ -130,20 +143,27 @@
 
 // mouse event handling:
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			shouldAutoActivateWithEvent:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 - (BOOL)			hitLayer:(NSPoint) p;
 - (DKDrawableObject*)	hitTest:(NSPoint) p;
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDown:(NSEvent*) event inView:(NSView*) view;
 - (void)			mouseDragged:(NSEvent*) event inView:(NSView*) view;
 - (void)			mouseUp:(NSEvent*) event inView:(NSView*) view;
 - (void)			flagsChanged:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
-- (NSView*)			currentView;
+//- (NSView*)			currentView;
+- (DKDrawingView*)			currentView;
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor;
 - (NSRect)			activeCursorRect;
 
 - (NSMenu *)		menuForEvent:(NSEvent *)theEvent inView:(NSView*) view;
+#endif TARGET_OS_IPHONE
 
 // supporting per-layer knob handling - default defers to the drawing as before
 
@@ -155,7 +175,8 @@
 // pasteboard types for drag/drop etc:
 
 - (NSArray*)		pasteboardTypesForOperation:(DKPasteboardOperationType) op;
-- (BOOL)			pasteboard:(NSPasteboard*) pb hasAvailableTypeForOperation:(DKPasteboardOperationType) op;
+//- (BOOL)			pasteboard:(NSPasteboard*) pb hasAvailableTypeForOperation:(DKPasteboardOperationType) op;
+- (BOOL)			pasteboard:(DKPasteboard*) pb hasAvailableTypeForOperation:(DKPasteboardOperationType) op;
 
 // style utilities (implemented by subclasses such as DKObjectOwnerLayer)
 
@@ -167,7 +188,8 @@
 
 - (void)			showInfoWindowWithString:(NSString*) str atPoint:(NSPoint) p;
 - (void)			hideInfoWindow;
-- (void)			setInfoWindowBackgroundColour:(NSColor*) colour;
+//- (void)			setInfoWindowBackgroundColour:(NSColor*) colour;
+- (void)			setInfoWindowBackgroundColour:(DKColor*) colour;
 
 // user actions:
 
@@ -185,7 +207,9 @@
 
 @interface DKLayer	(OptionalMethods)
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseMoved:(NSEvent*) event inView:(NSView*) view;
+#endif TARGET_OS_IPHONE
 
 
 @end

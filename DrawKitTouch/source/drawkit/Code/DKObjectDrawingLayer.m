@@ -1034,7 +1034,8 @@ enum
 ///
 ///********************************************************************************************************************
 
-- (void)				scrollToSelectionInView:(NSView*) aView
+//- (void)				scrollToSelectionInView:(NSView*) aView
+- (void)				scrollToSelectionInView:(DKDrawingView*) aView
 {
 	if ([self isSelectionNotEmpty])
 	{
@@ -1043,7 +1044,11 @@ enum
 		if( aView == nil )
 			[[self drawing] scrollToRect:sb];
 		else
-			[aView scrollRectToVisible:sb];
+#if TARGET_OS_IPHONE
+         [aView scrollRectToVisible:sb animated:YES];
+#else
+         [aView scrollRectToVisible:sb];
+#endif TARGET_OS_IPHONE
 	}
 }
 
@@ -1578,23 +1583,33 @@ enum
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)			imageOfSelectedObjects
+//- (NSImage*)			imageOfSelectedObjects
+- (DKImage*)			imageOfSelectedObjects
 {
-	NSImage*			img;
+	//NSImage*			img;
+	DKImage*			img;
 	NSRect				sb;
 	
 	sb = [self selectionBounds];
 	
-	img = [[NSImage alloc] initWithSize:sb.size];
+	//img = [[NSImage alloc] initWithSize:sb.size];
+	img = [[DKImage alloc] initWithSize:sb.size];
+#ifndef TARGET_OS_IPHONE
 	[img setFlipped:[[self drawing] isFlipped]];
+#endif TARGET_OS_IPHONE
 	
-	NSAffineTransform* tfm = [NSAffineTransform transform];
+	//NSAffineTransform* tfm = [NSAffineTransform transform];
+	DKAffineTransform* tfm = [DKAffineTransform transform];
 	[tfm translateXBy:-sb.origin.x yBy:-sb.origin.y];
 	
+#ifndef TARGET_OS_IPHONE
 	[img lockFocus];
+#endif TARGET_OS_IPHONE
 	[tfm concat];
 	[self drawSelectedObjects];
+#ifndef TARGET_OS_IPHONE
 	[img unlockFocus];
+#endif TARGET_OS_IPHONE
 
 	return [img autorelease];
 }
@@ -1654,7 +1669,8 @@ enum
 ///
 ///********************************************************************************************************************
 
-- (void)				copySelectionToPasteboard:(NSPasteboard*) pb
+//- (void)				copySelectionToPasteboard:(NSPasteboard*) pb
+- (void)				copySelectionToPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"cannot write to nil pasteboard");
 	
@@ -1666,7 +1682,9 @@ enum
 	if([sel count] == 0 )
 		[dataTypes removeObject:kDKDrawableObjectPasteboardType];
 	
+#ifndef TARGET_OS_IPHONE
 	[pb declareTypes:dataTypes owner:self];
+#endif TARGET_OS_IPHONE
 	
 	// add an info object to the pasteboard - allows info about the objects to be read without dearchiving
 	// the objects themselves.
@@ -1680,7 +1698,7 @@ enum
 		// DK's native pasteboard type is simply an archived array of the selection.
 	
 		NSData* pbdata = [NSKeyedArchiver archivedDataWithRootObject:sel];
-		[pb setData:pbdata forType:kDKDrawableObjectPasteboardType];
+		[pb setData:pbdata forPasteboardType:kDKDrawableObjectPasteboardType];
 		
 		// if a single object is selected, it is offered the chance to add further data to the clipboard
 		
@@ -1693,12 +1711,21 @@ enum
 			
 	// add image of selection in PDF format:
 	NSData* pdf = [self pdfDataOfSelectedObjects];
+#if TARGET_OS_IPHONE
+	[pb setData:pdf forPasteboardType:(NSString *)kUTTypePDF];
+#else
 	[pb setData:pdf forType:NSPDFPboardType];
+#endif TARGET_OS_IPHONE
 	
 	// and TIFF format:
 
-	NSImage* si = [self imageOfSelectedObjects];
+	//NSImage* si = [self imageOfSelectedObjects];
+	DKImage* si = [self imageOfSelectedObjects];
+#if TARGET_OS_IPHONE
+	pb.image = si;
+#else
 	[pb setData:[si TIFFRepresentation] forType:NSTIFFPboardType];
+#endif TARGET_OS_IPHONE
 	
 	[dataTypes release];
 }
@@ -1883,6 +1910,7 @@ enum
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				multipleSelectionValidatedMenuItem:(NSMenuItem*) item
 {
 	NSEnumerator*		iter = [[self selection] objectEnumerator];
@@ -1913,6 +1941,7 @@ enum
 	[item setState:menuItemState];
 	return valid;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1975,7 +2004,9 @@ enum
 ///
 ///********************************************************************************************************************
 
-- (void)				beginDragOfSelectedObjectsWithEvent:(NSEvent*) event inView:(NSView*) view
+#ifndef TARGET_OS_IPHONE
+//- (void)				beginDragOfSelectedObjectsWithEvent:(NSEvent*) event inView:(NSView*) view
+- (void)				beginDragOfSelectedObjectsWithEvent:(NSEvent*) event inView:(DKDrawingView*) view
 {
 	// starts a "real" drag of the selection. Usually called from mouseDragged when the mouse leaves the drag exclusion rect.
 	
@@ -2004,8 +2035,15 @@ enum
 	m_objectsPendingDrag = [[self selectedObjectsPreservingStackingOrder] retain];
 	[self setSelectedObjectsVisible:NO]; 
 	
+#if TARGET_OS_IPHONE
+   (void)event;
+   (void)view;
+   twlog("implement beginDragOfSelectedObjectsWithEvent");
+#else
 	[view dragImage:image at:dragLoc offset:NSZeroSize event:event pasteboard:pb source:self slideBack:YES];
+#endif TARGET_OS_IPHONE
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)				drawingSizeChanged:(NSNotification*) note
@@ -2148,7 +2186,8 @@ enum
 	#pragma unused(sender)
 	
 	if([self isSelectionNotEmpty])
-		[self copySelectionToPasteboard:[NSPasteboard generalPasteboard]];
+		//[self copySelectionToPasteboard:[NSPasteboard generalPasteboard]];
+		[self copySelectionToPasteboard:[DKPasteboard generalPasteboard]];
 }
 
 
@@ -2175,18 +2214,30 @@ enum
 	
 	[self recordSelectionForUndo];
 	
-	NSPasteboard*	pb = [NSPasteboard generalPasteboard];
+	//NSPasteboard*	pb = [NSPasteboard generalPasteboard];
+	DKPasteboard*	pb = [DKPasteboard generalPasteboard];
 	NSArray*		objects = [DKDrawableObject nativeObjectsFromPasteboard:pb];
 	BOOL			isContextMenu = ([sender tag] == kDKPasteCommandContextualMenuTag);
 	NSPoint			cp = NSZeroPoint;
+#if TARGET_OS_IPHONE
+	DKDrawingView* view = (DKDrawingView*)[[[UIApplication sharedApplication] keyWindow] findFirstResponder];
+#else
 	NSView*			view = (NSView*)[[NSApp keyWindow] firstResponder];
+#endif TARGET_OS_IPHONE
 	
 	// if the command came from the context menu, use the mouse location to position the item
 	
+#if TARGET_OS_IPHONE
+	if ( isContextMenu )
+		cp = [DKTDrawingView pointForLastContextualMenuEvent];
+	else
+		cp = [(DKTDrawingView*)view centredPointInDocView];
+#else
 	if ( isContextMenu )
 		cp = [DKDrawingView pointForLastContextualMenuEvent];
 	else
 		cp = [(GCZoomView*)view centredPointInDocView];
+#endif TARGET_OS_IPHONE
 	
 	if( objects != nil && [objects count] > 0 )
 	{
@@ -2248,12 +2299,20 @@ enum
 		NSString* action = ([objects count] == 1)? NSLocalizedString(@"Paste Object", @"undo action for paste object") : NSLocalizedString(@"Paste Objects", @"undo action for paste objects");
 		[self commitSelectionUndoWithActionName:action];
 	}
-	else if ([pb availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]] != nil )
+#if TARGET_OS_IPHONE
+   else if (pb.string)
+#else
+   else if ([pb availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]] != nil )
+#endif TARGET_OS_IPHONE
 	{
 		// pasting a string - add a text object
 		
+#if TARGET_OS_IPHONE
+		NSString* theString = pb.string;
+#else
 		NSString* theString = [pb stringForType:NSStringPboardType];
-		
+#endif TARGET_OS_IPHONE
+            
 		if( theString != nil )
 		{
 			DKTextShape* tShape = [DKTextShape textShapeWithString:theString inRect:NSMakeRect( 0, 0, 200, 100 )];
@@ -2268,12 +2327,20 @@ enum
 			[self commitSelectionUndoWithActionName:NSLocalizedString(@"Paste Text", @"undo string for paste text")];
 		}
 	}
+#if TARGET_OS_IPHONE
+	else if (pb.image)
+#else
 	else if ([NSImage canInitWithPasteboard:pb])
+#endif TARGET_OS_IPHONE
 	{
 		// convert to an image shape and add it. Since this doesn't have a position, paste it in the centre of
 		// the view.
 		
+#if TARGET_OS_IPHONE
+		UIImage*		image = pb.image;
+#else
 		NSImage*		image = [[NSImage alloc] initWithPasteboard:pb];
+#endif TARGET_OS_IPHONE
       // added cast to avoid conflict with iPhone SDK function ...alex
 		DKImageShape*	imshape = [(DKImageShape *)[DKImageShape alloc] initWithImage:image];
 		
@@ -2725,8 +2792,10 @@ enum
 			[self scrollToSelectionInView:nil];
 			[self commitSelectionUndoWithActionName:NSLocalizedString(@"Reveal Hidden Objects", @"undo string for reveal hidden objects")];
 		}
+#ifndef TARGET_OS_IPHONE
 		else
 			NSBeep();
+#endif TARGET_OS_IPHONE
 	}
 }
 
@@ -2762,7 +2831,9 @@ enum
 		
 		if([objects count] < 2 )
 		{
+#ifndef TARGET_OS_IPHONE
 			NSBeep();
+#endif TARGET_OS_IPHONE
 			return;
 		}
 		
@@ -2802,7 +2873,9 @@ enum
 		
 		if([objects count] < 2 )
 		{
+#ifndef TARGET_OS_IPHONE
 			NSBeep();
+#endif TARGET_OS_IPHONE
 			return;
 		}
 
@@ -3082,8 +3155,10 @@ enum
 		
 		if( joinsMade > 0 )
 			[self commitSelectionUndoWithActionName:NSLocalizedString(@"Join Paths", @"undo string for join paths")];
+#ifndef TARGET_OS_IPHONE
 		else
 			NSBeep();
+#endif TARGET_OS_IPHONE
 	}
 }
 
@@ -3104,6 +3179,7 @@ enum
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)			applyStyle:(id) sender
 {
 	id repObject = [sender representedObject];
@@ -3117,6 +3193,7 @@ enum
 		}
 	}
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark As a DKObjectOwnerLayer
@@ -3281,7 +3358,8 @@ enum
 ///
 ///********************************************************************************************************************
 
-- (void)				addObjects:(NSArray*) objects fromPasteboard:(NSPasteboard*) pb atDropLocation:(NSPoint) p
+//- (void)				addObjects:(NSArray*) objects fromPasteboard:(NSPasteboard*) pb atDropLocation:(NSPoint) p
+- (void)				addObjects:(NSArray*) objects fromPasteboard:(DKPasteboard*) pb atDropLocation:(NSPoint) p
 {
 	[self recordSelectionForUndo];
 	[super addObjects:objects fromPasteboard:pb atDropLocation:p];
@@ -3350,7 +3428,11 @@ static void	 drawFunction3( const void* value, void* context )
 			NSEnumerator*		iter;
 			DKDrawableObject*	obj;
 #endif
+#if TARGET_OS_IPHONE
+			BOOL				screen = YES;
+#else
 			BOOL				screen = [NSGraphicsContext currentContextDrawingToScreen];
+#endif TARGET_OS_IPHONE
 			BOOL				drawSelected = [self selectionVisible] && screen && ([self isActive] || [[self class] selectionIsShownWhenInactive]) && ![self locked];
 			NSArray*			objectsToDraw = [self objectsForUpdateRect:rect inView:aView];
 			
@@ -3411,7 +3493,8 @@ static void	 drawFunction3( const void* value, void* context )
 			NSBezierPath* debug = [(id)[self storage] debugStorageDivisions];
 			
 			[debug setLineWidth:0];
-			[[NSColor orangeColor] set];
+			//[[NSColor orangeColor] set];
+			[[DKColor orangeColor] set];
 			[debug stroke];
 		}
 	}
@@ -3479,6 +3562,7 @@ static void	 drawFunction3( const void* value, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu *)			menuForEvent:(NSEvent*) theEvent inView:(NSView*) view
 {
 	if([self locked])
@@ -3536,6 +3620,7 @@ static void	 drawFunction3( const void* value, void* context )
 	
 	return [contextmenu autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)				setLayerGroup:(DKLayerGroup*) aGroup
@@ -3618,6 +3703,7 @@ static void	 drawFunction3( const void* value, void* context )
 #pragma mark -
 #pragma mark As part of the NSDraggingDestination protocol
 
+#ifndef TARGET_OS_IPHONE
 - (NSDragOperation)		draggingUpdated:(id <NSDraggingInfo>) sender
 {
 	NSDragOperation result = [super draggingUpdated:sender];
@@ -3649,9 +3735,15 @@ static void	 drawFunction3( const void* value, void* context )
 			// there is an object under the mouse. If it is able to respond to the drag, select it:
 			
 			NSArray* types = [[target class] pasteboardTypesForOperation:kDKReadableTypesForDrag];
-			availableType = [pb availableTypeFromArray:types];
+#if TARGET_OS_IPHONE
+         BOOL somethingAvailable = [pb containsPasteboardTypes:types];
+			
+			if (somethingAvailable)
+#else
+         availableType = [pb availableTypeFromArray:types];
 			
 			if( availableType != nil )
+#endif TARGET_OS_IPHONE
 			{
 				// yes, the object is able to respond to this drag, so select it:
 				
@@ -3670,8 +3762,9 @@ static void	 drawFunction3( const void* value, void* context )
 
 	return result;
 }
+#endif TARGET_OS_IPHONE
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				performDragOperation:(id <NSDraggingInfo>) sender
 {
 	DKDrawableObject*	target = [self singleSelection];
@@ -3720,12 +3813,14 @@ static void	 drawFunction3( const void* value, void* context )
 		return YES;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 	
 #pragma mark -
 #pragma mark As part of the NSDraggingSource protocol
 
+#ifndef TARGET_OS_IPHONE
 - (void)	draggedImage:(NSImage*) anImage endedAt:(NSPoint) aPoint operation:(NSDragOperation) operation
 {
 	#pragma unused(anImage)
@@ -3748,6 +3843,7 @@ static void	 drawFunction3( const void* value, void* context )
 		m_objectsPendingDrag = nil;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -3958,6 +4054,7 @@ static void	 drawFunction3( const void* value, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL					action = [item action];
@@ -4097,8 +4194,9 @@ static void	 drawFunction3( const void* value, void* context )
 	
 	return enable;
 }
+#endif TARGET_OS_IPHONE
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)		validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem
 {
 	NSUInteger alignCrit = [self alignmentMenuItemRequiredObjects:anItem];
@@ -4108,6 +4206,6 @@ static void	 drawFunction3( const void* value, void* context )
 	
 	return [super validateUserInterfaceItem:anItem];
 }
-
+#endif TARGET_OS_IPHONE
 
 @end

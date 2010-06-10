@@ -24,13 +24,18 @@
 	NSMutableArray*	m_cTable;
 }
 
+#ifndef TARGET_OS_IPHONE
 - (id)				initWithBitmapImageRep:(NSBitmapImageRep*) rep maxColours:(NSUInteger) maxColours colourBits:(NSUInteger) nBits;
+#endif TARGET_OS_IPHONE
 - (NSUInteger)		indexForRGB:(NSUInteger[]) rgb;
-- (NSColor*)		colourForIndex:(NSUInteger) index;
+//- (NSColor*)		colourForIndex:(NSUInteger) index;
+- (DKColor*)		colourForIndex:(NSUInteger) index;
 - (NSArray*)		colourTable;
 - (NSInteger)				numberOfColours;
 
+#ifndef TARGET_OS_IPHONE
 - (void)			analyse:(NSBitmapImageRep*) rep;
+#endif TARGET_OS_IPHONE
 
 @end
 

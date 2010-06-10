@@ -18,10 +18,12 @@
 @protocol DKDrawingTool
 
 - (NSString*)		actionName;
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor;
 - (NSInteger)		mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel;
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel;
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel;
+#endif TARGET_OS_IPHONE
 
 @end
 

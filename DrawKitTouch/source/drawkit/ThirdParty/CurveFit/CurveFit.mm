@@ -1,6 +1,6 @@
 /*
  *  CurveFit.mm
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
  *
  *  Created by graham on 05/11/2006.
  *  Copyright 2006 Apptree.net. All rights reserved.
@@ -16,7 +16,8 @@
 
 
 
-NSBezierPath*			curveFitPath(NSBezierPath* inPath, float epsilon)
+//NSBezierPath*			curveFitPath(NSBezierPath* inPath, float epsilon)
+DKBezierPath*			curveFitPath(DKBezierPath* inPath, float epsilon)
 {
 	// given an input path in vector form (flattened), this converts it to the C++ data structure list of points and processes it via the
 	// curve fit method in the bezier-utils lib. It then converts the result back to NSBezierPath form. Note - the caller is responsible for passing
@@ -25,7 +26,8 @@ NSBezierPath*			curveFitPath(NSBezierPath* inPath, float epsilon)
 	Geom::Point*	pd;
 	int				ec, i;
 	NSPoint			p[3];
-	NSBezierPath*	result = [NSBezierPath bezierPath];
+	//NSBezierPath*	result = [NSBezierPath bezierPath];
+	DKBezierPath*	result = [DKBezierPath bezierPath];
 	
 	ec = [inPath elementCount];
 	
@@ -94,7 +96,8 @@ NSBezierPath*			curveFitPath(NSBezierPath* inPath, float epsilon)
 }
 
 
-NSBezierPath*		smartCurveFitPath( NSBezierPath* inPath, float epsilon, float cornerAngleThreshold )
+//NSBezierPath*		smartCurveFitPath( NSBezierPath* inPath, float epsilon, float cornerAngleThreshold )
+DKBezierPath*		smartCurveFitPath( DKBezierPath* inPath, float epsilon, float cornerAngleThreshold )
 {
 	// this curve fits a flattened path, but is much smarter about which parts of the path to curve fit and which to leave alone. It
 	// also properly deals with separate subpaths within the original path (holes).
@@ -107,16 +110,20 @@ NSBezierPath*		smartCurveFitPath( NSBezierPath* inPath, float epsilon, float cor
 	NSPoint					ap[3], np[3];
 	NSPoint					lastPoint = NSZeroPoint;
 	NSPoint					firstPoint = NSZeroPoint;
-	NSBezierPath*			result;
-	NSBezierPath*			temp;
+	//NSBezierPath*			result;
+	//NSBezierPath*			temp;
+	DKBezierPath*			result;
+	DKBezierPath*			temp;
 	float					angle;
 	
-	result = [NSBezierPath bezierPath];
+	//result = [NSBezierPath bezierPath];
+	result = [DKBezierPath bezierPath];
 	[result setWindingRule:[inPath windingRule]];
 	
 	if ( ec > 0 )
 	{
-		temp = [NSBezierPath bezierPath];	// holds the accumulated elements for each subsection
+		//temp = [NSBezierPath bezierPath];	// holds the accumulated elements for each subsection
+		temp = [DKBezierPath bezierPath];	// holds the accumulated elements for each subsection
 		
 		for( i = 0; i < ec; ++i )
 		{

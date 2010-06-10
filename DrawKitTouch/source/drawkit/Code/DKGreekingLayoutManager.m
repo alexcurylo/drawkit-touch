@@ -6,6 +6,10 @@
 //  Copyright 2009 Apptree.net. All rights reserved.
 //
 
+#if TARGET_OS_IPHONE
+#error NSLayoutManager not available in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 #import "DKGreekingLayoutManager.h"
 
 
@@ -24,7 +28,8 @@
 }
 
 
-- (void)			setGreekingColour:(NSColor*) aColour
+//- (void)			setGreekingColour:(NSColor*) aColour
+- (void)			setGreekingColour:(DKColor*) aColour
 {
 	[aColour retain];
 	[mGreekingColour release];
@@ -32,7 +37,8 @@
 }
 
 
-- (NSColor*)		greekingColour
+//- (NSColor*)		greekingColour
+- (DKColor*)		greekingColour
 {
 	return mGreekingColour;
 }
@@ -47,7 +53,8 @@
 	else
 	{
 		NSGlyph		glyph;
-		NSFont*		font;
+		//NSFont*		font;
+		DKFont*		font;
 		NSRect		glyphBounds, lineRect;
 		NSPoint		glyphLoc;
 		NSUInteger	gli, characterIndex;
@@ -70,7 +77,7 @@
 			glyphBounds.origin.x = origin.x + glyphLoc.x;
 			glyphBounds.origin.y = origin.y + glyphLoc.y - NSHeight( glyphBounds );
 			
-			NSRectFill( glyphBounds );
+			DKRectFill( glyphBounds );
 		}
 		else
 		{
@@ -83,7 +90,7 @@
 				fragRect = [self lineFragmentUsedRectForGlyphAtIndex:glyphIndex effectiveRange:&glyphRange];
 				
 				if([self greeking] == kDKGreekingByLineRectangle)
-					NSRectFill( NSOffsetRect( fragRect, origin.x, origin.y ));
+					DKRectFill( NSOffsetRect( fragRect, origin.x, origin.y ));
 				else
 				{
 					// greeking down to the glyph rects, so calculate them and draw them
@@ -102,7 +109,7 @@
 						glyphBounds.origin.x = origin.x + lineRect.origin.x + glyphLoc.x;
 						glyphBounds.origin.y = ( origin.y + lineRect.origin.y + glyphLoc.y ) - NSHeight( glyphBounds );
 						
-						NSRectFill( glyphBounds );
+						DKRectFill( glyphBounds );
 					}
 				}
 				
@@ -125,7 +132,8 @@
 {
 	self = [super init];
 	if( self )
-		[self setGreekingColour:[NSColor lightGrayColor]];
+		//[self setGreekingColour:[NSColor lightGrayColor]];
+		[self setGreekingColour:[DKColor lightGrayColor]];
 	
 	return self;
 }

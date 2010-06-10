@@ -29,7 +29,8 @@
 	return mRoughness;
 }
 
-- (NSString*)				pathKeyForPath:(NSBezierPath*) path
+//- (NSString*)				pathKeyForPath:(NSBezierPath*) path
+- (NSString*)				pathKeyForPath:(DKBezierPath*) path
 {
 	// form a simple hash from the path's size, length and current stroke width. Note that the precision is deliberately set to just 1 decimal
 	// place so that minor rounding errors when doing path transforms don't generate different keys. Do not rely on this format, or attempt
@@ -46,13 +47,16 @@
 }
 
 
-- (NSBezierPath*)			roughPathFromPath:(NSBezierPath*) path
+//- (NSBezierPath*)			roughPathFromPath:(NSBezierPath*) path
+- (DKBezierPath*)			roughPathFromPath:(DKBezierPath*) path
 {
 	// is this path in the cache?
 	
 	NSString*			key = [self pathKeyForPath:path];
-	NSBezierPath*		cp = [mPathCache objectForKey:key];
-	NSAffineTransform*	tfm = [NSAffineTransform transform];
+	//NSBezierPath*		cp = [mPathCache objectForKey:key];
+	//NSAffineTransform*	tfm = [NSAffineTransform transform];
+	DKBezierPath*		cp = [mPathCache objectForKey:key];
+	DKAffineTransform*	tfm = [DKAffineTransform transform];
 	NSRect				pb = [path bounds];
 	
 	if( cp == nil )
@@ -66,7 +70,8 @@
 			// set its origin to 0,0 based on the original path
 			
 			[tfm translateXBy:-pb.origin.x yBy:-pb.origin.y];
-			NSBezierPath* temp = [tfm transformBezierPath:cp];
+			//NSBezierPath* temp = [tfm transformBezierPath:cp];
+			DKBezierPath* temp = [tfm transformBezierPath:cp];
 			
 			// cache it for future re-use
 			
@@ -110,7 +115,8 @@
 #pragma mark -
 #pragma mark As a DKStroke
 
-- (id)						initWithWidth:(CGFloat) width colour:(NSColor*) colour
+//- (id)						initWithWidth:(CGFloat) width colour:(NSColor*) colour
+- (id)						initWithWidth:(CGFloat) width colour:(DKColor*) colour
 {
 	self = [super initWithWidth:width colour:colour];
 	if( self != nil )
@@ -123,12 +129,14 @@
 	return self;
 }
 
-- (void)					renderPath:(NSBezierPath*) path
+//- (void)					renderPath:(NSBezierPath*) path
+- (void)					renderPath:(DKBezierPath*) path
 {
 	[[self colour] setFill];
 	[self applyAttributesToPath:path];
 	
-	NSBezierPath* pc = [self roughPathFromPath:path];
+	//NSBezierPath* pc = [self roughPathFromPath:path];
+	DKBezierPath* pc = [self roughPathFromPath:path];
 		
 	[pc fill];
 }

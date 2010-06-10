@@ -27,7 +27,9 @@
 #import "DKTextPath.h"
 #import "LogEvent.h"
 #import "DKToolRegistry.h"
-
+#if TARGET_OS_IPHONE
+#import "DKTZoomView.h"
+#endif TARGET_OS_IPHONE
 
 #pragma mark constants
 
@@ -94,10 +96,12 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 + (DKDrawingTool*)		drawingToolWithKeyboardEquivalent:(NSEvent*) keyEvent
 {
 	return [[DKToolRegistry sharedToolRegistry] drawingToolWithKeyboardEquivalent:keyEvent];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -263,7 +267,11 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 
 + (id)			firstResponderAbleToSetTool
 {
+#if TARGET_OS_IPHONE
+	UIResponder* firstResponder = [[[UIApplication sharedApplication] keyWindow] findFirstResponder];
+#else
 	NSResponder* firstResponder = [[NSApp mainWindow] firstResponder];
+#endif TARGET_OS_IPHONE
 	
 	// follow responder chain until we find one that can respond, or we hit the end of the chain
 	
@@ -272,6 +280,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 	
 	if( firstResponder )
 		return firstResponder;
+#ifndef TARGET_OS_IPHONE
 	else
 	{
 		// before giving up, check if the active document implements -setDrawingTool: - subclasses of DKDrawingDocument do
@@ -281,6 +290,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 		if([curDoc respondsToSelector:@selector(setDrawingTool:)])
 			return curDoc;
 	}
+#endif TARGET_OS_IPHONE
 	
 	return nil;
 }
@@ -472,12 +482,12 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 /// notes:			override to return a cursor appropriate to the tool
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor
 {
 	return [NSCursor arrowCursor];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -497,6 +507,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(p)
@@ -507,6 +518,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 
 	return kDKDrawingNoPart;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -527,6 +539,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(p)
@@ -535,6 +548,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 	#pragma unused(event)
 	#pragma unused(aDel)
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -557,6 +571,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(p)
@@ -567,6 +582,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 	
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -584,7 +600,8 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
-- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+//- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+- (void)			drawRect:(NSRect) aRect inView:(DKDrawingView*) aView
 {
 	#pragma unused(aRect)
 	#pragma unused(aView)
@@ -607,11 +624,13 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			flagsChanged:(NSEvent*) event inLayer:(DKLayer*) layer
 {
 	#pragma unused(event)
 	#pragma unused(layer)
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -676,6 +695,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			setCursorForPoint:(NSPoint) mp targetObject:(DKDrawableObject*) obj inLayer:(DKLayer*) aLayer event:(NSEvent*) event
 {
 	#pragma unused(mp)
@@ -685,6 +705,7 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 	
 	[[self cursor] set];
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 

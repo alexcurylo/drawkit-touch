@@ -12,7 +12,11 @@
 #import "DKLayer+Metadata.h"
 #import "DKDrawing.h"
 #import "DKStyle.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKDrawKitMacros.h"
 #import "DKGeometryUtilities.h"
 #import "DKGridLayer.h"
@@ -1097,7 +1101,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView
+//- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView
+- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView
 {
 	return [self objectEnumeratorForUpdateRect:rect inView:aView options:0];
 }
@@ -1125,7 +1130,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+//- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options
 {
 	return [[self objectsForUpdateRect:rect inView:aView options:options] objectEnumerator];
 }
@@ -1146,7 +1152,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView
+//- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView
+- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView
 {
 	return [self objectsForUpdateRect:rect inView:aView options:0];
 }
@@ -1172,7 +1179,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+//- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options
 {
 	return [[self storage] objectsIntersectingRect:rect inView:aView options:options];
 }
@@ -1232,7 +1240,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	outlines = (([self layerCacheOption] & kDKLayerCacheObjectOutlines ) != 0 );
 	
 	if( outlines )
-		tempStyle = [DKStyle styleWithFillColour:nil strokeColour:[NSColor blackColor] strokeWidth:1.0];
+		//tempStyle = [DKStyle styleWithFillColour:nil strokeColour:[NSColor blackColor] strokeWidth:1.0];
+		tempStyle = [DKStyle styleWithFillColour:nil strokeColour:[DKColor blackColor] strokeWidth:1.0];
 	
 	while(( od = [iter nextObject]))
 	{
@@ -1258,28 +1267,37 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)		imageOfObjects
+//- (NSImage*)		imageOfObjects
+- (DKImage*)		imageOfObjects
 {
-	NSImage*			img = nil;
+	//NSImage*			img = nil;
+	DKImage*			img = nil;
 	NSRect				sb;
 	
 	if([[self visibleObjects] count] > 0 )
 	{
 		sb = [self unionOfAllObjectBounds];
 		
-		img = [[NSImage alloc] initWithSize:sb.size];
+		//img = [[NSImage alloc] initWithSize:sb.size];
+		img = [[DKImage alloc] initWithSize:sb.size];
 		
-		NSAffineTransform* tfm = [NSAffineTransform transform];
+		//NSAffineTransform* tfm = [NSAffineTransform transform];
+		DKAffineTransform* tfm = [DKAffineTransform transform];
 		[tfm translateXBy:-sb.origin.x yBy:-sb.origin.y];
 		
+#ifndef TARGET_OS_IPHONE
 		[img lockFocus];
+#endif TARGET_OS_IPHONE
 		
-		[[NSColor clearColor] set];
-		NSRectFill( NSMakeRect( 0, 0, sb.size.width, sb.size.height ));
+		//[[NSColor clearColor] set];
+		[[DKColor clearColor] set];
+		DKRectFill( NSMakeRect( 0, 0, sb.size.width, sb.size.height ));
 		
 		[tfm concat];
 		[self drawVisibleObjects];
+#ifndef TARGET_OS_IPHONE
 		[img unlockFocus];
+#endif TARGET_OS_IPHONE
 	}
 	return [img autorelease];
 }
@@ -1425,7 +1443,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (void)				drawPendingObjectInView:(NSView*) aView
+//- (void)				drawPendingObjectInView:(NSView*) aView
+- (void)				drawPendingObjectInView:(DKDrawingView*) aView
 {
 	if ( mNewObjectPending != nil )
 	{
@@ -1540,9 +1559,11 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	renderingTransform
+//- (NSAffineTransform*)	renderingTransform
+- (DKAffineTransform*)	renderingTransform
 {
-	return [NSAffineTransform transform];
+	//return [NSAffineTransform transform];
+	return [DKAffineTransform transform];
 }
 
 
@@ -1563,7 +1584,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (void)				applyTransformToObjects:(NSAffineTransform*) transform
+//- (void)				applyTransformToObjects:(NSAffineTransform*) transform
+- (void)				applyTransformToObjects:(DKAffineTransform*) transform
 {
 	[[self objects] makeObjectsPerformSelector:@selector(applyTransform:) withObject:transform];
 }
@@ -1777,7 +1799,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (NSArray*)			nativeObjectsFromPasteboard:(NSPasteboard*) pb
+//- (NSArray*)			nativeObjectsFromPasteboard:(NSPasteboard*) pb
+- (NSArray*)			nativeObjectsFromPasteboard:(DKPasteboard*) pb
 {
 	return [DKDrawableObject nativeObjectsFromPasteboard:pb];
 }
@@ -1808,7 +1831,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (void)				addObjects:(NSArray*) objects fromPasteboard:(NSPasteboard*) pb atDropLocation:(NSPoint) p
+//- (void)				addObjects:(NSArray*) objects fromPasteboard:(NSPasteboard*) pb atDropLocation:(NSPoint) p
+- (void)				addObjects:(NSArray*) objects fromPasteboard:(DKPasteboard*) pb atDropLocation:(NSPoint) p
 {
 	#pragma unused(pb)
 	
@@ -1907,7 +1931,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 ///
 ///********************************************************************************************************************
 
-- (BOOL)				updatePasteCountWithPasteboard:(NSPasteboard*) pb
+//- (BOOL)				updatePasteCountWithPasteboard:(NSPasteboard*) pb
+- (BOOL)				updatePasteCountWithPasteboard:(DKPasteboard*) pb
 {
 	NSInteger cc = [pb changeCount];
 	if( cc == mPasteboardLastChange )
@@ -2550,7 +2575,7 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	NSRect ir = [[self drawing] interior];
 	
 	[[self selectionColour] set];
-	NSFrameRectWithWidth( NSInsetRect( ir, -5, -5), 5.0 );
+	DKFrameRectWithWidth( NSInsetRect( ir, -5, -5), 5.0 );
 }
 
 
@@ -2711,7 +2736,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	NSRect old = [oldInterior rectValue];
 	NSRect new = [[self drawing] interior];
 	
-	NSAffineTransform* tfm = [NSAffineTransform transform];
+	//NSAffineTransform* tfm = [NSAffineTransform transform];
+	DKAffineTransform* tfm = [DKAffineTransform transform];
 	[tfm translateXBy:new.origin.x - old.origin.x yBy:new.origin.y - old.origin.y];
 
 	[self applyTransformToObjects:tfm];
@@ -2761,7 +2787,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 		NSBezierPath* debug = [(id)[self storage] debugStorageDivisions];
 		
 		[debug setLineWidth:0];
-		[[NSColor redColor] set];
+		//[[NSColor redColor] set];
+		[[DKColor redColor] set];
 		[debug stroke];
 	}
 }
@@ -2918,16 +2945,26 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	
 	if (( op & kDKAllReadableTypes ) != 0 )
 	{
+#if TARGET_OS_IPHONE
+		[types addObjectsFromArray:UIPasteboardTypeListImage];
+		[types addObjectsFromArray:UIPasteboardTypeListURL];
+		[types addObjectsFromArray:UIPasteboardTypeListString];
+#else
 		[types addObjectsFromArray:[NSImage imagePasteboardTypes]];
 		[types addObject:NSFilenamesPboardType];
 		[types addObject:NSStringPboardType];
+#endif TARGET_OS_IPHONE
 	}
 	
 	// we can write PDF and TIFF image formats:
 	
 	if ((op & kDKAllWritableTypes ) != 0 )
 	{
+#if TARGET_OS_IPHONE
+		[types addObjectsFromArray:[NSArray arrayWithObjects:(NSString *)kUTTypePDF, (NSString *)kUTTypeTIFF, nil]];
+#else
 		[types addObjectsFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil]];
+#endif TARGET_OS_IPHONE
 	}
 	
 	return types;
@@ -3115,10 +3152,12 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 #pragma mark -
 #pragma mark As part of the NSDraggingDestination protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			performDragOperation:(id <NSDraggingInfo>) sender
 {
 	BOOL			result = NO;
-	NSView*			view = [self currentView];
+	//NSView*			view = [self currentView];
+	DKDrawingView*			view = [self currentView];
 	NSPasteboard*	pb = [sender draggingPasteboard];
 	NSPoint			cp, ip = [sender draggedImageLocation];
 	NSArray*		dropObjects = nil;
@@ -3126,9 +3165,13 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 
 	cp = [view convertPoint:ip fromView:nil];
 	
+#if TARGET_OS_IPHONE
+   if ([pb containsPasteboardTypes:[self pasteboardTypesForOperation:kDKReadableTypesForDrag]])
+#else
 	NSString*	dt = [pb availableTypeFromArray:[self pasteboardTypesForOperation:kDKReadableTypesForDrag]];
 	
 	if ([dt isEqualToString:kDKDrawableObjectPasteboardType])
+#endif TARGET_OS_IPHONE
 	{
 		// drag contains native objects, which we can use directly.
 		// if dragging source is this layer, remove existing
@@ -3139,12 +3182,20 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 		
 		result = YES;
 	}
+#if TARGET_OS_IPHONE
+	else if (pb.string)
+#else
 	else if ([dt isEqualToString:NSStringPboardType])
+#endif TARGET_OS_IPHONE
 	{
 		// create a text object to contain the dropped string
 		
-		NSString* theString = [pb stringForType:NSStringPboardType];
-		
+#if TARGET_OS_IPHONE
+		NSString* theString = pb.string;
+#else
+      NSString* theString = [pb stringForType:NSStringPboardType];
+#endif TARGET_OS_IPHONE
+            
 		if( theString != nil )
 		{
 			 DKTextShape* tShape = [DKTextShape textShapeWithString:theString inRect:NSMakeRect( 0, 0, 200, 100 )];
@@ -3196,8 +3247,10 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	
 	return result;
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSDragOperation)		draggingEntered:(id <NSDraggingInfo>) sender
 {
 	#pragma unused(sender)
@@ -3207,8 +3260,10 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	
 	return NSDragOperationGeneric;
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				draggingExited:(id <NSDraggingInfo>) sender
 {
 	#pragma unused(sender)
@@ -3216,27 +3271,33 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	m_inDragOp = NO;
 	[self setNeedsDisplay:YES];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSDragOperation)		draggingUpdated:(id <NSDraggingInfo>) sender
 {
 	#pragma unused(sender)
 
 	return NSDragOperationGeneric;
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				prepareForDragOperation:(id <NSDraggingInfo>) sender
 {
 	#pragma unused(sender)
 
 	return YES;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL action = [item action];
@@ -3255,7 +3316,7 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	
 	return [super validateMenuItem:item];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 

@@ -89,7 +89,8 @@ NSString*	kDKImageDataManagerPasteboardType = @"net.apptree.drawkit.imgdatamgrty
 }
 
 
-- (NSImage*)		makeImageWithData:(NSData*) imageData key:(NSString**) key
+//- (NSImage*)		makeImageWithData:(NSData*) imageData key:(NSString**) key
+- (DKImage*)		makeImageWithData:(NSData*) imageData key:(NSString**) key
 {
 	// if <imageData> exists in the repository, it is used to make an image which is returned. If <key> is not NULL, the key is returned. If the image data is
 	// not already in the repository, it is added using a new key. The resulting image and new key are returned. This is used when you have imageData.
@@ -113,24 +114,34 @@ NSString*	kDKImageDataManagerPasteboardType = @"net.apptree.drawkit.imgdatamgrty
 	
 	// create and return the image
 	
-	return [[[NSImage alloc] initWithData:imageData] autorelease];
+	//return [[[NSImage alloc] initWithData:imageData] autorelease];
+	return [[[DKImage alloc] initWithData:imageData] autorelease];
 }
 
 
-- (NSImage*)		makeImageWithPasteboard:(NSPasteboard*) pb key:(NSString**) key
+//- (NSImage*)		makeImageWithPasteboard:(NSPasteboard*) pb key:(NSString**) key
+- (DKImage*)		makeImageWithPasteboard:(DKPasteboard*) pb key:(NSString**) key
 {
 	// create an image, if possible, from the pasteboard. This first tries to see if the pasteboard contains our private image key type, and if so
 	// uses that. Otherwise it extracts the data and proceeds conventionally.
 	
 	NSData*		imageData = nil;
-	NSString*	privateType = [pb availableTypeFromArray:[NSArray arrayWithObject:kDKImageDataManagerPasteboardType]];
+#if TARGET_OS_IPHONE
+   BOOL privateType = [pb containsPasteboardTypes:[NSArray arrayWithObject:kDKImageDataManagerPasteboardType]];
+#else
+   NSString*	privateType = [pb availableTypeFromArray:[NSArray arrayWithObject:kDKImageDataManagerPasteboardType]];
+#endif TARGET_OS_IPHONE
 	
 	if( privateType )
 	{
 		// could be already cached by this - may not be, because it could have come from a different document, but will be here if the same
 		// document.
 		
+#if TARGET_OS_IPHONE
+		NSString* theKey = [pb valueForPasteboardType:kDKImageDataManagerPasteboardType];
+#else
 		NSString* theKey = [pb stringForType:kDKImageDataManagerPasteboardType];
+#endif TARGET_OS_IPHONE
 		
 		if([self hasImageDataForKey:theKey])
 		{
@@ -138,36 +149,52 @@ NSString*	kDKImageDataManagerPasteboardType = @"net.apptree.drawkit.imgdatamgrty
 			if( key != NULL )
 				*key = theKey;
 			
-			return [[[NSImage alloc] initWithData:imageData] autorelease];
+			//return [[[NSImage alloc] initWithData:imageData] autorelease];
+			return [[[DKImage alloc] initWithData:imageData] autorelease];
 		}
 	}
 	
 	// if here, just read the pb in the conventional way, caching the data here as we go
 	
+#if TARGET_OS_IPHONE
+	if (pb.URL || pb.image)
+#else
 	if([NSImage canInitWithPasteboard:pb])
+#endif TARGET_OS_IPHONE
 	{
 		// first see if it's a URL
 		
+#if TARGET_OS_IPHONE
+		NSURL* fileURL = pb.URL;
+#else
 		NSURL* fileURL = [NSURL URLFromPasteboard:pb];
+#endif TARGET_OS_IPHONE
 		
 		if( fileURL )
 			return [self makeImageWithContentsOfURL:fileURL key:key];
 		else
 		{
+#if TARGET_OS_IPHONE
+         if (pb.image)
+            return pb.image;
+#else
 			NSString* imageType = [pb availableTypeFromArray:[NSImage imagePasteboardTypes]];
 			
 			if( imageType )
 			{
-				imageData = [pb dataForType:imageType];
+				//imageData = [pb dataForType:imageType];
+				imageData = [pb dataForPasteboardType:imageType];
 				return [self makeImageWithData:imageData key:key];
 			}
+#endif TARGET_OS_IPHONE
 		}
 	}
 	return nil;
 }
 
 
-- (NSImage*)		makeImageWithContentsOfURL:(NSURL*) url key:(NSString**) key;
+//- (NSImage*)		makeImageWithContentsOfURL:(NSURL*) url key:(NSString**) key;
+- (DKImage*)		makeImageWithContentsOfURL:(NSURL*) url key:(NSString**) key;
 {
 	// read the data from the URL and proceed as for the data case
 	
@@ -176,12 +203,14 @@ NSString*	kDKImageDataManagerPasteboardType = @"net.apptree.drawkit.imgdatamgrty
 }
 
 
-- (NSImage*)		makeImageForKey:(NSString*) key
+//- (NSImage*)		makeImageForKey:(NSString*) key
+- (DKImage*)		makeImageForKey:(NSString*) key
 {
 	NSData* imageData = [self imageDataForKey:key];
 	
 	if( imageData )
-		return [[[NSImage alloc] initWithData:imageData] autorelease];
+		//return [[[NSImage alloc] initWithData:imageData] autorelease];
+		return [[[DKImage alloc] initWithData:imageData] autorelease];
 	else
 		return nil;
 }

@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKDrawableShape.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 13/08/2006.
 ///
@@ -28,7 +28,8 @@ DKShapeEditOperation;
 @interface DKDrawableShape : DKDrawableObject <NSCoding, NSCopying>
 {
 @private
-	NSBezierPath*			m_path;					// shape's path stored in canonical form (origin centred and with unit size)
+	//NSBezierPath*			m_path;					// shape's path stored in canonical form (origin centred and with unit size)
+	DKBezierPath*			m_path;					// shape's path stored in canonical form (origin centred and with unit size)
 	NSMutableArray*			m_customHotSpots;		// list of attached custom hotspots (if any)
 	DKDistortionTransform*	m_distortTransform;		// distortion transform for distort operations
 	CGFloat					m_rotationAngle;		// angle of rotation of the shape
@@ -46,49 +47,71 @@ DKShapeEditOperation;
 + (void)					setKnobMask:(NSInteger) knobMask;
 + (void)					setAngularConstraintAngle:(CGFloat) radians;
 + (NSRect)					unitRectAtOrigin;
-+ (void)					setInfoWindowBackgroundColour:(NSColor*) colour;
+//+ (void)					setInfoWindowBackgroundColour:(NSColor*) colour;
++ (void)					setInfoWindowBackgroundColour:(DKColor*) colour;
+#ifndef TARGET_OS_IPHONE
 + (NSCursor*)				cursorForShapePartcode:(NSInteger) pc;
+#endif TARGET_OS_IPHONE
 
 // convenient ways to create shapes for a path you have:
 
 + (DKDrawableShape*)		drawableShapeWithRect:(NSRect) aRect;
 + (DKDrawableShape*)		drawableShapeWithOvalInRect:(NSRect) aRect;
-+ (DKDrawableShape*)		drawableShapeWithCanonicalBezierPath:(NSBezierPath*) path;
-+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path;
-+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle;
-+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle;
-+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle withStyle:(DKStyle*) aStyle;
+//+ (DKDrawableShape*)		drawableShapeWithCanonicalBezierPath:(NSBezierPath*) path;
+//+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path;
+//+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle;
+//+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle;
+//+ (DKDrawableShape*)		drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle withStyle:(DKStyle*) aStyle;
++ (DKDrawableShape*)		drawableShapeWithCanonicalBezierPath:(DKBezierPath*) path;
++ (DKDrawableShape*)		drawableShapeWithBezierPath:(DKBezierPath*) path;
++ (DKDrawableShape*)		drawableShapeWithBezierPath:(DKBezierPath*) path rotatedToAngle:(CGFloat) angle;
++ (DKDrawableShape*)		drawableShapeWithBezierPath:(DKBezierPath*) path withStyle:(DKStyle*) aStyle;
++ (DKDrawableShape*)		drawableShapeWithBezierPath:(DKBezierPath*) path rotatedToAngle:(CGFloat) angle withStyle:(DKStyle*) aStyle;
 
 // initialise a shape for a rect or oval or different kinds of path:
 
 - (id)						initWithRect:(NSRect) aRect;
 - (id)						initWithOvalInRect:(NSRect) aRect;
-- (id)						initWithCanonicalBezierPath:(NSBezierPath*) aPath;
-- (id)						initWithBezierPath:(NSBezierPath*) aPath;
-- (id)						initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle;
+//- (id)						initWithCanonicalBezierPath:(NSBezierPath*) aPath;
+//- (id)						initWithBezierPath:(NSBezierPath*) aPath;
+//- (id)						initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle;
+- (id)						initWithCanonicalBezierPath:(DKBezierPath*) aPath;
+- (id)						initWithBezierPath:(DKBezierPath*) aPath;
+- (id)						initWithBezierPath:(DKBezierPath*) aPath rotatedToAngle:(CGFloat) angle;
 
 // allowing style to be passed directly:
 
 - (id)						initWithRect:(NSRect) aRect style:(DKStyle*) aStyle;
 - (id)						initWithOvalInRect:(NSRect) aRect style:(DKStyle*) aStyle;
-- (id)						initWithCanonicalBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle;
-- (id)						initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle;
-- (id)						initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle style:(DKStyle*) style;
+//- (id)						initWithCanonicalBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle;
+//- (id)						initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle;
+//- (id)						initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle style:(DKStyle*) style;
+- (id)						initWithCanonicalBezierPath:(DKBezierPath*) aPath style:(DKStyle*) aStyle;
+- (id)						initWithBezierPath:(DKBezierPath*) aPath style:(DKStyle*) aStyle;
+- (id)						initWithBezierPath:(DKBezierPath*) aPath rotatedToAngle:(CGFloat) angle style:(DKStyle*) style;
 
 // path operations:
 
-- (void)					setPath:(NSBezierPath*) path;
-- (NSBezierPath*)			path;
+//- (void)					setPath:(NSBezierPath*) path;
+- (void)					setPath:(DKBezierPath*) path;
+//- (NSBezierPath*)			path;
+- (DKBezierPath*)			path;
 - (void)					reshapePath;
-- (void)					adoptPath:(NSBezierPath*) path;
-- (NSBezierPath*)			transformedPath;
-- (BOOL)					canPastePathWithPasteboard:(NSPasteboard*) pb;
+//- (void)					adoptPath:(NSBezierPath*) path;
+//- (NSBezierPath*)			transformedPath;
+//- (BOOL)					canPastePathWithPasteboard:(NSPasteboard*) pb;
+- (void)					adoptPath:(DKBezierPath*) path;
+- (DKBezierPath*)			transformedPath;
+- (BOOL)					canPastePathWithPasteboard:(DKPasteboard*) pb;
 
 // geometry:
 
-- (NSAffineTransform*)		transform;
-- (NSAffineTransform*)		transformIncludingParent;
-- (NSAffineTransform*)		inverseTransform;
+//- (NSAffineTransform*)		transform;
+//- (NSAffineTransform*)		transformIncludingParent;
+//- (NSAffineTransform*)		inverseTransform;
+- (DKAffineTransform*)		transform;
+- (DKAffineTransform*)		transformIncludingParent;
+- (DKAffineTransform*)		inverseTransform;
 - (NSPoint)					locationIgnoringOffset;
 
 - (void)					rotateUsingReferencePoint:(NSPoint) rp constrain:(BOOL) constrain;

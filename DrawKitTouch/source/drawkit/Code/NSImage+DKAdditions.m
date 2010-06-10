@@ -9,15 +9,18 @@
 #import "NSImage+DKAdditions.h"
 #import "DKGeometryUtilities.h"
 
-@implementation NSImage (DKAdditions)
+//@implementation NSImage (DKAdditions)
+@implementation DKImage (DKAdditions)
 
-+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size
+//+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size
++ (DKImage*)	imageFromImage:(DKImage*) srcImage withSize:(NSSize) size
 {
 	return [self imageFromImage:srcImage withSize:size fraction:1.0 allowScaleUp:YES];
 }
 
 
-+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size fraction:(CGFloat) opacity allowScaleUp:(BOOL) scaleUp
+//+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size fraction:(CGFloat) opacity allowScaleUp:(BOOL) scaleUp
++ (DKImage*)	imageFromImage:(DKImage*) srcImage withSize:(NSSize) size fraction:(CGFloat) opacity allowScaleUp:(BOOL) scaleUp
 {
 	// makes a copy of <srcImage> by drawing it into a bitmap representation of <size>, scaling as needed. A new temporary graphics context is
 	// made to ensure that there are no side effects such as arbitrary flippedness (the returned image is unflipped). This also sets high quality
@@ -32,14 +35,13 @@
 	NSAssert( size.width > 0, @"invalid size, width is zero or -ve");
 	NSAssert( size.height > 0, @"invalid size, height is zero or -ve");
 	
-	// we'll remove casts to quiet our compiler warnings ...alex
-   NSInteger pixelsWide = ceil(size.width);
-   NSInteger pixelsHigh = ceil(size.height);
+#if TARGET_OS_IPHONE
+   UIGraphicsBeginImageContext(size);
+   CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+#else
 	NSBitmapImageRep* bm = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
-																   //pixelsWide:(NSInteger)ceil(size.width)
-																   //pixelsHigh:(NSInteger)ceil(size.height)
-                                                   pixelsWide:pixelsWide
-                                                   pixelsHigh:pixelsHigh
+																   pixelsWide:(NSInteger)ceil(size.width)
+																   pixelsHigh:(NSInteger)ceil(size.height)
 																bitsPerSample:8
 															  samplesPerPixel:4
 																	 hasAlpha:YES
@@ -49,6 +51,7 @@
 																 bitsPerPixel:0];
 	
 	NSAssert( bm != nil, @"bitmap could not be created");
+#endif TARGET_OS_IPHONE
 	
 	NSRect destRect = NSMakeRect( 0, 0, size.width, size.height );
 	
@@ -64,6 +67,7 @@
 	else
 		destRect = ScaledRectForSize( srcSize, destRect );
 	
+#ifndef TARGET_OS_IPHONE
 	NSImage* image = [[NSImage alloc] initWithSize:size];
 	[image addRepresentation:bm];
 	[bm release];
@@ -74,10 +78,20 @@
 	[tempContext setImageInterpolation:NSImageInterpolationHigh];
 	
 	[image lockFocus];
+#endif TARGET_OS_IPHONE
 	
-	[[NSColor clearColor] set];
-	NSRectFill( NSMakeRect( 0, 0, size.width, size.height ));
+	//[[NSColor clearColor] set];
+	[[DKColor clearColor] set];
+	DKRectFill( NSMakeRect( 0, 0, size.width, size.height ));
 	
+#if TARGET_OS_IPHONE
+	[srcImage drawInRect:destRect blendMode:kCGBlendModeNormal alpha:opacity];
+   
+   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+   UIGraphicsEndImageContext();
+   
+   return image;
+#else
 	[srcImage drawInRect:destRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:opacity];
 	[image unlockFocus];
 	
@@ -86,8 +100,9 @@
 	// do not make additional image caches
 	
 	[image setCacheMode:NSImageCacheNever];
-	
+
 	return [image autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 

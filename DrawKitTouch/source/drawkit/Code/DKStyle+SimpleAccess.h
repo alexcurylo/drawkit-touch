@@ -17,16 +17,21 @@
 
 @interface DKStyle (SimpleAccess)
 
-+ (DKStyle*)		styleWithDotDensity:(CGFloat) percent foreColour:(NSColor*) fore backColour:(NSColor*) back;
+//+ (DKStyle*)		styleWithDotDensity:(CGFloat) percent foreColour:(NSColor*) fore backColour:(NSColor*) back;
++ (DKStyle*)		styleWithDotDensity:(CGFloat) percent foreColour:(DKColor*) fore backColour:(DKColor*) back;
 
 - (DKStroke*)		stroke;
 - (DKFill*)			fill;
 
-- (void)			setFillColour:(NSColor*) fillColour;
-- (NSColor*)		fillColour;
+//- (void)			setFillColour:(NSColor*) fillColour;
+//- (NSColor*)		fillColour;
+- (void)			setFillColour:(DKColor*) fillColour;
+- (DKColor*)		fillColour;
 
-- (void)			setStrokeColour:(NSColor*) strokeColour;
-- (NSColor*)		strokeColour;
+//- (void)			setStrokeColour:(NSColor*) strokeColour;
+//- (NSColor*)		strokeColour;
+- (void)			setStrokeColour:(DKColor*) strokeColour;
+- (DKColor*)		strokeColour;
 
 - (void)			setStrokeWidth:(CGFloat) strokeWidth;
 - (CGFloat)			strokeWidth;
@@ -44,8 +49,10 @@
 - (NSString*)		string;
 
 - (BOOL)			hasImageComponent;
-- (void)			setImageComponent:(NSImage*) anImage;
-- (NSImage*)		imageComponent;
+//- (void)			setImageComponent:(NSImage*) anImage;
+//- (NSImage*)		imageComponent;
+- (void)			setImageComponent:(DKImage*) anImage;
+- (DKImage*)		imageComponent;
 
 @end
 

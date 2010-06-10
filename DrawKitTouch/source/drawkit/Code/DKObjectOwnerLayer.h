@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKObjectOwnerLayer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 21/11/2006.
 ///
@@ -112,16 +112,21 @@ DKLayerCacheOption;
 
 // enumerating objects (typically for drawing)
 
-- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView;
-- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options;
-- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView;
-- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options;
+//- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView;
+- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView;
+//- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options;
+- (NSEnumerator*)		objectEnumeratorForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options;
+//- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView;
+- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView;
+//- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(NSView*) aView options:(DKObjectStorageOptions) options;
+- (NSArray*)			objectsForUpdateRect:(NSRect) rect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options;
 
 // updating & drawing objects:
 
 - (void)				drawable:(DKDrawableObject*) obj needsDisplayInRect:(NSRect) rect;
 - (void)				drawVisibleObjects;
-- (NSImage*)			imageOfObjects;
+//- (NSImage*)			imageOfObjects;
+- (DKImage*)			imageOfObjects;
 - (NSData*)				pdfDataOfObjects;
 
 // pending object - used during interactive creation of new objects
@@ -129,7 +134,8 @@ DKLayerCacheOption;
 - (void)				addObjectPendingCreation:(DKDrawableObject*) pend;
 - (void)				removePendingObject;
 - (void)				commitPendingObjectWithUndoActionName:(NSString*) actionName;
-- (void)				drawPendingObjectInView:(NSView*) aView;
+//- (void)				drawPendingObjectInView:(NSView*) aView;
+- (void)				drawPendingObjectInView:(DKDrawingView*) aView;
 - (DKDrawableObject*)	pendingObject;
 
 // geometry:
@@ -137,8 +143,10 @@ DKLayerCacheOption;
 - (NSRect)				unionOfAllObjectBounds;
 - (void)				refreshObjectsInContainer:(id) container;
 - (void)				refreshAllObjects;
-- (NSAffineTransform*)	renderingTransform;
-- (void)				applyTransformToObjects:(NSAffineTransform*) transform;
+//- (NSAffineTransform*)	renderingTransform;
+//- (void)				applyTransformToObjects:(NSAffineTransform*) transform;
+- (DKAffineTransform*)	renderingTransform;
+- (void)				applyTransformToObjects:(DKAffineTransform*) transform;
 
 // stacking order:
 
@@ -155,8 +163,10 @@ DKLayerCacheOption;
 
 // clipboard ops:
 
-- (void)				addObjects:(NSArray*) objects fromPasteboard:(NSPasteboard*) pb atDropLocation:(NSPoint) p;
-- (BOOL)				updatePasteCountWithPasteboard:(NSPasteboard*) pb;
+//- (void)				addObjects:(NSArray*) objects fromPasteboard:(NSPasteboard*) pb atDropLocation:(NSPoint) p;
+- (void)				addObjects:(NSArray*) objects fromPasteboard:(DKPasteboard*) pb atDropLocation:(NSPoint) p;
+//- (BOOL)				updatePasteCountWithPasteboard:(NSPasteboard*) pb;
+- (BOOL)				updatePasteCountWithPasteboard:(DKPasteboard*) pb;
 - (BOOL)				isRecordingPasteOffset;
 - (void)				setRecordingPasteOffset:(BOOL) record;
 - (NSInteger)			pasteCount;

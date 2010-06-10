@@ -12,6 +12,9 @@
 
 #import "DKDrawKitMacros.h"
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
 
 
 // colour mapping macros rgb->index->rgb. Note that these only do the most primitive colour mapping which is bit truncation and concatenation.
@@ -77,6 +80,7 @@ static inline void indexToRGB_332( NSUInteger i, NSUInteger rgb[3] )
 #pragma mark -
 @implementation DKColourQuantizer
 #pragma mark As a DKColourQuantizer
+#ifndef TARGET_OS_IPHONE
 - (id)				initWithBitmapImageRep:(NSBitmapImageRep*) rep maxColours:(NSUInteger) maxColours colourBits:(NSUInteger) nBits
 {
 	NSAssert(rep != nil, @"Expected valid rep");
@@ -97,6 +101,7 @@ static inline void indexToRGB_332( NSUInteger i, NSUInteger rgb[3] )
 	
 	return self;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (NSUInteger)		indexForRGB:(NSUInteger[]) rgb
@@ -125,7 +130,8 @@ static inline void indexToRGB_332( NSUInteger i, NSUInteger rgb[3] )
 }
 
 
-- (NSColor*)		colourForIndex:(NSUInteger) indx
+//- (NSColor*)		colourForIndex:(NSUInteger) indx
+- (DKColor*)		colourForIndex:(NSUInteger) indx
 {
 	return [[self colourTable] objectAtIndex:indx];
 }
@@ -170,7 +176,8 @@ static inline void indexToRGB_332( NSUInteger i, NSUInteger rgb[3] )
 			g = (CGFloat)rgb[1] / 255.0f;
 			b = (CGFloat)rgb[2] / 255.0f;
 	
-			[m_cTable addObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0]];
+			//[m_cTable addObject:[NSColor colorWithCalibratedRed:r green:g blue:b alpha:1.0]];
+			[m_cTable addObject:[DKColor colorWithCalibratedRed:r green:g blue:b alpha:1.0]];
 		}
 	}
 	
@@ -185,6 +192,7 @@ static inline void indexToRGB_332( NSUInteger i, NSUInteger rgb[3] )
 
 
 #pragma mark -
+#ifndef TARGET_OS_IPHONE
 - (void)			analyse:(NSBitmapImageRep*) rep
 {
 	#pragma unused(rep)
@@ -192,6 +200,7 @@ static inline void indexToRGB_332( NSUInteger i, NSUInteger rgb[3] )
 	// the basic quantizer does no analysis of the image - it only works on the size of the RGB space. Override for more
 	// sophisticated quantizers. Upside: it's very fast ;-)
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark As an NSObject
@@ -382,6 +391,7 @@ static NSUInteger	mask[8]	= {	0x80, 0x40,	0x20, 0x10,	0x08, 0x04,	0x02, 0x01 };
 
 #pragma mark -
 #pragma mark As a DKColourQuantizer
+#ifndef TARGET_OS_IPHONE
 - (void)			analyse:(NSBitmapImageRep*) rep
 {
 	NSInteger			i, j;
@@ -402,6 +412,7 @@ static NSUInteger	mask[8]	= {	0x80, 0x40,	0x20, 0x10,	0x08, 0x04,	0x02, 0x01 };
 		}
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 - (NSArray*)		colourTable
@@ -412,7 +423,8 @@ static NSUInteger	mask[8]	= {	0x80, 0x40,	0x20, 0x10,	0x08, 0x04,	0x02, 0x01 };
 		
 		rgb_triple*	rgb;
 		NSUInteger	i, indx = 0;
-		NSColor*	colour;
+		//NSColor*	colour;
+		DKColor*	colour;
 		
 		rgb = (rgb_triple*) malloc( m_nLeafCount * sizeof(rgb_triple));
 		[self paletteColour:m_pTree index:&indx colour:rgb];
@@ -421,7 +433,8 @@ static NSUInteger	mask[8]	= {	0x80, 0x40,	0x20, 0x10,	0x08, 0x04,	0x02, 0x01 };
 		
 		for( i = 0; i < indx; ++i )
 		{
-			colour = [NSColor colorWithCalibratedRed:rgb[i].r green:rgb[i].g blue:rgb[i].b alpha:1.0];
+			//colour = [NSColor colorWithCalibratedRed:rgb[i].r green:rgb[i].g blue:rgb[i].b alpha:1.0];
+			colour = [DKColor colorWithCalibratedRed:rgb[i].r green:rgb[i].g blue:rgb[i].b alpha:1.0];
 			[m_cTable addObject:colour];
 		}
 		
@@ -449,6 +462,7 @@ static NSUInteger	mask[8]	= {	0x80, 0x40,	0x20, 0x10,	0x08, 0x04,	0x02, 0x01 };
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (id)				initWithBitmapImageRep:(NSBitmapImageRep*) rep maxColours:(NSUInteger) maxColours colourBits:(NSUInteger) nBits
 {
 	NSAssert(rep != nil, @"Expected valid rep");
@@ -469,6 +483,7 @@ static NSUInteger	mask[8]	= {	0x80, 0x40,	0x20, 0x10,	0x08, 0x04,	0x02, 0x01 };
 	
 	return self;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (NSInteger)				numberOfColours

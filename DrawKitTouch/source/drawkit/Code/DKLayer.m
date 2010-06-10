@@ -12,7 +12,12 @@
 #import "DKLayer.h"
 #import "DKKnob.h"
 #import "DKDrawing.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#import "UIColor+DKTAdditions.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKSelectionPDFView.h"
 #import "DKGeometryUtilities.h"
 #import "GCInfoFloater.h"
@@ -93,7 +98,8 @@ static NSArray*	s_selectionColours = nil;
 		
 		for( i = 0; i < 6; i++ )
 		{
-			NSColor* colour = [NSColor colorWithDeviceRed:colours[i][0] green:colours[i][1] blue:colours[i][2] alpha:1.0];
+			//NSColor* colour = [NSColor colorWithDeviceRed:colours[i][0] green:colours[i][1] blue:colours[i][2] alpha:1.0];
+			DKColor* colour = [DKColor colorWithDeviceRed:colours[i][0] green:colours[i][1] blue:colours[i][2] alpha:1.0];
 			[list addObject:colour];
 		}
 		
@@ -119,7 +125,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSColor*)		selectionColourForIndex:(NSUInteger) indx
+//+ (NSColor*)		selectionColourForIndex:(NSUInteger) indx
++ (DKColor*)		selectionColourForIndex:(NSUInteger) indx
 {
 	NSArray* selColours = [self selectionColours];
 	
@@ -544,7 +551,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)			setSelectionColour:(NSColor*) colour
+//- (void)			setSelectionColour:(NSColor*) colour
+- (void)			setSelectionColour:(DKColor*) colour
 {
 	if( ![self locked] && ![colour isEqual:[self selectionColour]])
 	{
@@ -583,7 +591,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)		selectionColour
+//- (NSColor*)		selectionColour
+- (DKColor*)		selectionColour
 {
 	return m_selectionColour;
 }
@@ -604,7 +613,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)		thumbnailImageWithSize:(NSSize) size
+//- (NSImage*)		thumbnailImageWithSize:(NSSize) size
+- (DKImage*)		thumbnailImageWithSize:(NSSize) size
 {
 	NSSize		drsize = [[self drawing] drawingSize];
 
@@ -616,10 +626,13 @@ static NSArray*	s_selectionColours = nil;
 	
 	//LogEvent_(kReactiveEvent,  @"creating layer thumbnail size: {%f, %f}", size.width, size.height );
 	
-	NSImage*	thumb = [[NSImage alloc] initWithSize:size];
+	//NSImage*	thumb = [[NSImage alloc] initWithSize:size];
+	DKImage*	thumb = [[DKImage alloc] initWithSize:size];
 	NSRect		tr, dr, dest;
 	
+#ifndef TARGET_OS_IPHONE
 	[thumb setFlipped:[[self drawing] isFlipped]];
+#endif TARGET_OS_IPHONE
 
 	tr = NSMakeRect( 0, 0, size.width, size.height );
 	dr = NSMakeRect( 0, 0, drsize.width, drsize.height );
@@ -629,21 +642,32 @@ static NSArray*	s_selectionColours = nil;
 	// build a transform to scale the drawing to the destination rect size
 	
 	CGFloat scale = dest.size.width / drsize.width;
-	NSAffineTransform*	tfm = [NSAffineTransform transform];
+	//NSAffineTransform*	tfm = [NSAffineTransform transform];
+	DKAffineTransform*	tfm = [DKAffineTransform transform];
 	[tfm scaleBy:scale];
 	
+#ifndef TARGET_OS_IPHONE
 	[thumb lockFocus];
-	[[NSColor clearColor] set];
-	NSRectFill( tr );
+#endif TARGET_OS_IPHONE
+	//[[NSColor clearColor] set];
+	[[DKColor clearColor] set];
+	DKRectFill( tr );
+#if TARGET_OS_IPHONE
+   CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+#else
 	[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+#endif TARGET_OS_IPHONE
 	
 	[tfm concat];
 	[self drawRect:dr inView:nil];
 	
-	[[NSColor blackColor] set];
-	NSFrameRectWithWidth( dr, 2.0 );
+	//[[NSColor blackColor] set];
+	[[DKColor blackColor] set];
+	DKFrameRectWithWidth( dr, 2.0 );
 	
+#ifndef TARGET_OS_IPHONE
 	[thumb unlockFocus];
+#endif TARGET_OS_IPHONE
 	
 	return [thumb autorelease];
 }
@@ -662,7 +686,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)		thumbnail
+//- (NSImage*)		thumbnail
+- (DKImage*)		thumbnail
 {
 	return [self thumbnailImageWithSize:NSZeroSize];
 }
@@ -711,12 +736,18 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (BOOL)			writePDFDataToPasteboard:(NSPasteboard*) pb
+//- (BOOL)			writePDFDataToPasteboard:(NSPasteboard*) pb
+- (BOOL)			writePDFDataToPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"Cannot write to a nil pasteboard");
 	
+#if TARGET_OS_IPHONE
+	[pb setData:[self pdf] forPasteboardType:(NSString *)kUTTypePDF];
+   return YES;
+#else
 	[pb declareTypes:[NSArray arrayWithObject:NSPDFPboardType] owner:self];
 	return [pb setData:[self pdf] forType:NSPDFPboardType];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -734,6 +765,7 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSBitmapImageRep*) bitmapRepresentationWithDPI:(NSUInteger) dpi
 {
 	if( dpi == 0 )
@@ -788,6 +820,7 @@ static NSArray*	s_selectionColours = nil;
 	
 	return [rep autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1388,12 +1421,14 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			shouldAutoActivateWithEvent:(NSEvent*) event
 {
 	#pragma unused(event)
 	
 	return ![self locked];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1459,11 +1494,13 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDown:(NSEvent*) event inView:(NSView*) view
 {
 	#pragma unused(event)
 	#pragma unused(view)
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1480,11 +1517,13 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDragged:(NSEvent*) event inView:(NSView*) view;
 {
 	#pragma unused(event)
 	#pragma unused(view)
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1501,11 +1540,13 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseUp:(NSEvent*) event inView:(NSView*) view;
 {
 	#pragma unused(event)
 	#pragma unused(view)
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1521,12 +1562,14 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			flagsChanged:(NSEvent*) event
 {
 	#pragma unused(event)
 	
 	// override to do something useful
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1548,7 +1591,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSView*)			currentView
+//- (NSView*)			currentView
+- (DKDrawingView*)			currentView
 {
 	return [DKDrawingView currentlyDrawingView];
 }
@@ -1567,11 +1611,12 @@ static NSArray*	s_selectionColours = nil;
 ///					the mouse is within it, or which tool has been attached.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor
 {
 	return [NSCursor arrowCursor];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1587,11 +1632,12 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSRect)			activeCursorRect
 {
 	return [[self drawing] interior];
 }
-
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 ///*********************************************************************************************************************
@@ -1609,6 +1655,7 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu *)		menuForEvent:(NSEvent *)theEvent inView:(NSView*) view
 {
 	#pragma unused(theEvent)
@@ -1616,6 +1663,7 @@ static NSArray*	s_selectionColours = nil;
 	
 	return nil;
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark supporting per-layer knob handling
@@ -1759,7 +1807,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (BOOL)			pasteboard:(NSPasteboard*) pb hasAvailableTypeForOperation:(DKPasteboardOperationType) op
+//- (BOOL)			pasteboard:(NSPasteboard*) pb hasAvailableTypeForOperation:(DKPasteboardOperationType) op
+- (BOOL)			pasteboard:(DKPasteboard*) pb hasAvailableTypeForOperation:(DKPasteboardOperationType) op
 {
 	// return whether the given pasteboard has an available data type for the given operation on this object
 	
@@ -1769,8 +1818,12 @@ static NSArray*	s_selectionColours = nil;
 	
 	if ( types != nil )
 	{
+#if TARGET_OS_IPHONE
+      return [pb containsPasteboardTypes:types];
+#else
 		NSString* type = [pb availableTypeFromArray:types];
 		return ( type != nil );
+#endif TARGET_OS_IPHONE
 	}
 	else
 		return NO;
@@ -1892,7 +1945,8 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)			setInfoWindowBackgroundColour:(NSColor*) colour
+//- (void)			setInfoWindowBackgroundColour:(NSColor*) colour
+- (void)			setInfoWindowBackgroundColour:(DKColor*) colour
 {
 	if ( m_infoWindow == nil )
 	{
@@ -2102,7 +2156,8 @@ static NSArray*	s_selectionColours = nil;
 	
 	// export the layer's content as a PDF
 	
-	[self writePDFDataToPasteboard:[NSPasteboard generalPasteboard]];
+	//[self writePDFDataToPasteboard:[NSPasteboard generalPasteboard]];
+	[self writePDFDataToPasteboard:[DKPasteboard generalPasteboard]];
 }
 
 
@@ -2190,7 +2245,8 @@ static NSArray*	s_selectionColours = nil;
 		[self setLayerGroup:[coder decodeObjectForKey:@"group"]];
 		[self setLayerName:[coder decodeObjectForKey:@"name"]];
 		
-		NSColor* selColour = [coder decodeObjectForKey:@"selcolour"];
+		//NSColor* selColour = [coder decodeObjectForKey:@"selcolour"];
+		DKColor* selColour = [coder decodeObjectForKey:@"selcolour"];
 		
 		if( selColour )
 			[self setSelectionColour:selColour];
@@ -2247,6 +2303,7 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			validateMenuItem:(NSMenuItem*) item
 {
 	SEL		action = [item action];
@@ -2272,8 +2329,9 @@ static NSArray*	s_selectionColours = nil;
 		
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			validateUserInterfaceItem:(id < NSValidatedUserInterfaceItem >) anItem
 {
 	if([(id)anItem isKindOfClass:[NSMenuItem class]])
@@ -2288,6 +2346,7 @@ static NSArray*	s_selectionColours = nil;
 	
 	return oldResult;
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -2309,11 +2368,19 @@ static NSArray*	s_selectionColours = nil;
 {
 	// query the currently rendering view's active state and pass it back to the knobs
 	
+#if TARGET_OS_IPHONE
+	UIWindow* window = [[[self drawing] currentView] window];
+
+	// if there is no window (e.g. for a print or PDF view) assume active
+	
+	return ( window == nil ) || [window isKeyWindow];
+#else
 	NSWindow* window = [[[self drawing] currentView] window];
 	
 	// if there is no window (e.g. for a print or PDF view) assume active
 	
 	return ( window == nil ) || [window isMainWindow];
+#endif TARGET_OS_IPHONE
 }
 
 

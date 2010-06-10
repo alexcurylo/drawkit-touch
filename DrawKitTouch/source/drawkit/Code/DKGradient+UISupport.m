@@ -8,6 +8,9 @@
 //
 
 #import "DKGradient+UISupport.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
 
 static void		glossInterpolation(void *info, const CGFloat *input, CGFloat *output);
 static CGFloat	perceptualGlossFractionForColor(CGFloat *inputComponents);
@@ -21,10 +24,14 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.58 green:0.86 blue:0.98 alpha:1.00] at:0.0];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.42 green:0.68 blue:0.90 alpha:1.00] at:11.5/23];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.64 green:0.80 blue:0.94 alpha:1.00] at:11.5/23];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.56 green:0.70 blue:0.90 alpha:1.00] at:1.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.58 green:0.86 blue:0.98 alpha:1.00] at:0.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.42 green:0.68 blue:0.90 alpha:1.00] at:11.5/23];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.64 green:0.80 blue:0.94 alpha:1.00] at:11.5/23];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.56 green:0.70 blue:0.90 alpha:1.00] at:1.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.58 green:0.86 blue:0.98 alpha:1.00] at:0.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.42 green:0.68 blue:0.90 alpha:1.00] at:11.5/23];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.64 green:0.80 blue:0.94 alpha:1.00] at:11.5/23];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.56 green:0.70 blue:0.90 alpha:1.00] at:1.0];
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -35,10 +42,14 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:0.0];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.83 green:0.83 blue:0.83 alpha:1.00] at:11.5/23];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:11.5/23];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.92 green:0.92 blue:0.92 alpha:1.00] at:1.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:0.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.83 green:0.83 blue:0.83 alpha:1.00] at:11.5/23];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:11.5/23];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.92 green:0.92 blue:0.92 alpha:1.00] at:1.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:0.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.83 green:0.83 blue:0.83 alpha:1.00] at:11.5/23];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:11.5/23];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.92 green:0.92 blue:0.92 alpha:1.00] at:1.0];
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -49,10 +60,14 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.80 green:0.80 blue:0.80 alpha:1.00] at:0.0];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.64 green:0.64 blue:0.64 alpha:1.00] at:11.5/23];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.80 green:0.80 blue:0.80 alpha:1.00] at:11.5/23];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.77 green:0.77 blue:0.77 alpha:1.00] at:1.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.80 green:0.80 blue:0.80 alpha:1.00] at:0.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.64 green:0.64 blue:0.64 alpha:1.00] at:11.5/23];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.80 green:0.80 blue:0.80 alpha:1.00] at:11.5/23];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.77 green:0.77 blue:0.77 alpha:1.00] at:1.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.80 green:0.80 blue:0.80 alpha:1.00] at:0.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.64 green:0.64 blue:0.64 alpha:1.00] at:11.5/23];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.80 green:0.80 blue:0.80 alpha:1.00] at:11.5/23];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.77 green:0.77 blue:0.77 alpha:1.00] at:1.0];	
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -63,8 +78,10 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.85 green:0.85 blue:0.85 alpha:1.00] at:0.0];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:1.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.85 green:0.85 blue:0.85 alpha:1.00] at:0.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:1.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.85 green:0.85 blue:0.85 alpha:1.00] at:0.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.95 green:0.95 blue:0.95 alpha:1.00] at:1.0];	
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -75,8 +92,10 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.75 green:0.75 blue:0.75 alpha:1.00] at:0.0];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.90 green:0.90 blue:0.90 alpha:1.00] at:1.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.75 green:0.75 blue:0.75 alpha:1.00] at:0.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.90 green:0.90 blue:0.90 alpha:1.00] at:1.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.75 green:0.75 blue:0.75 alpha:1.00] at:0.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.90 green:0.90 blue:0.90 alpha:1.00] at:1.0];	
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -87,8 +106,10 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.60 green:0.60 blue:0.60 alpha:1.00] at:0.0];	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.75 green:0.75 blue:0.75 alpha:1.00] at:1.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.60 green:0.60 blue:0.60 alpha:1.00] at:0.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.75 green:0.75 blue:0.75 alpha:1.00] at:1.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.60 green:0.60 blue:0.60 alpha:1.00] at:0.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.75 green:0.75 blue:0.75 alpha:1.00] at:1.0];
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -98,8 +119,10 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.68 green:0.68 blue:0.68 alpha:1.00] at:0.0];	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.83 green:0.83 blue:0.83 alpha:1.00] at:1.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.68 green:0.68 blue:0.68 alpha:1.00] at:0.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.83 green:0.83 blue:0.83 alpha:1.00] at:1.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.68 green:0.68 blue:0.68 alpha:1.00] at:0.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.83 green:0.83 blue:0.83 alpha:1.00] at:1.0];
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
@@ -109,8 +132,10 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 + (DKGradient*)		sourceListSelectedGradient
 {
 	DKGradient* grad = [[DKGradient alloc] init];
-	[grad addColor:[NSColor colorWithCalibratedRed:0.06 green:0.37 blue:0.85 alpha:1.00] at:0.0];	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.30 green:0.60 blue:0.92 alpha:1.00] at:1.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.06 green:0.37 blue:0.85 alpha:1.00] at:0.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.30 green:0.60 blue:0.92 alpha:1.00] at:1.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.06 green:0.37 blue:0.85 alpha:1.00] at:0.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.30 green:0.60 blue:0.92 alpha:1.00] at:1.0];
 	[grad setAngleInDegrees:90];
 
 	return [grad autorelease];
@@ -120,15 +145,18 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.43 green:0.43 blue:0.43 alpha:1.00] at:0.0];	
-	[grad addColor:[NSColor colorWithCalibratedRed:0.60 green:0.60 blue:0.60 alpha:1.00] at:1.0];
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.43 green:0.43 blue:0.43 alpha:1.00] at:0.0];	
+	//[grad addColor:[NSColor colorWithCalibratedRed:0.60 green:0.60 blue:0.60 alpha:1.00] at:1.0];
+	[grad addColor:[DKColor colorWithCalibratedRed:0.43 green:0.43 blue:0.43 alpha:1.00] at:0.0];	
+	[grad addColor:[DKColor colorWithCalibratedRed:0.60 green:0.60 blue:0.60 alpha:1.00] at:1.0];
 	[grad setAngleInDegrees:90];
 	
 	return [grad autorelease];
 }
 
 
-+ (void)				drawShinyGradientInRect:(NSRect) inRect withColour:(NSColor*) colour
+//+ (void)				drawShinyGradientInRect:(NSRect) inRect withColour:(NSColor*) colour
++ (void)				drawShinyGradientInRect:(NSRect) inRect withColour:(DKColor*) colour
 {
 	// convenient method to create a shiny effect for button backgrounds, etc. This is closely based on the code my Matt Gallagher
 	// http://cocoawithlove.com/2008/09/drawing-gloss-gradients-in-coregraphics.html whose work is fully acknowledged.
@@ -145,7 +173,11 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
     params.expOffset = _CGFloatExp(-params.expCoefficient);
     params.expScale = 1.0 / (1.0 - params.expOffset);
 	
-    NSColor *source = [colour colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+#if TARGET_OS_IPHONE
+	UIColor *source = [colour colorUsingCalibratedRGBColorSpace];
+#else
+   NSColor *source = [colour colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+#endif TARGET_OS_IPHONE
     [source getComponents:params.color];
     if ([source numberOfComponents] == 3)
     {
@@ -175,23 +207,31 @@ static void		perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *o
     CGPoint startPoint; 
     CGPoint endPoint; 
 	
+#ifndef TARGET_OS_IPHONE
 	if([[NSGraphicsContext currentContext] isFlipped])
+#endif TARGET_OS_IPHONE
 	{
 		startPoint = CGPointMake(NSMinX(inRect), NSMinY(inRect));
 		endPoint = CGPointMake(NSMinX(inRect), NSMaxY(inRect));
 	}
+#ifndef TARGET_OS_IPHONE
 	else
 	{
 		startPoint = CGPointMake(NSMinX(inRect), NSMaxY(inRect));
 		endPoint = CGPointMake(NSMinX(inRect), NSMinY(inRect));
 	}
+#endif TARGET_OS_IPHONE
 	
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
     CGShadingRef shading = CGShadingCreateAxial(colorspace, startPoint,
 												endPoint, gradientFunction, FALSE, FALSE);
 	
+#if TARGET_OS_IPHONE
+	CGContextRef context = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
-    
+#endif TARGET_OS_IPHONE
+   
     CGContextSaveGState(context);
 	CGContextSetBlendMode(context,kCGBlendModeNormal);
     CGContextClipToRect(context, NSRectToCGRect(inRect));
@@ -251,14 +291,16 @@ static void perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *ou
     const CGFloat MAX_BLUE_THRESHOLD = 0.7;
     const CGFloat GRAYSCALE_CAUSTIC_SATURATION = 0.1;
     
-    NSColor *source = [NSColor colorWithCalibratedRed:inputComponents[0] green:inputComponents[1] blue:inputComponents[2] alpha:inputComponents[3]];
+    //NSColor *source = [NSColor colorWithCalibratedRed:inputComponents[0] green:inputComponents[1] blue:inputComponents[2] alpha:inputComponents[3]];
+    DKColor *source = [DKColor colorWithCalibratedRed:inputComponents[0] green:inputComponents[1] blue:inputComponents[2] alpha:inputComponents[3]];
 	
     CGFloat hue, saturation, brightness, alpha;
     [source getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha];
 	
     CGFloat targetHue, targetSaturation, targetBrightness;
-    [[NSColor yellowColor] getHue:&targetHue saturation:&targetSaturation brightness:&targetBrightness alpha:&alpha];
-    
+    //[[NSColor yellowColor] getHue:&targetHue saturation:&targetSaturation brightness:&targetBrightness alpha:&alpha];
+    [[DKColor yellowColor] getHue:&targetHue saturation:&targetSaturation brightness:&targetBrightness alpha:&alpha];
+ 
     if (saturation < 1e-3)
     {
         hue = targetHue;
@@ -271,12 +313,14 @@ static void perceptualCausticColorForColor(CGFloat *inputComponents, CGFloat *ou
     }
     else if (hue > MAX_BLUE_THRESHOLD)
     {
-        [[NSColor magentaColor] getHue:&targetHue saturation:&targetSaturation brightness:&targetBrightness alpha:&alpha];
-    }
+         //[[NSColor magentaColor] getHue:&targetHue saturation:&targetSaturation brightness:&targetBrightness alpha:&alpha];
+         [[DKColor magentaColor] getHue:&targetHue saturation:&targetSaturation brightness:&targetBrightness alpha:&alpha];
+   }
 	
     CGFloat scaledCaustic = CAUSTIC_FRACTION * 0.5 * (1.0 + cos(COSINE_ANGLE_SCALE * M_PI * (hue - targetHue)));
 	
-    NSColor *targetColor = [NSColor  colorWithCalibratedHue:hue * (1.0 - scaledCaustic) + targetHue * scaledCaustic
+    //NSColor *targetColor = [NSColor  colorWithCalibratedHue:hue * (1.0 - scaledCaustic) + targetHue * scaledCaustic
+    DKColor *targetColor = [DKColor  colorWithCalibratedHue:hue * (1.0 - scaledCaustic) + targetHue * scaledCaustic
 										saturation:saturation
 										brightness:brightness * (1.0 - scaledCaustic) + targetBrightness * scaledCaustic
 										alpha:inputComponents[3]];

@@ -22,14 +22,22 @@
 // some useful angular constants
 
 #define FIFTEEN_DEGREES					(0.261799387799)
-#define NINETY_DEGREES					(pi * 0.5)
-#define FORTYFIVE_DEGREES				(pi * 0.25)
-#define HALF_PI							(pi * 0.5)
+//#define NINETY_DEGREES					(pi * 0.5)
+#define NINETY_DEGREES					M_PI_2
+//#define FORTYFIVE_DEGREES				(pi * 0.25)
+#define FORTYFIVE_DEGREES				M_PI_4
+//#define HALF_PI							(pi * 0.5)
+#define HALF_PI							M_PI_2
 
 // exception safe save/restore of the current graphics context
 
+#if TARGET_OS_IPHONE
+#define	SAVE_GRAPHICS_CONTEXT			@try { CGContextSaveGState(UIGraphicsGetCurrentContext());
+#define RESTORE_GRAPHICS_CONTEXT		} @finally { CGContextRestoreGState(UIGraphicsGetCurrentContext()); }
+#else
 #define	SAVE_GRAPHICS_CONTEXT			@try { [NSGraphicsContext saveGraphicsState];
 #define RESTORE_GRAPHICS_CONTEXT		} @finally { [NSGraphicsContext restoreGraphicsState]; }
+#endif TARGET_OS_IPHONE
 
 
 // 64-bit float macros

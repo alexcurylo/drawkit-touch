@@ -324,7 +324,11 @@
 		[rep drawAtPoint: point fromRect:fromRect coreImageFilter:filterName arguments:arguments];
 	}
 	else
-		[self drawAtPoint: point fromRect:fromRect operation:NSCompositeSourceOver fraction:1.0f];
+#if TARGET_OS_IPHONE
+      [self drawAtPoint: point fromRect:fromRect operation:kCGBlendModeNormal fraction:1.0f];
+#else
+      [self drawAtPoint: point fromRect:fromRect operation:NSCompositeSourceOver fraction:1.0f];
+#endif TARGET_OS_IPHONE
 
 	[pool release];
 }

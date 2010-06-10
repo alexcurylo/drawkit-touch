@@ -10,6 +10,9 @@
 
 #import "DKBSPObjectStorage.h"
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "DKTZoomView.h"
+#endif TARGET_OS_IPHONE
 
 
 // utility functions:
@@ -64,7 +67,8 @@ static inline NSUInteger childNodeAtIndex( NSUInteger nodeIndex )
 }
 
 
-- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+//- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(DKDrawingView *) aView options:(DKObjectStorageOptions) options
 {
 #pragma unused(options)
 	
@@ -475,7 +479,8 @@ static inline NSUInteger childNodeAtIndex( NSUInteger nodeIndex )
 		mNodes = [[NSMutableArray alloc] init];
 		mLeaves = [[NSMutableArray alloc] init];
 		mResults = [[NSMutableIndexSet alloc] init];
-		mDebugPath = [[NSBezierPath alloc] init];
+		//mDebugPath = [[NSBezierPath alloc] init];
+		mDebugPath = [[DKBezierPath alloc] init];
 		
 		[self setDepth:depth];
 	}
@@ -622,7 +627,8 @@ static inline NSUInteger childNodeAtIndex( NSUInteger nodeIndex )
 }
 
 
-- (NSBezierPath*)	debugStorageDivisions
+//- (NSBezierPath*)	debugStorageDivisions
+- (DKBezierPath*)	debugStorageDivisions
 {
 	// returns a path consisting of all the BSP rect divisions
 	

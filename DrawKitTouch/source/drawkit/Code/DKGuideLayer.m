@@ -9,11 +9,16 @@
 ///**********************************************************************************************************************************
 
 #import "DKGuideLayer.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#import "UIColor+DKTAdditions.h"
+#else
 #import "DKDrawingView.h"
+#import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 #import "DKDrawing.h"
 #import "DKGridLayer.h"
 #import "GCInfoFloater.h"
-#import "NSColor+DKAdditions.h"
 #import "DKUndoManager.h"
 
 
@@ -21,8 +26,10 @@
 
 @interface DKGuideLayer (Private)
 
-- (void)		repositionGuide:(DKGuide*) guide atPoint:(NSPoint) p inView:(NSView*) aView;
-- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(NSView*) aView;
+//- (void)		repositionGuide:(DKGuide*) guide atPoint:(NSPoint) p inView:(NSView*) aView;
+- (void)		repositionGuide:(DKGuide*) guide atPoint:(NSPoint) p inView:(DKDrawingView*) aView;
+//- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(NSView*) aView;
+- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(DKDrawingView*) aView;
 
 @end
 
@@ -804,7 +811,8 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-- (void)		repositionGuide:(DKGuide*) guide atPoint:(NSPoint) p inView:(NSView*) aView
+//- (void)		repositionGuide:(DKGuide*) guide atPoint:(NSPoint) p inView:(NSView*) aView
+- (void)		repositionGuide:(DKGuide*) guide atPoint:(NSPoint) p inView:(DKDrawingView*) aView
 {
 	NSPoint oldPoint = p;
 	CGFloat	newPos;
@@ -845,9 +853,11 @@ static BOOL		sWasInside = NO;
 }
 
 
-- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(NSView*) aView
+//- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(NSView*) aView
+- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(DKDrawingView*) aView
 {
-	NSClipView* clipView = [[aView enclosingScrollView] contentView];
+	//NSClipView* clipView = [[aView enclosingScrollView] contentView];
+	UIScrollView* clipView = aView;
 	
 	if( clipView )
 	{
@@ -1019,7 +1029,8 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-- (void)				setGuideColour:(NSColor*) colour
+//- (void)				setGuideColour:(NSColor*) colour
+- (void)				setGuideColour:(DKColor*) colour
 {
 	if ( ![self locked] && colour != [self guideColour])
 	{
@@ -1051,7 +1062,8 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)			guideColour
+//- (NSColor*)			guideColour
+- (DKColor*)			guideColour
 {
 	return [self selectionColour];
 }
@@ -1080,7 +1092,8 @@ static BOOL		sWasInside = NO;
 	DKGuide*		guide;
 	CGFloat			savedLineWidth, lineWidth = ([aView scale] < 1.0)? 1.0 : (2.0 / [aView scale]);
 	
-	savedLineWidth = [NSBezierPath defaultLineWidth];
+	//savedLineWidth = [NSBezierPath defaultLineWidth];
+	savedLineWidth = [DKBezierPath defaultLineWidth];
 	iter = [[self guides] objectEnumerator];
 
 #if DK_DRAW_GUIDES_IN_CLIP_VIEW
@@ -1088,14 +1101,16 @@ static BOOL		sWasInside = NO;
 
 	if( clipView && aView )
 	{
-		[NSBezierPath setDefaultLineWidth:1.0];
+		//[NSBezierPath setDefaultLineWidth:1.0];
+		[DKBezierPath setDefaultLineWidth:1.0];
 		
 		SAVE_GRAPHICS_CONTEXT
 		
 		[clipView lockFocus];
 		
 		NSRect br = [clipView bounds];
-		[NSBezierPath clipRect:br];
+		//[NSBezierPath clipRect:br];
+		[DKBezierPath clipRect:br];
 
 		while(( guide = [iter nextObject]))
 		{
@@ -1127,7 +1142,8 @@ static BOOL		sWasInside = NO;
 				}
 				
 				[[guide guideColour] set];
-				[NSBezierPath strokeLineFromPoint:a toPoint:b];
+				//[NSBezierPath strokeLineFromPoint:a toPoint:b];
+				[DKBezierPath strokeLineFromPoint:a toPoint:b];
 			}
 		}
 		
@@ -1138,7 +1154,8 @@ static BOOL		sWasInside = NO;
 	else
 #endif
 	{
-		[NSBezierPath setDefaultLineWidth:lineWidth];
+		//[NSBezierPath setDefaultLineWidth:lineWidth];
+		[DKBezierPath setDefaultLineWidth:lineWidth];
 		
 		while(( guide = [iter nextObject]))
 		{
@@ -1147,7 +1164,8 @@ static BOOL		sWasInside = NO;
 		}
 	}
 	
-	[NSBezierPath setDefaultLineWidth:savedLineWidth];
+	//[NSBezierPath setDefaultLineWidth:savedLineWidth];
+	[DKBezierPath setDefaultLineWidth:savedLineWidth];
 }
 
 
@@ -1201,6 +1219,7 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDown:(NSEvent*) event inView:(NSView*) view
 {
 	if( ![self locked])
@@ -1248,6 +1267,7 @@ static BOOL		sWasInside = NO;
 		}
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1264,7 +1284,7 @@ static BOOL		sWasInside = NO;
 /// notes:			continues the drag of a guide, if the layer isn't locked.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDragged:(NSEvent*) event inView:(NSView*) view
 {
 	if ( ![self locked] && m_dragGuideRef != nil )
@@ -1307,6 +1327,7 @@ static BOOL		sWasInside = NO;
 		}
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1323,7 +1344,7 @@ static BOOL		sWasInside = NO;
 /// notes:			completes a guide drag. If the guide was dragged out of the interior of the drawing, it is deleted.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseUp:(NSEvent*) event inView:(NSView*) view
 {
 	#pragma unused(event)
@@ -1341,7 +1362,11 @@ static BOOL		sWasInside = NO;
 		{
 			[self removeGuide:m_dragGuideRef];
 			
+#if TARGET_OS_IPHONE
+         CGPoint animLoc = [view convertPoint:[event locationInWindow] toView:[view window]];
+#else
 			NSPoint animLoc = [[event window] convertBaseToScreen:[event locationInWindow]];
+#endif TARGET_OS_IPHONE
 			NSShowAnimationEffect(NSAnimationEffectDisappearingItemDefault, animLoc, NSZeroSize, nil, nil, NULL );
 		}
 		
@@ -1350,6 +1375,7 @@ static BOOL		sWasInside = NO;
 		[[self undoManager] endUndoGrouping];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1366,12 +1392,14 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				shouldAutoActivateWithEvent:(NSEvent*) event
 {
 	#pragma unused(event)
 	
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1389,7 +1417,8 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-- (void)				setSelectionColour:(NSColor*) aColour
+//- (void)				setSelectionColour:(NSColor*) aColour
+- (void)				setSelectionColour:(DKColor*) aColour
 {
 	[self setGuideColour:aColour];
 }
@@ -1408,7 +1437,7 @@ static BOOL		sWasInside = NO;
 /// notes:			closed hand when dragging a guide, open hand otherwise.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)			cursor
 {
 	if([self locked])
@@ -1426,6 +1455,7 @@ static BOOL		sWasInside = NO;
 			return [NSCursor openHandCursor];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1440,12 +1470,12 @@ static BOOL		sWasInside = NO;
 /// notes:			guide layer's cursor rect is the deletion rect.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSRect)			activeCursorRect
 {
 	return [self guideDeletionRect];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -1501,6 +1531,7 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu *)		menuForEvent:(NSEvent *)theEvent inView:(NSView*) view
 {
 	NSMenu* menu = [super menuForEvent:theEvent inView:view];
@@ -1516,7 +1547,7 @@ static BOOL		sWasInside = NO;
 	
 	return menu;
 }
-
+#endif TARGET_OS_IPHONE
 
 - (BOOL)			supportsMetadata
 {
@@ -1576,7 +1607,8 @@ static BOOL		sWasInside = NO;
 		m_showDragInfo = YES;
 		m_snapTolerance = [[self class] defaultSnapTolerance];
 		[self setShouldDrawToPrinter:NO];
-		[self setSelectionColour:[NSColor orangeColor]];
+		//[self setSelectionColour:[NSColor orangeColor]];
+		[self setSelectionColour:[DKColor orangeColor]];
 		
 		if (m_hGuides == nil || m_vGuides == nil)
 		{
@@ -1652,6 +1684,7 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	if ([item action] == @selector( clearGuides: ))
@@ -1659,6 +1692,7 @@ static BOOL		sWasInside = NO;
 		
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 
 @end
@@ -1763,7 +1797,8 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-- (void)				setGuideColour:(NSColor*) colour
+//- (void)				setGuideColour:(NSColor*) colour
+- (void)				setGuideColour:(DKColor*) colour
 {
 	[colour retain];
 	[m_colour release];
@@ -1785,7 +1820,8 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)			guideColour
+//- (NSColor*)			guideColour
+- (DKColor*)			guideColour
 {
 	return m_colour;
 }
@@ -1824,8 +1860,10 @@ static BOOL		sWasInside = NO;
 	}
 		
 	[[self guideColour] set];
-	[NSBezierPath setDefaultLineWidth:lw];
-	[NSBezierPath strokeLineFromPoint:a toPoint:b];
+	//[NSBezierPath setDefaultLineWidth:lw];
+	//[NSBezierPath strokeLineFromPoint:a toPoint:b];
+	[DKBezierPath setDefaultLineWidth:lw];
+	[DKBezierPath strokeLineFromPoint:a toPoint:b];
 }
 
 
@@ -1851,7 +1889,8 @@ static BOOL		sWasInside = NO;
 	{
 		m_position = 0.0;
 		m_isVertical = NO;
-		[self setGuideColour:[NSColor cyanColor]];
+		//[self setGuideColour:[NSColor cyanColor]];
+		[self setGuideColour:[DKColor cyanColor]];
 		if (m_colour == nil)
 		{
 			[self autorelease];
@@ -1882,7 +1921,8 @@ static BOOL		sWasInside = NO;
 		
 		// guard against older files that didn't save this ivar
 		
-		NSColor* clr = [coder decodeObjectForKey:@"guide_colour"];
+		//NSColor* clr = [coder decodeObjectForKey:@"guide_colour"];
+		DKColor* clr = [coder decodeObjectForKey:@"guide_colour"];
 		
 		if ( clr )
 			[self setGuideColour:clr];

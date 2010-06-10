@@ -13,7 +13,11 @@
 #import "DKDrawKitMacros.h"
 #import "DKGradientExtensions.h"
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#else
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 
 #ifndef __STANDALONE__
 #import "DKDrawableObject+Metadata.h"
@@ -73,8 +77,10 @@ static inline void			resolveHSV(CGFloat *color1, CGFloat *color2);
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 	
-	[grad addColor:[NSColor rgbBlack] at:0.0];	
-	[grad addColor:[NSColor rgbWhite] at:1.0];
+	//[grad addColor:[NSColor rgbBlack] at:0.0];	
+	//[grad addColor:[NSColor rgbWhite] at:1.0];
+	[grad addColor:[DKColor rgbBlack] at:0.0];	
+	[grad addColor:[DKColor rgbWhite] at:1.0];
 	
 	return [grad autorelease];
 }
@@ -95,7 +101,8 @@ static inline void			resolveHSV(CGFloat *color1, CGFloat *color2);
 ///
 ///********************************************************************************************************************
 
-+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2
+//+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2
++ (DKGradient*)			gradientWithStartingColor:(DKColor*) c1 endingColor:(DKColor*) c2
 {
 	return [self gradientWithStartingColor:c1 endingColor:c2 type:kDKGradientTypeLinear angle:0.0];
 }
@@ -118,7 +125,8 @@ static inline void			resolveHSV(CGFloat *color1, CGFloat *color2);
 ///
 ///********************************************************************************************************************
 
-+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2 type:(NSInteger) gt angle:(CGFloat) degrees
+//+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2 type:(NSInteger) gt angle:(CGFloat) degrees
++ (DKGradient*)			gradientWithStartingColor:(DKColor*) c1 endingColor:(DKColor*) c2 type:(NSInteger) gt angle:(CGFloat) degrees
 {
 	DKGradient* grad = [[DKGradient alloc] init];
 
@@ -147,11 +155,16 @@ static inline void			resolveHSV(CGFloat *color1, CGFloat *color2);
 ///
 ///********************************************************************************************************************
 
-- (DKGradient*)			gradientByColorizingWithColor:(NSColor*) color
+//- (DKGradient*)			gradientByColorizingWithColor:(NSColor*) color
+- (DKGradient*)			gradientByColorizingWithColor:(DKColor*) color
 {
 	DKGradient* copy = [self copy];
 	
+#if TARGET_OS_IPHONE
+	UIColor*		rgb = [color colorUsingCalibratedRGBColorSpace];
+#else
 	NSColor*		rgb = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+#endif TARGET_OS_IPHONE
 	NSEnumerator*	iter = [[copy colorStops] objectEnumerator];
 	DKColorStop*	stop;
 	
@@ -207,7 +220,8 @@ static inline void			resolveHSV(CGFloat *color1, CGFloat *color2);
 ///
 ///********************************************************************************************************************
 
-- (DKColorStop*)			addColor:(NSColor*) Color at: (CGFloat) pos
+//- (DKColorStop*)			addColor:(NSColor*) Color at: (CGFloat) pos
+- (DKColorStop*)			addColor:(DKColor*) Color at: (CGFloat) pos
 {
 	DKColorStop *stop = [[DKColorStop alloc] initWithColor:Color at:pos];
 	[self addColorStop:stop];
@@ -500,7 +514,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 
 - (void)				fillRect:(NSRect) rect
 {
-	[self fillPath:[NSBezierPath bezierPathWithRect:rect]];
+	//[self fillPath:[NSBezierPath bezierPathWithRect:rect]];
+	[self fillPath:[DKBezierPath bezierPathWithRect:rect]];
 }
 
 
@@ -519,7 +534,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (void)				fillPath:(NSBezierPath*) path
+//- (void)				fillPath:(NSBezierPath*) path
+- (void)				fillPath:(DKBezierPath*) path
 {
 	NSPoint cp;
 	
@@ -545,7 +561,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (void)				fillPath:(NSBezierPath*) path centreOffset:(NSPoint) co
+//- (void)				fillPath:(NSBezierPath*) path centreOffset:(NSPoint) co
+- (void)				fillPath:(DKBezierPath*) path centreOffset:(NSPoint) co
 {
 	NSRect pb = [path bounds];
 	
@@ -600,8 +617,10 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 	NSInteger						keys, k2;
 	static DKColorStop*		key1 = nil;
 	static DKColorStop*		key2 = nil;
-	static NSColor*			kk1;
-	static NSColor*			kk2;
+	//static NSColor*			kk1;
+	//static NSColor*			kk2;
+	static DKColor*			kk1;
+	static DKColor*			kk2;
 	static CGFloat			k1pos, k2pos;
 	static NSInteger				indx = 0;
 
@@ -774,7 +793,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (void)				fillPath:(NSBezierPath*) path startingAtPoint:(NSPoint) sp startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er
+//- (void)				fillPath:(NSBezierPath*) path startingAtPoint:(NSPoint) sp startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er
+- (void)				fillPath:(DKBezierPath*) path startingAtPoint:(NSPoint) sp startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er
 {
 	if([path isEmpty] || [path bounds].size.width <= 0.0 || [path bounds].size.height <= 0.0)
 		return;
@@ -793,7 +813,11 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 	SAVE_GRAPHICS_CONTEXT	//[NSGraphicsContext saveGraphicsState];
 	[path addClip];
 	
+#if TARGET_OS_IPHONE
+	CGContextRef context = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef	context = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	[self fillContext:context startingAtPoint:sp startRadius:sr endingAtPoint:ep endRadius:er];
 	RESTORE_GRAPHICS_CONTEXT	//[NSGraphicsContext restoreGraphicsState];
 
@@ -925,7 +949,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)			colorAtValue:(CGFloat) val
+//- (NSColor*)			colorAtValue:(CGFloat) val
+- (DKColor*)			colorAtValue:(CGFloat) val
 {
 	// public method to get colour at any point from 0->1 across the gradient. Note that this methiod allows arbitrary
 	// (unordered) values of <val> and so is slower than the shader callback. It also creates a calibrated NSColor object
@@ -938,7 +963,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 		// deal with case where gradient hasn't really been set up properly (0 or 1 Color stops)
 		
 		if ( keys == 0 )
-			return [NSColor rgbGrey:0.5];
+			//return [NSColor rgbGrey:0.5];
+			return [DKColor rgbGrey:0.5];
 		else
 			//return [[[self colorStops] objectAtIndex:0] color];
          // added cast to avoid conflict with iPhone SDK function ...alex
@@ -951,7 +977,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 			CGFloat	components[4];
 			
 			[self private_colorAtValue:val components:components randomAccess:YES];
-			return [NSColor colorWithCalibratedRed:components[0] green:components[1] blue:components[2] alpha:components[3]];
+			//return [NSColor colorWithCalibratedRed:components[0] green:components[1] blue:components[2] alpha:components[3]];
+			return [DKColor colorWithCalibratedRed:components[0] green:components[1] blue:components[2] alpha:components[3]];
 		}
 		else
 			//return [[[self colorStops] lastObject] color];
@@ -1019,7 +1046,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 
 - (void)				setAngleInDegrees:(CGFloat) degrees
 {
-	[self setAngle:(degrees * pi)/180.0f];
+	//[self setAngle:(degrees * pi)/180.0f];
+	[self setAngle:(degrees * M_PI)/180.0f];
 }
 
 
@@ -1039,7 +1067,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 
 - (CGFloat)				angleInDegrees
 {
-	return fmodf(([self angle] * 180.0f )/ pi, 360.0 );
+	//return fmodf(([self angle] * 180.0f )/ pi, 360.0 );
+	return fmodf(([self angle] * 180.0f )/ M_PI, 360.0 );
 }
 
 
@@ -1214,21 +1243,30 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)			swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder
+//- (NSImage*)			swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder
+- (DKImage*)			swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder
 {
-	NSImage *swatchImage = [[NSImage alloc] initWithSize:size];
+	//NSImage *swatchImage = [[NSImage alloc] initWithSize:size];
+	DKImage *swatchImage = [[DKImage alloc] initWithSize:size];
+#ifndef TARGET_OS_IPHONE
 	[swatchImage setFlipped:YES];
+#endif TARGET_OS_IPHONE
 	NSRect box = NSMakeRect(0.0, 0.0, size.width, size.height);
 
+#ifndef TARGET_OS_IPHONE
 	[swatchImage lockFocus];
+#endif TARGET_OS_IPHONE
 	[self fillRect:box];
 	
 	if (showBorder)
 	{
-		[[NSColor grayColor] set];
-		NSFrameRectWithWidth( box, 1.0 );
+		//[[NSColor grayColor] set];
+		[[DKColor grayColor] set];
+		DKFrameRectWithWidth( box, 1.0 );
 	}
+#ifndef TARGET_OS_IPHONE
 	[swatchImage unlockFocus];
+#endif TARGET_OS_IPHONE
 	
 	return [swatchImage autorelease];
 }
@@ -1248,7 +1286,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (NSImage*) standardSwatchImage;
+//- (NSImage*) standardSwatchImage;
+- (DKImage*) standardSwatchImage;
 {
 	return [self swatchImageWithSize:DKGradientSwatchSize withBorder:YES];
 }
@@ -1520,7 +1559,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithColor:(NSColor*) Color at:(CGFloat) pos;
+//- (id)					initWithColor:(NSColor*) Color at:(CGFloat) pos;
+- (id)					initWithColor:(DKColor*) Color at:(CGFloat) pos;
 {
 	self = [super init];
 	if (self != nil)
@@ -1554,7 +1594,8 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (NSColor*)			color
+//- (NSColor*)			color
+- (DKColor*)			color
 {
 	return mColor;
 }
@@ -1574,11 +1615,16 @@ static NSInteger cmpColorStops (DKColorStop* lh, DKColorStop* rh, void *context)
 ///
 ///********************************************************************************************************************
 
-- (void)				setColor:(NSColor*) Color
+//- (void)				setColor:(NSColor*) Color
+- (void)				setColor:(DKColor*) Color
 {
 	[[self owner] colorStopWillChangeColor:self];
 	
-	NSColor* rgb = [Color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+#if TARGET_OS_IPHONE
+	UIColor*		rgb = [Color colorUsingCalibratedRGBColorSpace];
+#else
+	NSColor*		rgb = [Color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+#endif TARGET_OS_IPHONE
 	
 	[rgb retain];
 	[mColor release];
@@ -1825,9 +1871,11 @@ static inline double		powerMap( double x, double y )
 static inline double		sineMap( double x, double y )
 {
 	if ( y < 0 )
-		return sin( x * pi / 2.0 + 3.0 * pi / 2.0 ) + 1.0;
+		//return sin( x * pi / 2.0 + 3.0 * pi / 2.0 ) + 1.0;
+		return sin( x * M_PI_2 + 3.0 * M_PI / 2.0 ) + 1.0;
 	else
-		return sin( x * pi / 2.0 );
+		//return sin( x * pi / 2.0 );
+		return sin( x * M_PI_2 );
 }
 
 

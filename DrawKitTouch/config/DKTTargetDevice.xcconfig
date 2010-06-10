@@ -4,6 +4,6 @@
 //  Copyright 2010 Trollwerks Inc. All rights reserved.
 //
 
-SDKROOT = iphoneos3.1.3
+SDKROOT = iphoneos4.0
 
 #include "DKTTargetBase.xcconfig"

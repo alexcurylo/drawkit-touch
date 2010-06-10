@@ -6,6 +6,10 @@
 //  Copyright 2008 Apptree.net. All rights reserved.
 //
 
+#if TARGET_OS_IPHONE
+#error NSLayoutManager not available in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 #import "DKBezierLayoutManager.h"
 
 
@@ -50,7 +54,8 @@
 			
 			NSUInteger	g;
 			NSPoint		gloc, ploc;
-			NSFont*		font;
+			//NSFont*		font;
+			DKFont*		font;
 			
 			fragRect = [self lineFragmentRectForGlyphAtIndex:glyphIndex effectiveRange:&grange];
 			
@@ -92,8 +97,10 @@
 #pragma mark - as a NSLayoutManager
 
 - (void)	showPackedGlyphs:(char*) glyphs length:(NSUInteger) glyphLen
-			   glyphRange:(NSRange) glyphRange atPoint:(NSPoint) point font:(NSFont*) font
-					color:(NSColor*) color printingAdjustment:(NSSize) printingAdjustment
+			   //glyphRange:(NSRange) glyphRange atPoint:(NSPoint) point font:(NSFont*) font
+					//color:(NSColor*) color printingAdjustment:(NSSize) printingAdjustment
+			   glyphRange:(NSRange) glyphRange atPoint:(NSPoint) point font:(DKFont*) font
+					color:(DKColor*) color printingAdjustment:(NSSize) printingAdjustment
 {
 #pragma unused(glyphLen, glyphRange, font, color, printingAdjustment)
 	

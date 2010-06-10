@@ -11,11 +11,14 @@
 #import "NSBezierPath+Editing.h"
 #import "DKGeometryUtilities.h"
 #import "NSShadow+Scaling.h"
+#ifndef TARGET_OS_IPHONE
 #import "DKBezierLayoutManager.h"
+#endif TARGET_OS_IPHONE
 
 
 
-@interface NSBezierPath (TextOnPathPrivate)
+//@interface NSBezierPath (TextOnPathPrivate)
+@interface DKBezierPath (TextOnPathPrivate)
 
 - (void)				motionCallback:(NSTimer*) timer;
 
@@ -23,11 +26,14 @@
 
 // keys used for data in private cache
 
+#ifndef TARGET_OS_IPHONE
 static NSString* kDKTextOnPathGlyphPositionCacheKey			= @"DKTextOnPathGlyphPositions";
 static NSString* kDKTextOnPathChecksumCacheKey				= @"DKTextOnPathChecksum";
 static NSString* kDKTextOnPathTextFittedCacheKey			= @"DKTextOnPathTextFitted";
+#endif TARGET_OS_IPHONE
 
-@implementation NSBezierPath (TextOnPath)
+//@implementation NSBezierPath (TextOnPath)
+@implementation DKBezierPath (TextOnPath)
 
 
 ///*********************************************************************************************************************
@@ -44,6 +50,7 @@ static NSString* kDKTextOnPathTextFittedCacheKey			= @"DKTextOnPathTextFitted";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 + (NSLayoutManager*)	textOnPathLayoutManager
 {
 	// returns a layout manager instance which is used for all text on path layout tasks. Reusing this shared instance saves a little time and memory
@@ -62,6 +69,7 @@ static NSString* kDKTextOnPathTextFittedCacheKey			= @"DKTextOnPathTextFitted";
 	
 	return topLayoutMgr;
 }
+#endif TARGET_OS_IPHONE
 
 
 static NSDictionary*	s_TOPTextAttributes = nil;
@@ -82,11 +90,16 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 
 + (NSDictionary*)		textOnPathDefaultAttributes
 {
+#if TARGET_OS_IPHONE
+   twlog("implement textOnPathDefaultAttributes");
+#else
 	if( s_TOPTextAttributes == nil )
 	{
-		NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0];
+		//NSFont *font = [NSFont fontWithName:@"Helvetica" size:12.0];
+		DKFont *font = [DKFont fontWithName:@"Helvetica" size:12.0];
 		s_TOPTextAttributes = [[NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName] retain];
 	}
+#endif TARGET_OS_IPHONE
 	
 	return s_TOPTextAttributes;
 }
@@ -138,7 +151,14 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 
 - (BOOL)				drawTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy
 {
+#if TARGET_OS_IPHONE
+   (void)str;
+   (void)dy;
+   twlog("implement drawTextOnPath");
+   return NO;
+#else
 	return [self drawTextOnPath:str yOffset:dy layoutManager:nil cache:nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -163,6 +183,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				drawTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy layoutManager:(NSLayoutManager*) lm cache:(NSMutableDictionary*) cache
 {
 	NSUInteger	cachedCS = [[cache objectForKey:kDKTextOnPathChecksumCacheKey] integerValue];
@@ -214,6 +235,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	return result;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -287,13 +309,16 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathWithTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy
+//- (NSBezierPath*)		bezierPathWithTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy
+- (DKBezierPath*)		bezierPathWithTextOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy
 {
 	// returns the laid out glyphs as a single path for the entire laid out string
 	
 	NSEnumerator*	iter = [[self bezierPathsWithGlyphsOnPath:str yOffset:dy] objectEnumerator];
-	NSBezierPath*	path = [NSBezierPath bezierPath];
-	NSBezierPath*	temp;
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	temp;
+	DKBezierPath*	path = [DKBezierPath bezierPath];
+	DKBezierPath*	temp;
 	
 	while(( temp = [iter nextObject]))
 		[path appendBezierPath:temp];
@@ -319,6 +344,12 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 
 - (NSArray*)			bezierPathsWithGlyphsOnPath:(NSAttributedString*) str yOffset:(CGFloat) dy
 {
+#if TARGET_OS_IPHONE
+   (void)str;
+   (void)dy;
+   twlog("implement bezierPathsWithGlyphsOnPath");
+   return nil;
+#else
 	// returns the laid out glyphs as an array of separate paths
 	
 	DKTextOnPathGlyphAccumulator* ga = [[[DKTextOnPathGlyphAccumulator alloc] init] autorelease];
@@ -327,6 +358,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	[self layoutStringOnPath:text yOffset:dy usingLayoutHelper:ga layoutManager:lm cache:nil];
 	return [ga glyphs];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -344,7 +376,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str
+//- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str
+- (DKBezierPath*)		bezierPathWithStringOnPath:(NSString*) str
 {
 	// returns the path of the string laid out on the path with default attributes
 	
@@ -367,7 +400,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str attributes:(NSDictionary*) attrs
+//- (NSBezierPath*)		bezierPathWithStringOnPath:(NSString*) str attributes:(NSDictionary*) attrs
+- (DKBezierPath*)		bezierPathWithStringOnPath:(NSString*) str attributes:(NSDictionary*) attrs
 {
 	// returns the path of the laid out string with the given attributes
 	
@@ -375,7 +409,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		attrs = [[self class] textOnPathDefaultAttributes];
 	
 	NSAttributedString* as = [[NSAttributedString alloc] initWithString:str attributes:attrs];
-	NSBezierPath*		np = [self bezierPathWithTextOnPath:as yOffset:0];
+	//NSBezierPath*		np = [self bezierPathWithTextOnPath:as yOffset:0];
+	DKBezierPath*		np = [self bezierPathWithTextOnPath:as yOffset:0];
 	[as release];
 	return np;
 }
@@ -405,6 +440,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				layoutStringOnPath:(NSTextStorage*) str
 								yOffset:(CGFloat) dy
 								usingLayoutHelper:(id) helperObject
@@ -436,7 +472,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	}
 	
 	NSTextContainer*	tc = [[lm textContainers] lastObject];
-	NSBezierPath*		temp;
+	//NSBezierPath*		temp;
+	DKBezierPath*		temp;
 	NSUInteger			glyphIndex;
 	NSRect				gbr;
 	BOOL				result = YES;
@@ -545,6 +582,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	return result;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -564,6 +602,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				kernText:(NSTextStorage*) text toFitLength:(CGFloat) length
 {
 	// adjusts the kerning of the text passed so that it fits exactly into <length>
@@ -609,6 +648,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	NSRange charRange = [lm characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
 	[text addAttributes:kernAttributes range:charRange];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -627,6 +667,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)		preadjustedTextStorageWithString:(NSAttributedString*) str layoutManager:(NSLayoutManager*) lm
 {
 	NSAssert( lm != nil, @"nil layout manager passed while processing text on path");
@@ -638,8 +679,12 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	// determine whether the text needs to be kerned to fit - yes if the alignment is 'justified'
 
+#if TARGET_OS_IPHONE
+	BOOL autoKern = NO;
+#else
 	NSParagraphStyle* para = [str attribute:NSParagraphStyleAttributeName atIndex:0 effectiveRange:NULL];
 	BOOL autoKern = ([para alignment] == NSJustifiedTextAlignment);
+#endif TARGET_OS_IPHONE
 	
 	NSTextStorage* text = [[NSTextStorage alloc] initWithAttributedString:str];
 	[text addLayoutManager:lm];
@@ -661,6 +706,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	return [text autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -686,6 +732,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				drawUnderlinePathForLayoutManager:(NSLayoutManager*) lm yOffset:(CGFloat) dy cache:(NSMutableDictionary*) cache
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
@@ -702,6 +749,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		rangeLimit = NSMaxRange( effectiveRange );
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -723,6 +771,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				drawStrikethroughPathForLayoutManager:(NSLayoutManager*) lm yOffset:(CGFloat) dy cache:(NSMutableDictionary*) cache
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
@@ -739,6 +788,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		rangeLimit = NSMaxRange( effectiveRange );
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -758,14 +808,17 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				drawUnderlinePathForLayoutManager:(NSLayoutManager*) lm range:(NSRange) range yOffset:(CGFloat) dy cache:(NSMutableDictionary*) cache
 {
 	NSAttributedString* str = [lm textStorage];
-	NSFont*				font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL]; // UL thickness taken from first character on line regardless
+	//NSFont*				font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL]; // UL thickness taken from first character on line regardless
+	DKFont*				font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL]; // UL thickness taken from first character on line regardless
 	NSInteger					ulAttribute = [[str attribute:NSUnderlineStyleAttributeName atIndex:range.location effectiveRange:NULL] integerValue];
 	CGFloat				ulOffset, ulThickness = [font underlineThickness];
 	CGFloat				start, length, grot;
-	NSBezierPath*		ulp;
+	//NSBezierPath*		ulp;
+	DKBezierPath*		ulp;
 	
 	// see if the path we need is cached, in which case we can avoid recomputing it. Because there could be several different paths that apply to ranges,
 	// the cache key is generated from the various parameters
@@ -846,17 +899,20 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	// what colour to draw it in. Unless explicitly set, use foreground colour.
 	
-	NSColor* ulc = [str attribute:NSUnderlineColorAttributeName atIndex:range.location effectiveRange:NULL];
+	//NSColor* ulc = [str attribute:NSUnderlineColorAttributeName atIndex:range.location effectiveRange:NULL];
+	DKColor* ulc = [str attribute:NSUnderlineColorAttributeName atIndex:range.location effectiveRange:NULL];
 	
 	if( ulc == nil )
 		ulc = [str attribute:NSForegroundColorAttributeName atIndex:range.location effectiveRange:NULL];
 	
 	if( ulc == nil )
-		ulc = [NSColor blackColor];
+		//ulc = [NSColor blackColor];
+		ulc = [DKColor blackColor];
 	
 	// any text shadow?
 	
-	NSShadow* shad = [str attribute:NSShadowAttributeName atIndex:range.location effectiveRange:NULL];
+	//NSShadow* shad = [str attribute:NSShadowAttributeName atIndex:range.location effectiveRange:NULL];
+	DKShadow* shad = [str attribute:NSShadowAttributeName atIndex:range.location effectiveRange:NULL];
 	
 	SAVE_GRAPHICS_CONTEXT
 	
@@ -868,6 +924,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	RESTORE_GRAPHICS_CONTEXT
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -887,15 +944,18 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				drawStrikethroughPathForLayoutManager:(NSLayoutManager*) lm range:(NSRange) range yOffset:(CGFloat) dy cache:(NSMutableDictionary*) cache
 {
 	NSAttributedString* str = [lm textStorage];
-	NSFont*				font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+	//NSFont*				font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+	DKFont*				font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
 	NSInteger					ulAttribute = [[str attribute:NSStrikethroughStyleAttributeName atIndex:range.location effectiveRange:NULL] integerValue];
 	CGFloat				start, length;
 	CGFloat				xHeight = [font xHeight];
 	CGFloat				ulThickness = [font underlineThickness];
-	NSBezierPath*		ulp;
+	//NSBezierPath*		ulp;
+	DKBezierPath*		ulp;
 	
 	// see if we can reuse a previously cached path here
 	
@@ -930,17 +990,20 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	// what colour to draw it in. Unless explicitly set, use foreground colour.
 	
-	NSColor* ulc = [str attribute:NSStrikethroughColorAttributeName atIndex:range.location effectiveRange:NULL];
+	//NSColor* ulc = [str attribute:NSStrikethroughColorAttributeName atIndex:range.location effectiveRange:NULL];
+	DKColor* ulc = [str attribute:NSStrikethroughColorAttributeName atIndex:range.location effectiveRange:NULL];
 	
 	if( ulc == nil )
 		ulc = [str attribute:NSForegroundColorAttributeName atIndex:range.location effectiveRange:NULL];
 	
 	if( ulc == nil )
-		ulc = [NSColor blackColor];
+		//ulc = [NSColor blackColor];
+		ulc = [DKColor blackColor];
 	
 	// any text shadow?
 	
-	NSShadow* shad = [str attribute:NSShadowAttributeName atIndex:range.location effectiveRange:NULL];
+	//NSShadow* shad = [str attribute:NSShadowAttributeName atIndex:range.location effectiveRange:NULL];
+	DKShadow* shad = [str attribute:NSShadowAttributeName atIndex:range.location effectiveRange:NULL];
 	
 	SAVE_GRAPHICS_CONTEXT
 	
@@ -952,6 +1015,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	RESTORE_GRAPHICS_CONTEXT
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -980,7 +1044,12 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	DKTextOnPathMetricsHelper* mh = [[DKTextOnPathMetricsHelper alloc] init];
 	[mh setCharacterRange:range];
 	
+#if TARGET_OS_IPHONE
+   (void)str;
+   twlog("implement pathPosition");
+#else
 	[self layoutStringOnPath:(NSTextStorage*)str yOffset:0 usingLayoutHelper:mh layoutManager:[[self class] textOnPathLayoutManager] cache:nil];
+#endif TARGET_OS_IPHONE
 	
 	*start = [mh position];
 	*length = [mh length];
@@ -1015,12 +1084,20 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	// The offsets are relative to the beginning of the text. The <offset<> is the distance from the baseline to the underline as derived from the
 	// font in use.
 	
+#if TARGET_OS_IPHONE
+   (void)str;
+   (void)range;
+   (void)offset;
+   twlog("implement descenderBreaksForString");
+   return nil;
+#else
 	NSTextStorage* subString = [[NSTextStorage alloc] initWithAttributedString:[str attributedSubstringFromRange:range]];
 	
 	DKBezierLayoutManager* lm = [[DKBezierLayoutManager alloc] init];
 	NSTextContainer* btc = [[NSTextContainer alloc] initWithContainerSize:NSMakeSize(1.0e6, 1.0e6 )];
 	[lm addTextContainer:btc];
-	[subString setAlignment:NSLeftTextAlignment range:NSMakeRange( 0, range.length )];
+	//[subString setAlignment:NSLeftTextAlignment range:NSMakeRange( 0, range.length )];
+	[subString setAlignment:DKLeftTextAlignment range:NSMakeRange( 0, range.length )];
 	[subString addLayoutManager:lm];
 	
 	NSRange glyphRange = [lm glyphRangeForTextContainer:btc];
@@ -1032,7 +1109,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	NSRect lineFrag = [lm lineFragmentRectForGlyphAtIndex:glyphRange.location effectiveRange:NULL];
 	CGFloat yOffset = NSHeight( lineFrag ) - baseline + fabs(offset);
 	
-	NSBezierPath* glyphPath = [lm textPath];
+	//NSBezierPath* glyphPath = [lm textPath];
+	DKBezierPath* glyphPath = [lm textPath];
 	NSArray* result = [[glyphPath intersectingPointsWithHorizontalLineAtY:yOffset] retain];
 	
 	[btc release];
@@ -1040,6 +1118,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	[subString release];
 	
 	return [result autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 #define DESCENDER_BREAK_PADDING		3
@@ -1068,7 +1147,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		textLinePathWithMask:(NSInteger) mask
+//- (NSBezierPath*)		textLinePathWithMask:(NSInteger) mask
+- (DKBezierPath*)		textLinePathWithMask:(NSInteger) mask
 						  startPosition:(CGFloat) sp
 								 length:(CGFloat) length
 								 offset:(CGFloat) offset
@@ -1076,6 +1156,17 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 						descenderBreaks:(NSArray*) breaks
 						  grotThreshold:(CGFloat) gt
 {
+#if TARGET_OS_IPHONE
+   (void)mask;
+   (void)sp;
+   (void)length;
+   (void)offset;
+   (void)lineThickness;
+   (void)breaks;
+   (void)gt;
+   twlog("implement textLinePathWithMask");
+   return nil;
+#else
 	// extract the path we are based on. Note: underline by word is not yet supported.
 	
 	if(( mask & 0x0F ) == NSUnderlineStyleNone )
@@ -1095,7 +1186,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		offset += (lineThickness * 0.5f );
 	}
 	
-	NSBezierPath* trimmedPath; 
+	//NSBezierPath* trimmedPath; 
+	DKBezierPath* trimmedPath; 
 	
 	// factor in any descender breaks if we have them. Each break alternates between the start of a break and the resumption of the line.
 	
@@ -1106,7 +1198,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		CGFloat			pos, breakOffset, padding;
 		BOOL			hadFirst = NO;
 		
-		trimmedPath = [NSBezierPath bezierPath];
+		//trimmedPath = [NSBezierPath bezierPath];
+		trimmedPath = [DKBezierPath bezierPath];
 		pos = sp;
 		
 		padding = gt * 0.3;
@@ -1132,8 +1225,10 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		trimmedPath = [self bezierPathByTrimmingFromLength:sp toLength:length];
 	
 	[trimmedPath setFlatness:0.1];
-	CGFloat savedFlatness = [NSBezierPath defaultFlatness];
-	[NSBezierPath setDefaultFlatness:0.1];
+	//CGFloat savedFlatness = [NSBezierPath defaultFlatness];
+	//[NSBezierPath setDefaultFlatness:0.1];
+	CGFloat savedFlatness = [DKBezierPath defaultFlatness];
+	[DKBezierPath setDefaultFlatness:0.1];
 	
 	// parallel offset has opposite sign to text offset
 	
@@ -1142,11 +1237,13 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	
 	if( isDouble )
 	{
-		NSBezierPath* bp = [trimmedPath paralleloidPathWithOffset2:2.0 * lineThickness];
+		//NSBezierPath* bp = [trimmedPath paralleloidPathWithOffset2:2.0 * lineThickness];
+		DKBezierPath* bp = [trimmedPath paralleloidPathWithOffset2:2.0 * lineThickness];
 		[trimmedPath appendBezierPath:bp];
 	}
 	
-	[NSBezierPath setDefaultFlatness:savedFlatness];
+	//[NSBezierPath setDefaultFlatness:savedFlatness];
+	[DKBezierPath setDefaultFlatness:savedFlatness];
 	
 	if( mask & 0x0F00 )
 	{
@@ -1191,6 +1288,7 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 	}
 	
 	return trimmedPath;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1262,26 +1360,30 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathWithObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo
+//- (NSBezierPath*)		bezierPathWithObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo
+- (DKBezierPath*)		bezierPathWithObjectsOnPathAtInterval:(CGFloat) interval factoryObject:(id) object userInfo:(void*) userInfo
 {
 	// as above, but where the returned objects are in themselves paths, they are appended into one general path and returned.
 	
 	if ([self elementCount] < 2 || interval <= 0 )
 		return nil;
 	
-	NSBezierPath*	newPath = nil;
+	//NSBezierPath*	newPath = nil;
+	DKBezierPath*	newPath = nil;
 	NSArray*		placedObjects = [self placeObjectsOnPathAtInterval:interval factoryObject:object userInfo:userInfo];
 	
 	if ([placedObjects count] > 0 )
 	{
-		newPath = [NSBezierPath bezierPath];
+		//newPath = [NSBezierPath bezierPath];
+		newPath = [DKBezierPath bezierPath];
 		
 		NSEnumerator*	iter = [placedObjects objectEnumerator];
 		id				obj;
 		
 		while(( obj = [iter nextObject]))
 		{
-			if ([obj isKindOfClass:[NSBezierPath class]])
+			//if ([obj isKindOfClass:[NSBezierPath class]])
+			if ([obj isKindOfClass:[DKBezierPath class]])
 				[newPath appendBezierPath:obj];
 		}
 	}
@@ -1306,7 +1408,8 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval
+//- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval
+- (DKBezierPath*)		bezierPathWithPath:(DKBezierPath*) path atInterval:(CGFloat) interval
 {
 	return [self bezierPathWithPath:path atInterval:interval phase:0.0 alternate:NO taperDelegate:nil];
 }
@@ -1331,13 +1434,16 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval phase:(CGFloat) phase alternate:(BOOL) alt taperDelegate:(id) taperDel
+//- (NSBezierPath*)		bezierPathWithPath:(NSBezierPath*) path atInterval:(CGFloat) interval phase:(CGFloat) phase alternate:(BOOL) alt taperDelegate:(id) taperDel
+- (DKBezierPath*)		bezierPathWithPath:(DKBezierPath*) path atInterval:(CGFloat) interval phase:(CGFloat) phase alternate:(BOOL) alt taperDelegate:(id) taperDel
 {
 	if ([self elementCount] < 2 || interval <= 0 )
 		return nil;
 	
-	NSBezierPath*		newPath = [NSBezierPath bezierPath];
-	NSBezierPath*		temp;
+	//NSBezierPath*		newPath = [NSBezierPath bezierPath];
+	//NSBezierPath*		temp;
+	DKBezierPath*		newPath = [DKBezierPath bezierPath];
+	DKBezierPath*		temp;
 	NSPoint				p;
 	CGFloat				slope, distance, length;
 	NSUInteger			count = 0;
@@ -1351,11 +1457,13 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 		p = [self pointOnPathAtLength:distance slope:&slope];
 		
 		if( alt && (( count & 1 ) == 1 ))
-			slope += pi;
+			//slope += pi;
+			slope += M_PI;
 		
 		temp = [path copy];
 		
-		NSAffineTransform* tfm = [NSAffineTransform transform];
+		//NSAffineTransform* tfm = [NSAffineTransform transform];
+		DKAffineTransform* tfm = [DKAffineTransform transform];
 		
 		[tfm translateXBy:p.x yBy:p.y];
 		[tfm rotateByRadians:slope];
@@ -1544,7 +1652,9 @@ static NSDictionary*	s_TOPTextAttributes = nil;
 			NSTimer*	t = [NSTimer timerWithTimeInterval:1.0/30.0 target:self selector:@selector(motionCallback:) userInfo:parameters repeats:YES];
 			
 			[parameters release];
+#ifndef TARGET_OS_IPHONE
 			[[NSRunLoop currentRunLoop] addTimer:t forMode:NSEventTrackingRunLoopMode];
+#endif TARGET_OS_IPHONE
 			[[NSRunLoop currentRunLoop] addTimer:t forMode:NSDefaultRunLoopMode];
 		}
 	}
@@ -1687,7 +1797,8 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 	
 	CGFloat savedFlatness = [self flatness];
 	[self setFlatness:5.0];	
-	NSBezierPath*	flatpath = [self bezierPathByFlatteningPath];
+	//NSBezierPath*	flatpath = [self bezierPathByFlatteningPath];
+	DKBezierPath*	flatpath = [self bezierPathByFlatteningPath];
 	[self setFlatness:savedFlatness];
 	
 	NSMutableArray*		result = [NSMutableArray array];
@@ -1980,12 +2091,14 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy
 {
 	// determine the font for the glyph we are laying
 	
 	NSUInteger	charIndex = [lm characterIndexForGlyphAtIndex:glyphIndex];
-	NSFont*		font = [[lm textStorage] attribute:NSFontAttributeName atIndex:charIndex effectiveRange:NULL];
+	//NSFont*		font = [[lm textStorage] attribute:NSFontAttributeName atIndex:charIndex effectiveRange:NULL];
+	DKFont*		font = [[lm textStorage] attribute:NSFontAttributeName atIndex:charIndex effectiveRange:NULL];
 	NSGlyph		glyph = [lm glyphAtIndex:glyphIndex];
 	
 	// get the baseline of the glyph
@@ -1994,7 +2107,8 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 	
 	// get the path of the glyph
 	
-	NSBezierPath* glyphTemp = [[NSBezierPath alloc] init];
+	//NSBezierPath* glyphTemp = [[NSBezierPath alloc] init];
+	DKBezierPath* glyphTemp = [[DKBezierPath alloc] init];
 	[glyphTemp moveToPoint:NSMakePoint( 0, dy - base )];
 	[glyphTemp appendBezierPathWithGlyph:glyph inFont:font];
 
@@ -2012,6 +2126,7 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 	[mGlyphs addObject:glyphTemp];
 	[glyphTemp release];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (id)					init
@@ -2038,6 +2153,7 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 
 @implementation DKTextOnPathGlyphDrawer
 
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy
 {
 	// this simply applies the current angle and transformation to the current context and asks the layout manager to draw the glyph. It is assumed that this is called
@@ -2057,6 +2173,7 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 	
 	RESTORE_GRAPHICS_CONTEXT
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -2086,6 +2203,7 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				layoutManager:(NSLayoutManager*) lm willPlaceGlyphAtIndex:(NSUInteger) glyphIndex atLocation:(NSPoint) location pathAngle:(CGFloat) angle yOffset:(CGFloat) dy
 {
 #pragma unused(dy, location, angle)
@@ -2106,6 +2224,7 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 			mLength = NSMaxX([lm lineFragmentUsedRectForGlyphAtIndex:glyphIndex - 1 effectiveRange:NULL]) - mStartPosition;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -2149,31 +2268,37 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 
 #pragma mark -
 
-@implementation NSFont (DKUnderlineCategory)
+//@implementation NSFont (DKUnderlineCategory)
+@implementation DKFont (DKUnderlineCategory)
 
 - (CGFloat)		valueForInvalidUnderlinePosition
 {
+#if TARGET_OS_IPHONE
+   twlog("implement valueForInvalidUnderlinePosition");
+   return 0;
+#else
 	CGFloat ulo;
-	//NSFont* font = [([self class] fontWithName:@"Helvetica" size:[self pointSize]];
-   // added cast to avoid conflict with iPhone SDK function ...alex
-	NSFont* font = [NSFont fontWithName:@"Helvetica" size:[self pointSize]];
+	//NSFont* font = [[self class] fontWithName:@"Helvetica" size:[self pointSize]];
+	DKFont* font = [[self class] fontWithName:@"Helvetica" size:[self pointSize]];
 	
 	ulo = [font underlinePosition];
 	
-	//font = [[self class] fontWithName:@"Times" size:[self pointSize]];
-   // added cast to avoid conflict with iPhone SDK function ...alex
-	font = [NSFont fontWithName:@"Times" size:[self pointSize]];
+	font = [[self class] fontWithName:@"Times" size:[self pointSize]];
 	
 	return ( ulo + [font underlinePosition]) * 0.5f;
+#endif TARGET_OS_IPHONE
 }
 
 
 - (CGFloat)		valueForInvalidUnderlineThickness
 {
+#if TARGET_OS_IPHONE
+   twlog("implement valueForInvalidUnderlineThickness");
+   return 0;
+#else
 	CGFloat ulo;
 	//NSFont* font = [[self class] fontWithName:@"Helvetica" size:[self pointSize]];
-   // added cast to avoid conflict with iPhone SDK function ...alex
-	NSFont* font = [NSFont fontWithName:@"Helvetica" size:[self pointSize]];
+	DKFont* font = [[self class] fontWithName:@"Helvetica" size:[self pointSize]];
 	
 	ulo = [font underlineThickness];
 	
@@ -2182,6 +2307,7 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 	font = [NSFont fontWithName:@"Times" size:[self pointSize]];
 	
 	return ( ulo + [font underlineThickness]) * 0.5f;
+#endif TARGET_OS_IPHONE
 }
 	
 	

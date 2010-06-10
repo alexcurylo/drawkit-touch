@@ -485,8 +485,10 @@ static DKDirection	directionOfAngle( const CGFloat angle )
 {
 	// given an angle in radians, returns its basic direction.
 	
-	CGFloat fortyFiveDegrees = pi * 0.25f;
-	CGFloat oneThirtyFiveDegrees = pi * 0.75f;
+	//CGFloat fortyFiveDegrees = pi * 0.25f;
+	//CGFloat oneThirtyFiveDegrees = pi * 0.75f;
+	CGFloat fortyFiveDegrees = M_PI_4;
+	CGFloat oneThirtyFiveDegrees = M_PI * 0.75f;
 	
 	if( angle >= -fortyFiveDegrees && angle < fortyFiveDegrees )
 		return kDirectionEast;

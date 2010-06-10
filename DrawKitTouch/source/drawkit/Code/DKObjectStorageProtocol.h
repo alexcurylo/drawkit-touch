@@ -8,8 +8,7 @@
 ///
 ///**********************************************************************************************************************************
 
-// not in iPhone SDK, should be left to .pch ...alex
-//#import <Cocoa/Cocoa.h>
+@class DKDrawingView;
 
 @protocol DKObjectStorage;
 
@@ -48,7 +47,8 @@ DKObjectStorageOptions;
 // objects returned by these methods should be returned in bottom-to-top (drawing) Z-order unless the kDKZOrderMayBeRelaxed flag is set in which case
 // the order can be arbitrary. Z-order and object index are synonymous
 
-- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options;
+//- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options;
+- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options;
 - (NSArray*)				objectsContainingPoint:(NSPoint) aPoint;
 - (NSArray*)				objects;
 

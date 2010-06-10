@@ -149,6 +149,7 @@ DKCatManagerMergeOptions;
 // supporting UI:
 // menus of just the categories:
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				categoriesMenuWithSelector:(SEL) sel target:(id) target;
 - (NSMenu*)				categoriesMenuWithSelector:(SEL) sel target:(id) target options:(NSInteger) options;
 - (void)				checkItemsInMenu:(NSMenu*) menu forCategoriesContainingKey:(NSString*) key;
@@ -161,6 +162,7 @@ DKCatManagerMergeOptions;
 
 - (void)				removeMenu:(NSMenu*) menu;
 - (void)				updateMenusForKey:(NSString*) key;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -210,11 +212,13 @@ that the object is a member of. This facilitates category-oriented lookups of ob
 
 // informal protocol used by the createMenuWithItemDelegate method:
 
+#ifndef TARGET_OS_IPHONE
 @interface NSObject (CategoryManagerMenuItemDelegate)
 
 - (void)			menuItem:(NSMenuItem*) item wasAddedForObject:(id) object inCategory:(NSString*) category;
 
 @end
+#endif TARGET_OS_IPHONE
 
 // delegate informal protocol allows the delegate to decide which of a pair of objects should be used when merging
 
@@ -228,6 +232,7 @@ that the object is a member of. This facilitates category-oriented lookups of ob
 // private object used to store menu info - allows efficient management of the menu to match
 // the C/Mgrs contents. Menu creation and management is moved to this class, but API in Cat Manager functions as previously.
 
+#ifndef TARGET_OS_IPHONE
 @interface DKCategoryManagerMenuInfo : NSObject
 {
 @private
@@ -262,6 +267,7 @@ that the object is a member of. This facilitates category-oriented lookups of ob
 
 
 @end
+#endif TARGET_OS_IPHONE
 
 // this tag is set in every menu item that we create/manage automatically. Normally client code of the menus shouldn't use the tags of these items but instead the represented object,
 // so this tag identifies items that we can freely discard or modify. Any others are left alone, allowing clients to add other items to the menus that won't get disturbed.

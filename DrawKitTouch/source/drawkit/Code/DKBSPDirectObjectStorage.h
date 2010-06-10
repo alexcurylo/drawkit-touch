@@ -25,7 +25,8 @@
 
 - (void)			setTreeDepth:(NSUInteger) aDepth;
 - (id)				tree;
-- (NSBezierPath*)	debugStorageDivisions;
+//- (NSBezierPath*)	debugStorageDivisions;
+- (DKBezierPath*)	debugStorageDivisions;
 
 @end
 
@@ -41,7 +42,9 @@
 	id<DKStorableObject>	mObj;
 	NSMutableArray*			mFoundObjects;
 	NSUInteger				mObjectCount;
+#ifndef TARGET_OS_IPHONE
 	NSView*					mViewRef;
+#endif TARGET_OS_IPHONE
 	NSRect					mRect;
 }
 

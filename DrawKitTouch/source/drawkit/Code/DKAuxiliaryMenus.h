@@ -6,8 +6,9 @@
 //  Copyright 2009 Apptree.net. All rights reserved.
 //
 
-// not in iPhone SDK, should be left to .pch ...alex
-//#import <Cocoa/Cocoa.h>
+#if TARGET_OS_IPHONE
+#error there are no menus on the iPhone
+#endif TARGET_OS_IPHONE
 
 
 @interface DKAuxiliaryMenus : NSObject

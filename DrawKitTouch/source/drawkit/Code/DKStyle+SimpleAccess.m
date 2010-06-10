@@ -20,7 +20,8 @@
 @implementation DKStyle (SimpleAccess)
 
 
-+ (DKStyle*)	styleWithDotDensity:(CGFloat) percent foreColour:(NSColor*) fore backColour:(NSColor*) back
+//+ (DKStyle*)	styleWithDotDensity:(CGFloat) percent foreColour:(NSColor*) fore backColour:(NSColor*) back
++ (DKStyle*)	styleWithDotDensity:(CGFloat) percent foreColour:(DKColor*) fore backColour:(DKColor*) back
 {
 	// returns a style having a solid fill of <backColour> overlaid by a hatching with a dot screen of <density> and <foreColour>. Useful
 	// to create styles with a dot screen pattern. Note that density is in percent, not 0..1
@@ -57,7 +58,8 @@
 
 
 
-- (void)		setFillColour:(NSColor*) fillColour
+//- (void)		setFillColour:(NSColor*) fillColour
+- (void)		setFillColour:(DKColor*) fillColour
 {
 	if([self locked])
 		return;
@@ -87,7 +89,8 @@
 
 
 
-- (NSColor*)	fillColour
+//- (NSColor*)	fillColour
+- (DKColor*)	fillColour
 {
 	if([self hasFill])
 	{
@@ -101,7 +104,8 @@
 
 
 
-- (void)		setStrokeColour:(NSColor*) strokeColour
+//- (void)		setStrokeColour:(NSColor*) strokeColour
+- (void)		setStrokeColour:(DKColor*) strokeColour
 {
 	if([self locked])
 		return;
@@ -131,7 +135,8 @@
 
 
 
-- (NSColor*)	strokeColour
+//- (NSColor*)	strokeColour
+- (DKColor*)	strokeColour
 {
 	if([self hasStroke])
 	{
@@ -304,7 +309,8 @@
 
 
 
-- (void)			setImageComponent:(NSImage*) anImage
+//- (void)			setImageComponent:(NSImage*) anImage
+- (void)			setImageComponent:(DKImage*) anImage
 {
 	if([self locked])
 		return;
@@ -333,7 +339,8 @@
 }
 
 
-- (NSImage*)		imageComponent
+//- (NSImage*)		imageComponent
+- (DKImage*)		imageComponent
 {
 	if([self hasImageComponent])
 	{

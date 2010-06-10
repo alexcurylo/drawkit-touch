@@ -72,12 +72,17 @@ static inline NSUInteger childNodeAtIndex( NSUInteger nodeIndex )
 }	
 
 
-- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+//- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options
 {
 #pragma unused(options)
 	
 	NSMutableArray* results;
 	
+#if TARGET_OS_IPHONE
+   (void)aView;
+   twlog("implement objectsIntersectingRect");
+#else
 	if( aView )
 	{
 		const NSRect*	rects;
@@ -87,6 +92,7 @@ static inline NSUInteger childNodeAtIndex( NSUInteger nodeIndex )
 		results = [mTree objectsIntersectingRects:rects count:count inView:aView];
 	}
 	else
+#endif TARGET_OS_IPHONE
 		results = [mTree objectsIntersectingRect:aRect];
 	
 	// the final results need to be sorted into Z-order unless 'relaxed' flag set
@@ -376,7 +382,8 @@ static void			unmarkFunc( const void* value, void* context )
 }
 
 
-- (NSBezierPath*)			debugStorageDivisions
+//- (NSBezierPath*)			debugStorageDivisions
+- (DKBezierPath*)			debugStorageDivisions
 {
 	// for debugging purposes, returns a path consisting of the BSP rects
 	
@@ -566,7 +573,12 @@ static void			unmarkFunc( const void* value, void* context )
     if ([mNodes count] == 0)
         return nil;
 	
+#if TARGET_OS_IPHONE
+   (void)aView;
+   twlog("implement objectsIntersectingRects");
+#else
 	mViewRef = aView;
+#endif TARGET_OS_IPHONE
 	mOp = kDKOperationAccumulate;
 	[mFoundObjects removeAllObjects];
 	
@@ -585,7 +597,9 @@ static void			unmarkFunc( const void* value, void* context )
         return nil;
 	
 	mRect = rect;
+#ifndef TARGET_OS_IPHONE
 	mViewRef = nil;
+#endif TARGET_OS_IPHONE
 	mOp = kDKOperationAccumulate;
 	[mFoundObjects removeAllObjects];
 	
@@ -647,11 +661,16 @@ static void			addValueToFoundObjects( const void* value, void* context )
 	if(![obj isMarked] && [obj visible])
 	{
 		DKBSPDirectTree* tree = (DKBSPDirectTree*)context;
+#if TARGET_OS_IPHONE
+   twlog("implement addValueToFoundObjects");
+		if(NSIntersectsRect([obj bounds], tree->mRect ))
+#else
 		NSView*	view = tree->mViewRef;
 		
 		// double-check that the view really needs to draw this
 		
 		if(( view == nil && NSIntersectsRect([obj bounds], tree->mRect )) || [view needsToDrawRect:[obj bounds]])
+#endif TARGET_OS_IPHONE
 		{
 			[obj setMarked:YES];
 			CFArrayAppendValue((CFMutableArrayRef)tree->mFoundObjects, value );

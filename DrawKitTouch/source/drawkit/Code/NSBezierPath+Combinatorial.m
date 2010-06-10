@@ -12,11 +12,15 @@
 #import "NSBezierPath+Geometry.h"
 
 
-@interface NSBezierPath (CombinatorialPrivate)
+//@interface NSBezierPath (CombinatorialPrivate)
+@interface DKBezierPath (CombinatorialPrivate)
 
-- (void)			appendSplitElementFromPath:(NSBezierPath*) path withIntersectionInfo:(OABezierPathIntersection*) info rightOrLeft:(BOOL) isRight trailingOrLeading:(BOOL) isLeading;
-- (void)			appendElementsFromPath:(NSBezierPath*) path fromIndex:(NSInteger) firstIndex toIndex:(NSInteger) nextIndex;
-- (void)			appendElementsFromPath:(NSBezierPath*) inRange:(NSRange) range;
+//- (void)			appendSplitElementFromPath:(NSBezierPath*) path withIntersectionInfo:(OABezierPathIntersection*) info rightOrLeft:(BOOL) isRight trailingOrLeading:(BOOL) isLeading;
+//- (void)			appendElementsFromPath:(NSBezierPath*) path fromIndex:(NSInteger) firstIndex toIndex:(NSInteger) nextIndex;
+//- (void)			appendElementsFromPath:(NSBezierPath*) inRange:(NSRange) range;
+- (void)			appendSplitElementFromPath:(DKBezierPath*) path withIntersectionInfo:(OABezierPathIntersection*) info rightOrLeft:(BOOL) isRight trailingOrLeading:(BOOL) isLeading;
+- (void)			appendElementsFromPath:(DKBezierPath*) path fromIndex:(NSInteger) firstIndex toIndex:(NSInteger) nextIndex;
+- (void)			appendElementsFromPath:(DKBezierPath*) inRange:(NSRange) range;
 - (NSArray*)		breakApartWithIntersectionInfo:(PathIntersectionList) info rightOrLeft:(BOOL) isRight;
 
 @end
@@ -24,10 +28,12 @@
 
 
 
-@implementation NSBezierPath (Combinatorial)
+//@implementation NSBezierPath (Combinatorial)
+@implementation DKBezierPath (Combinatorial)
 
 
-- (void)	showIntersectionsWithPath:(NSBezierPath*) path
+//- (void)	showIntersectionsWithPath:(NSBezierPath*) path
+- (void)	showIntersectionsWithPath:(DKBezierPath*) path
 {
 	// test method, uses the Omni code to find the intersections, then draws a blob at the found points.
 	
@@ -36,7 +42,8 @@
 	
 	OABezierPathIntersection	ps;
 	NSUInteger					i;
-	NSBezierPath*				blob;
+	//NSBezierPath*				blob;
+	DKBezierPath*				blob;
 	NSRect						blobRect;
 	
 	blobRect.size = NSMakeSize( 5, 5 );
@@ -48,7 +55,8 @@
 		blobRect.origin = ps.location;
 		blobRect = NSOffsetRect( blobRect, -2.5, -2.5 );
 		
-		blob = [NSBezierPath bezierPathWithOvalInRect:blobRect];
+		//blob = [NSBezierPath bezierPathWithOvalInRect:blobRect];
+		blob = [DKBezierPath bezierPathWithOvalInRect:blobRect];
 		
 		// select a colour based on direction
 		
@@ -56,29 +64,37 @@
 		{
 			default:
 			case intersectionEntryLeft:
-				[[NSColor redColor] set];
+				//[[NSColor redColor] set];
+				[[DKColor redColor] set];
 				break;
 				
 			case intersectionEntryAt:
-				[[NSColor yellowColor] set];
+				//[[NSColor yellowColor] set];
+				[[DKColor yellowColor] set];
 				break;
 				
 			case intersectionEntryRight:
-				[[NSColor blueColor] set];
+				//[[NSColor blueColor] set];
+				[[DKColor blueColor] set];
 				break;
 		}
 		[blob fill];
 		// label it so we can see the order
 		
 		NSString* str = [NSString stringWithFormat:@"%ld", (long)i];
+#if TARGET_OS_IPHONE
+		[str drawAtPoint:blobRect.origin withFont:[UIFont systemFontOfSize:12]];
+#else
 		[str drawAtPoint:blobRect.origin withAttributes:nil];
+#endif TARGET_OS_IPHONE
 		
 		//NSLog(@"intersection = %d, element = %d", i, ps.left.segment);
 	}
 }
 
 
-- (NSBezierPath*)	renormalizePath
+//- (NSBezierPath*)	renormalizePath
+- (DKBezierPath*)	renormalizePath
 {
 	// this returns a path such that all of its subpaths are in a clockwise direction. It may return self if there is nothing to do. This is done first for each subpath
 	// contributing to a boolean operation so that the logic to perform the combinations is made more straightforward.
@@ -96,13 +112,15 @@
 	// more than one subpath, so break the path apart and recurse, collecting the subpaths back into a new path. This
 	// will only be executed once at the top level as paths are not hierarchical.
 	
-	NSBezierPath*	newPath = [NSBezierPath bezierPath];
+	//NSBezierPath*	newPath = [NSBezierPath bezierPath];
+	DKBezierPath*	newPath = [DKBezierPath bezierPath];
 	NSArray*		subs = [self subPaths];
 	NSUInteger		i;
 	
 	for( i = 0; i < [subs count]; ++i )
 	{
-		NSBezierPath* sub = [subs objectAtIndex:i];
+		//NSBezierPath* sub = [subs objectAtIndex:i];
+		DKBezierPath* sub = [subs objectAtIndex:i];
 		[newPath appendBezierPath:[sub renormalizePath]];
 	}
 	
@@ -110,7 +128,8 @@
 }
 
 
-- (void)			appendElementsFromPath:(NSBezierPath*) path inRange:(NSRange) range
+//- (void)			appendElementsFromPath:(NSBezierPath*) path inRange:(NSRange) range
+- (void)			appendElementsFromPath:(DKBezierPath*) path inRange:(NSRange) range
 {
 	// copies the elements within the range from <path> to the receiver. If the range exceeds the number of elements in the path, the rest of the
 	// elements are copied. If the range starts beyond the end of the path, this does nothing. If <path> completes with a closePath, it is not appended to this path.
@@ -160,7 +179,8 @@
 }
 
 
-- (void)			appendElementsFromPath:(NSBezierPath*) path fromIndex:(NSInteger) firstIndex toIndex:(NSInteger) nextIndex
+//- (void)			appendElementsFromPath:(NSBezierPath*) path fromIndex:(NSInteger) firstIndex toIndex:(NSInteger) nextIndex
+- (void)			appendElementsFromPath:(DKBezierPath*) path fromIndex:(NSInteger) firstIndex toIndex:(NSInteger) nextIndex
 {
 	// given a path, this copies the elements, from <first> to <next> inclusive, to this path. index values must be +ve. If nextIndex < firstIndex, the copy
 	// wraps around and copies elements from the beginning of the path up to <nextIndex>. If it does this, it converts closePaths to lineTos and
@@ -187,7 +207,8 @@
 
 
 
-- (void)	appendSplitElementFromPath:(NSBezierPath*) path withIntersectionInfo:(OABezierPathIntersection*) info rightOrLeft:(BOOL) isRight trailingOrLeading:(BOOL) isLeading;
+//- (void)	appendSplitElementFromPath:(NSBezierPath*) path withIntersectionInfo:(OABezierPathIntersection*) info rightOrLeft:(BOOL) isRight trailingOrLeading:(BOOL) isLeading;
+- (void)	appendSplitElementFromPath:(DKBezierPath*) path withIntersectionInfo:(OABezierPathIntersection*) info rightOrLeft:(BOOL) isRight trailingOrLeading:(BOOL) isLeading;
 {
 	NSAssert( path != nil, @"can't append elements from nil path");
 	
@@ -242,7 +263,8 @@
 	NSUInteger		i, m = info.count;
 	NSInteger				startIndex, endIndex;
 	NSMutableArray*	parts = [NSMutableArray array];
-	NSBezierPath*	piece;
+	//NSBezierPath*	piece;
+	DKBezierPath*	piece;
 	
 	for( i = 0; i < 1; ++i )
 	{
@@ -268,7 +290,8 @@
 		if( endIndex < 0 )
 			endIndex = [self elementCount] - 1;
 
-		piece = [NSBezierPath bezierPath];
+		//piece = [NSBezierPath bezierPath];
+		piece = [DKBezierPath bezierPath];
 		
 		//[piece moveToPoint:info.intersections[i].location];
 		//[piece appendSplitElementFromPath:self withIntersectionInfo:&info.intersections[i] rightOrLeft:isRight trailingOrLeading:YES];
@@ -286,13 +309,15 @@
 }
 
 
-- (NSBezierPath*)	performBooleanOp:(DKBooleanOperation) op withPath:(NSBezierPath*) path
+//- (NSBezierPath*)	performBooleanOp:(DKBooleanOperation) op withPath:(NSBezierPath*) path
+- (DKBezierPath*)	performBooleanOp:(DKBooleanOperation) op withPath:(DKBezierPath*) path
 {
 	#pragma unused(op)
 	
 	// first renormalize both contributing paths
 	
-	NSBezierPath* leftPath, *rightPath;
+	//NSBezierPath* leftPath, *rightPath;
+	DKBezierPath* leftPath, *rightPath;
 	
 	leftPath = [self renormalizePath];
 	rightPath = [path renormalizePath];
@@ -304,10 +329,12 @@
 	// assemble the new path. We start at the first intersection point, which will begin the new path. This point is common to all operations, unlike the first point
 	// of either source path, which may not be included in an intersection.
 	
-	NSBezierPath* newPath = [NSBezierPath bezierPath];
+	//NSBezierPath* newPath = [NSBezierPath bezierPath];
+	DKBezierPath* newPath = [DKBezierPath bezierPath];
 	
 	BOOL			phase = NO;		// phase tracks whether we are following the left or right path
-	NSBezierPath*	srcPath;		// srcPath is the one we are following at the moment.
+	//NSBezierPath*	srcPath;		// srcPath is the one we are following at the moment.
+	DKBezierPath*	srcPath;		// srcPath is the one we are following at the moment.
 	NSUInteger		sectIndex;		// index to which intersection is currently being actioned
 	NSPoint			previousPoint;	// the last end point of a segment
 	NSInteger				firstElement;	// tracks the index of the very first element we use
@@ -441,7 +468,8 @@
 
 
 
-- (NSArray*)		dividePathWithPath:(NSBezierPath*) path
+//- (NSArray*)		dividePathWithPath:(NSBezierPath*) path
+- (NSArray*)		dividePathWithPath:(DKBezierPath*) path
 {
 	// divides the receiver and <path> into parts split at the intersecting points between the two paths. The result is an array which in turn consists of two further
 	// arrays - the first containing the receiver's parts, the second the other path's. The other operations can be built by recombining the parts in various ways.
@@ -456,7 +484,8 @@
 	
 	// normalize
 	
-	NSBezierPath* left, *right;
+	//NSBezierPath* left, *right;
+	DKBezierPath* left, *right;
 	
 	left = [self renormalizePath];
 	right = [path renormalizePath];

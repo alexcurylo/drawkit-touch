@@ -1,6 +1,6 @@
 //
 //  DKGradientExtensions.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by Jason Jobe on 3/3/07.
 ///
@@ -10,6 +10,7 @@
 #import "DKGradient.h"
 
 
+#ifndef TARGET_OS_IPHONE
 @interface NSView (DKGradientExtensions)
 
 - (void) dragGradient:(DKGradient*)gradient swatchSize:(NSSize)size
@@ -20,10 +21,13 @@
 - (void) dragColor:(NSColor*)color swatchSize:(NSSize)size slideBack:(BOOL)slideBack event:(NSEvent *)event;
 
 @end
+#endif TARGET_OS_IPHONE
 
-@interface NSColor (DKGradientExtensions)
+//@interface NSColor (DKGradientExtensions)
+@interface DKColor (DKGradientExtensions)
 
-- (NSImage*) swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder;
+//- (NSImage*) swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder;
+- (DKImage*) swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder;
 
 @end
 

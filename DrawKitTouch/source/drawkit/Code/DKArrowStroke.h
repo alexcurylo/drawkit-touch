@@ -72,7 +72,8 @@ DKDimensionToleranceOption;
 	CGFloat						m_arrowWidth;
 	DKDimensioningLineOptions	mDimensionOptions;
 	NSNumberFormatter*			m_dims_formatter;
-	NSColor*					m_outlineColour;
+	//NSColor*					m_outlineColour;
+	DKColor*					m_outlineColour;
 	CGFloat						m_outlineWidth;
 	DKDimensionTextKind			mDimTextKind;
 	DKDimensionToleranceOption	mDimToleranceOptions;
@@ -103,15 +104,20 @@ DKDimensionToleranceOption;
 - (void)						setOutlineColour:(NSColor*) colour width:(CGFloat) width;
 #endif
 
-- (void)						setOutlineColour:(NSColor*) colour;
-- (NSColor*)					outlineColour;
+//- (void)						setOutlineColour:(NSColor*) colour;
+//- (NSColor*)					outlineColour;
+- (void)						setOutlineColour:(DKColor*) colour;
+- (DKColor*)					outlineColour;
 - (void)						setOutlineWidth:(CGFloat) width;
 - (CGFloat)						outlineWidth;
 
-- (NSImage*)					arrowSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width;
-- (NSImage*)					standardArrowSwatchImage;
+//- (NSImage*)					arrowSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width;
+//- (NSImage*)					standardArrowSwatchImage;
+- (DKImage*)					arrowSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width;
+- (DKImage*)					standardArrowSwatchImage;
 
-- (NSBezierPath*)				arrowPathFromOriginalPath:(NSBezierPath*) inPath fromObject:(id) obj;
+//- (NSBezierPath*)				arrowPathFromOriginalPath:(NSBezierPath*) inPath fromObject:(id) obj;
+- (DKBezierPath*)				arrowPathFromOriginalPath:(DKBezierPath*) inPath fromObject:(id) obj;
 
 // dimensioning lines:
 
@@ -134,8 +140,10 @@ DKDimensionToleranceOption;
 
 - (void)						setTextAttributes:(NSDictionary*) dict;
 - (NSDictionary*)				textAttributes;
-- (void)						setFont:(NSFont*) font;
-- (NSFont*)						font;
+//- (void)						setFont:(NSFont*) font;
+//- (NSFont*)						font;
+- (void)						setFont:(DKFont*) font;
+- (DKFont*)						font;
 
 @end
 

@@ -33,7 +33,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 
 
 #pragma mark -
-@implementation NSBezierPath (DKEditing)
+//@implementation NSBezierPath (DKEditing)
+@implementation DKBezierPath (DKEditing)
 #pragma mark As an NSBezierPath
 
 + (void)				setConstraintAngle:(CGFloat) radians
@@ -59,7 +60,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 {
 	// returns the point opposite p from q at radius r in a straight line.
 	
-	CGFloat	a = atan2f( p.y - q.y, p.x - q.x ) + pi;
+	//CGFloat	a = atan2f( p.y - q.y, p.x - q.x ) + pi;
+	CGFloat	a = atan2f( p.y - q.y, p.x - q.x ) + M_PI;
 	return NSMakePoint( q.x + ( r * cos( a )), q.y + ( r * sin( a )));
 }
 
@@ -123,24 +125,30 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 	
 	if ( outCPA )
 	{
-		outCPA->x = inPoints[1].x + r1 * cos( angle + pi );
-		outCPA->y = inPoints[1].y + r1 * sin( angle + pi );
+		//outCPA->x = inPoints[1].x + r1 * cos( angle + pi );
+		//outCPA->y = inPoints[1].y + r1 * sin( angle + pi );
+		outCPA->x = inPoints[1].x + r1 * cos( angle + M_PI );
+		outCPA->y = inPoints[1].y + r1 * sin( angle + M_PI );
 	}
 	
 	if( outCPB )
 	{
-		outCPB->x = inPoints[1].x - r2 * cos( angle + pi );
-		outCPB->y = inPoints[1].y - r2 * sin( angle + pi );
+		//outCPB->x = inPoints[1].x - r2 * cos( angle + pi );
+		//outCPB->y = inPoints[1].y - r2 * sin( angle + pi );
+		outCPB->x = inPoints[1].x - r2 * cos( angle + M_PI );
+		outCPB->y = inPoints[1].y - r2 * sin( angle + M_PI );
 	}
 }
 
 
 #pragma mark -
-- (NSBezierPath*)		bezierPathByRemovingTrailingElements:(NSInteger) numToRemove
+//- (NSBezierPath*)		bezierPathByRemovingTrailingElements:(NSInteger) numToRemove
+- (DKBezierPath*)		bezierPathByRemovingTrailingElements:(NSInteger) numToRemove
 {
 	// returns a copy with the last <n> elements removed.
 
-	NSBezierPath* newPath = [self copy];
+	//NSBezierPath* newPath = [self copy];
+	DKBezierPath* newPath = [self copy];
 	
 	if( ![self isEmpty])
 	{
@@ -180,14 +188,16 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 }
 
 
-- (NSBezierPath*)		bezierPathByStrippingRedundantElements
+//- (NSBezierPath*)		bezierPathByStrippingRedundantElements
+- (DKBezierPath*)		bezierPathByStrippingRedundantElements
 {
 	// returns a new path which is a copy of the receiver but with all redundant elements stripped out. A redundant element is
 	// one that doesn't contribute to the shape's appearance - zero-length lines or curves, and isolated trailing movetos. By
 	// stripping these elements, editing a path becomes much easier because all the special cases for the redundant elements can be
 	// simply avoided.
 	
-	NSBezierPath* newPath = [self copy];
+	//NSBezierPath* newPath = [self copy];
+	DKBezierPath* newPath = [self copy];
 	
 	if( ![self isEmpty])
 	{
@@ -247,7 +257,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 }
 
 
-- (NSBezierPath*)		bezierPathByRemovingElementAtIndex:(NSInteger) indx
+//- (NSBezierPath*)		bezierPathByRemovingElementAtIndex:(NSInteger) indx
+- (DKBezierPath*)		bezierPathByRemovingElementAtIndex:(NSInteger) indx
 {
 	// returns a new path that is a copy of the receiver except the element at <indx> has been deleted. If the element wasn't the last
 	// element, the remainder of the path is now a subpaht with a new moveTo element in place of the end point of the removed element.
@@ -259,7 +270,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 	NSInteger			i, m;
 	NSPoint				firstPoint = NSZeroPoint, originalFirstPoint = NSZeroPoint;
 	NSPoint				ap[3];
-	NSBezierPath*		newPath = [NSBezierPath bezierPath];
+	//NSBezierPath*		newPath = [NSBezierPath bezierPath];
+	DKBezierPath*		newPath = [DKBezierPath bezierPath];
 	NSBezierPathElement	element;
 	BOOL				hasDeleted = NO;
 	
@@ -639,17 +651,20 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 			{
 				if ( pet == NSCurveToBezierPathElement )
 				{
-					pc = [NSBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
+					//pc = [NSBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
+					pc = [DKBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
 					if ( pc != NSNotFound )
 						pc = 2;
 				}
 				else
-					pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
+					//pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
+					pc = [DKBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
 				
 				if ( pc != NSNotFound )
 					return partcodeForElementControlPoint( i-1, pc );
 
-				pc = [NSBezierPath point:p inNSPointArray:ap count:3 tolerance:t reverse:YES];
+				//pc = [NSBezierPath point:p inNSPointArray:ap count:3 tolerance:t reverse:YES];
+				pc = [DKBezierPath point:p inNSPointArray:ap count:3 tolerance:t reverse:YES];
 				
 				if ( pc != NSNotFound )
 					return partcodeForElementControlPoint( i, pc );
@@ -658,7 +673,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 			{
 				// test 2 control points, 3 for last segment
 				
-				pc = [NSBezierPath point:p inNSPointArray:ap count:(i == ( ec-1 ))? 3 : 2 tolerance:t];
+				//pc = [NSBezierPath point:p inNSPointArray:ap count:(i == ( ec-1 ))? 3 : 2 tolerance:t];
+				pc = [DKBezierPath point:p inNSPointArray:ap count:(i == ( ec-1 ))? 3 : 2 tolerance:t];
 				
 				if ( pc != NSNotFound )
 					return partcodeForElementControlPoint( i, pc );
@@ -668,12 +684,14 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 			
 			if ( pet == NSCurveToBezierPathElement )
 			{
-				pc = [NSBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
+				//pc = [NSBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
+				pc = [DKBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
 				if ( pc != NSNotFound )
 					pc = 2;
 			}
 			else
-				pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
+				//pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
+				pc = [DKBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
 			
 			if ( pc != NSNotFound )
 				return partcodeForElementControlPoint( i-1, pc );
@@ -683,7 +701,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 			
 			if ( i == ec - 1 )
 			{
-				pc = [NSBezierPath point:p inNSPointArray:ap count:3 tolerance:t reverse:onpPriority];
+				//pc = [NSBezierPath point:p inNSPointArray:ap count:3 tolerance:t reverse:onpPriority];
+				pc = [DKBezierPath point:p inNSPointArray:ap count:3 tolerance:t reverse:onpPriority];
 			
 				if ( pc != NSNotFound )
 					return partcodeForElementControlPoint( i, pc );
@@ -695,12 +714,14 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 			
 			if ( pet == NSCurveToBezierPathElement )
 			{
-				pc = [NSBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
+				//pc = [NSBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
+				pc = [DKBezierPath point:p inNSPointArray:&lp[2] count:1 tolerance:t];
 				if ( pc != NSNotFound )
 					pc = 2;
 			}
 			else
-				pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
+				//pc = [NSBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
+				pc = [DKBezierPath point:p inNSPointArray:lp count:1 tolerance:t];
 			
 			if ( pc != NSNotFound )
 				return partcodeForElementControlPoint( i-1, pc );
@@ -709,7 +730,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 			
 			if ( i == ec - 1 )
 			{
-				pc = [NSBezierPath point:p inNSPointArray:ap count:1 tolerance:t];
+				//pc = [NSBezierPath point:p inNSPointArray:ap count:1 tolerance:t];
+				pc = [DKBezierPath point:p inNSPointArray:ap count:1 tolerance:t];
 			
 				if ( pc != NSNotFound )
 					return partcodeForElementControlPoint( i, pc );
@@ -876,13 +898,15 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 						centre = [self controlPointForPartcode:partcodeForElementControlPoint( prev, 2 )];
 						
 						if ( corad )
-							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+							//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+							opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre];
 						else
 						{
 							NSPoint curOpp = [self controlPointForPartcode:prevPc];
 							CGFloat rad = hypot( curOpp.x - centre.x, curOpp.y - centre.y );
 						
-							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+							//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+							opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
 						}
 						
 						[self setControlPoint:opp forPartcode:prevPc];
@@ -900,13 +924,15 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 							NSInteger prevPc = partcodeForElementControlPoint( le, 1 );
 							
 							if ( corad )
-								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+								//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+								opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre];
 							else
 							{
 								NSPoint curOpp = [self controlPointForPartcode:prevPc];
 								CGFloat rad = hypot( curOpp.x - centre.x, curOpp.y - centre.y );
 						
-								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+								//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+								opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
 							}
 							
 							[self setControlPoint:opp forPartcode:prevPc];
@@ -923,13 +949,15 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 						centre = [self controlPointForPartcode:partcodeForElementControlPoint( element, 2 )];
 						
 						if ( corad )
-							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+							//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+							opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre];
 						else
 						{
 							NSPoint curOpp = [self controlPointForPartcode:partcodeForElement( next )];
 							CGFloat rad = hypot( curOpp.x - centre.x, curOpp.y - centre.y );
 						
-							opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+							//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+							opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
 						}
 						
 						[self setControlPoint:opp forPartcode:partcodeForElement( next )];
@@ -946,13 +974,15 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 							centre = [self controlPointForPartcode:partcodeForElementControlPoint( element, 2 )];
 							
 							if ( corad )
-								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+								//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre];
+								opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre];
 							else
 							{
 								NSPoint curOpp = [self controlPointForPartcode:partcodeForElement( e2 )];
 								CGFloat rad = hypot( curOpp.x - centre.x, curOpp.y - centre.y );
 						
-								opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+								//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
+								opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre radius:rad];
 							}
 							
 							[self setControlPoint:opp forPartcode:partcodeForElement( e2 )];
@@ -1024,7 +1054,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 
 
 #pragma mark -
-- (NSBezierPath*)		deleteControlPointForPartcode:(NSInteger) pc
+//- (NSBezierPath*)		deleteControlPointForPartcode:(NSInteger) pc
+- (DKBezierPath*)		deleteControlPointForPartcode:(NSInteger) pc
 {
 	NSInteger aidx = arrayIndexForPartcode( pc );
 	NSInteger elem = elementIndexForPartcode( pc );
@@ -1040,7 +1071,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 		NSPoint					ap[3], lp[3];
 		BOOL					deletedFirstPoint = NO;
 		NSBezierPathElement		lm;
-		NSBezierPath*			newPath = [NSBezierPath bezierPath];
+		//NSBezierPath*			newPath = [NSBezierPath bezierPath];
+		DKBezierPath*			newPath = [DKBezierPath bezierPath];
 		
 		for( i = 0; i < m; ++i )
 		{
@@ -1108,14 +1140,16 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 // 3 = insert opposite kind of element from whatever was hit
 // see also: DKDrawablePath which calls this
 
-- (NSBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(CGFloat) tol type:(NSInteger) controlPointType
+//- (NSBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(CGFloat) tol type:(NSInteger) controlPointType
+- (DKBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(CGFloat) tol type:(NSInteger) controlPointType
 {
 	CGFloat				t;
 	NSInteger			i, j, m, inselem = [self elementHitByPoint:p tolerance:tol tValue:&t];
 	NSPoint				ap[4], lp[4];	// leave room for four points to define bezier segment
 	NSPoint				firstPoint = NSZeroPoint;
 	NSBezierPathElement	pe, pre;
-	NSBezierPath*		newPath = nil;
+	//NSBezierPath*		newPath = nil;
+	DKBezierPath*		newPath = nil;
 	
 	if ( inselem > 0 )
 	{
@@ -1124,7 +1158,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 		// got a valid insertion point, so copy the path to a new path, inserting a new point
 		// at the given element, splitting the existing element at that point to do so.
 		
-		newPath = [NSBezierPath bezierPath];
+		//newPath = [NSBezierPath bezierPath];
+		newPath = [DKBezierPath bezierPath];
 		m = [self elementCount];
 		
 		for( i = 0; i < m; ++i )
@@ -1268,7 +1303,8 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 		[self elementAtIndex:se associatedPoints:ap];
 		[self elementAtIndex:se + 1 associatedPoints:bp];
 	
-		return atan2f( bp[0].y - ap[0].y, bp[0].x - ap[0].x ) + pi;
+		//return atan2f( bp[0].y - ap[0].y, bp[0].x - ap[0].x ) + pi;
+		return atan2f( bp[0].y - ap[0].y, bp[0].x - ap[0].x ) + M_PI;
 	}
 	else
 		return 0.0;
@@ -1542,13 +1578,16 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 {
 	// this is a debugging method - it displays the bounding rects of the path in the current view
 	
-	[[NSColor redColor] set];
-	[NSBezierPath setDefaultLineWidth:0.0];
+	//[[NSColor redColor] set];
+	//[NSBezierPath setDefaultLineWidth:0.0];
+	[[DKColor redColor] set];
+	[DKBezierPath setDefaultLineWidth:0.0];
 	
 	NSInteger		i, m = [self elementCount];
 	
 	for( i = 0; i < m; ++i )
-		[NSBezierPath strokeRect:[self boundingBoxForElement:i]];
+		//[NSBezierPath strokeRect:[self boundingBoxForElement:i]];
+		[DKBezierPath strokeRect:[self boundingBoxForElement:i]];
 }
 
 

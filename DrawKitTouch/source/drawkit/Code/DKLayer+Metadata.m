@@ -352,7 +352,8 @@ NSString*	kDKLayerMetadataUndoableChangesUserDefaultsKey	= @"kDKLayerMetadataUnd
 }
 
 
-- (void)		setColour:(NSColor*) colour forKey:(NSString*) key
+//- (void)		setColour:(NSColor*) colour forKey:(NSString*) key
+- (void)		setColour:(DKColor*) colour forKey:(NSString*) key
 {
 #if USE_107_OR_LATER_SCHEMA
 	[self setMetadataItem:[DKMetadataItem metadataItemWithColour:colour] forKey:key];
@@ -362,7 +363,8 @@ NSString*	kDKLayerMetadataUndoableChangesUserDefaultsKey	= @"kDKLayerMetadataUnd
 }
 
 
-- (NSColor*)	colourForKey:(NSString*) key
+//- (NSColor*)	colourForKey:(NSString*) key
+- (DKColor*)	colourForKey:(NSString*) key
 {
 #if USE_107_OR_LATER_SCHEMA
 	return [[self metadataItemForKey:key] colourValue];

@@ -613,11 +613,13 @@ NSRect		CentreRectInRect( const NSRect r, const NSRect cr )
 }
 
 
-NSBezierPath*		RotatedRect( const NSRect r, const CGFloat radians )
+//NSBezierPath*		RotatedRect( const NSRect r, const CGFloat radians )
+DKBezierPath*		RotatedRect( const NSRect r, const CGFloat radians )
 {
 	// turns the rect into a path, rotated about its centre by <radians>
 	
-	NSBezierPath* path = [NSBezierPath bezierPathWithRect:r];
+	//NSBezierPath* path = [NSBezierPath bezierPathWithRect:r];
+	DKBezierPath* path = [DKBezierPath bezierPathWithRect:r];
 	return [path rotatedPath:radians];
 }
 
@@ -646,11 +648,13 @@ NSRect		NormalizedRect( const NSRect r )
 }
 
 
-NSAffineTransform*	RotationTransform( const CGFloat angle, const NSPoint cp )
+//NSAffineTransform*	RotationTransform( const CGFloat angle, const NSPoint cp )
+DKAffineTransform*	RotationTransform( const CGFloat angle, const NSPoint cp )
 {
 	// return a transform that will cause a rotation about the point given at the angle given
 
-	NSAffineTransform*	xfm = [NSAffineTransform transform];
+	//NSAffineTransform*	xfm = [NSAffineTransform transform];
+	DKAffineTransform*	xfm = [DKAffineTransform transform];
 	[xfm translateXBy:cp.x yBy:cp.y];
 	[xfm rotateByRadians:angle];
 	[xfm translateXBy:-cp.x yBy:-cp.y];

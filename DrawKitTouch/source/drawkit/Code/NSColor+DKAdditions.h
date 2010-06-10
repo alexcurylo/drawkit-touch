@@ -8,9 +8,9 @@
 ///
 ///**********************************************************************************************************************************
 
-// not in iPhone SDK, should be left to .pch ...alex
-//#import <Cocoa/Cocoa.h>
-
+#if TARGET_OS_IPHONE
+#error use UIColor+DKAdditions.h in iPhone SDK
+#endif TARGET_OS_IPHONE
 
 @interface NSColor (DKAdditions)
 

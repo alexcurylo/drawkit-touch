@@ -15,7 +15,8 @@
 {
 	CGBlendMode				m_blendMode;
 	CGFloat					m_alpha;
-	NSImage*				m_maskImage;
+	//NSImage*				m_maskImage;
+	DKImage*				m_maskImage;
 }
 
 - (void)					setBlendMode:(CGBlendMode) mode;
@@ -24,8 +25,10 @@
 - (void)					setAlpha:(CGFloat) alpha;
 - (CGFloat)					alpha;
 
-- (void)					setMaskImage:(NSImage*) image;
-- (NSImage*)				maskImage;
+//- (void)					setMaskImage:(NSImage*) image;
+//- (NSImage*)				maskImage;
+- (void)					setMaskImage:(DKImage*) image;
+- (DKImage*)				maskImage;
 
 @end
 

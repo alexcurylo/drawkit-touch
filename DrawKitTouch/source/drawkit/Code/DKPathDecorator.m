@@ -11,7 +11,11 @@
 #import "DKPathDecorator.h"
 
 #import "DKDrawing.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "LogEvent.h"
 #import "NSBezierPath+Geometry.h"
 #import "NSBezierPath+Text.h"
@@ -25,14 +29,16 @@
 @implementation DKPathDecorator
 #pragma mark As a DKPathDecorator
 
-+ (DKPathDecorator*)	pathDecoratorWithImage:(NSImage*) image;
+//+ (DKPathDecorator*)	pathDecoratorWithImage:(NSImage*) image;
++ (DKPathDecorator*)	pathDecoratorWithImage:(DKImage*) image;
 {
    // added cast to avoid conflict with iPhone SDK function ...alex
 	return [[(DKPathDecorator *)[self alloc] initWithImage:image] autorelease];
 }
 
 
-- (id)					initWithImage:(NSImage*) image
+//- (id)					initWithImage:(NSImage*) image
+- (id)					initWithImage:(DKImage*) image
 {
 	self = [super init];
 	if(self != nil)
@@ -47,17 +53,20 @@
 
 
 #pragma mark -
-- (void)				setImage:(NSImage*) image
+//- (void)				setImage:(NSImage*) image
+- (void)				setImage:(DKImage*) image
 {
 	LogEvent_(kStateEvent, @"setting image of %@, size = %@", self, NSStringFromSize([image size]));
 	
 	if( NSEqualSizes([image size], NSZeroSize))
 		return;
 	
+#ifndef TARGET_OS_IPHONE
 	// whatever happens the pdf rep is also released
 	
 	[m_pdf release];
 	m_pdf = nil;
+#endif TARGET_OS_IPHONE
 
 	// remove any CGLayer cache so that next time the rasterizer is used it
 	// will be recreated using the new image
@@ -69,6 +78,7 @@
 	[m_image release];
 	m_image = image;
 
+#ifndef TARGET_OS_IPHONE
 	if ( m_image != nil )
 	{
 		[m_image setScalesWhenResized:YES];
@@ -92,10 +102,12 @@
 			}
 		}
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSImage*)			image
+//- (NSImage*)			image
+- (DKImage*)			image
 {
 	return m_image;
 }
@@ -148,6 +160,7 @@
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				setPDFImageRep:(NSPDFImageRep*) rep
 {
 	// archives preferentially store ONLY the pdf data as a raw PDF rep. On dearchiving, this uses the rep to reconstruct the
@@ -168,6 +181,7 @@
 		[image release];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -341,7 +355,8 @@
 	// return a value in 0..1 given a value in 0..1 which is used to set the curvature of the leadin and lead out ramps
 	// (for a linear ramp, return val)
 	
-	return 0.5 * ( 1 - cosf( fmodf( val, 1.0 ) * pi ));
+	//return 0.5 * ( 1 - cosf( fmodf( val, 1.0 ) * pi ));
+	return 0.5 * ( 1 - cosf( fmodf( val, 1.0 ) * M_PI ));
 }
 
 
@@ -399,7 +414,9 @@
 #pragma mark As an NSObject
 - (void)				dealloc
 {
+#ifndef TARGET_OS_IPHONE
 	[m_pdf release];
+#endif TARGET_OS_IPHONE
 	[m_image release];
 	[mDKCache release];
 	[mWobbleCache release];
@@ -418,15 +435,19 @@
 
 #pragma mark -
 #pragma mark As part of BezierPlacement Protocol
-- (id)					placeObjectAtPoint:(NSPoint) p onPath:(NSBezierPath*) path position:(CGFloat) pos slope:(CGFloat) slope userInfo:(void*) userInfo
+//- (id)					placeObjectAtPoint:(NSPoint) p onPath:(NSBezierPath*) path position:(CGFloat) pos slope:(CGFloat) slope userInfo:(void*) userInfo
+- (id)					placeObjectAtPoint:(NSPoint) p onPath:(DKBezierPath*) path position:(CGFloat) pos slope:(CGFloat) slope userInfo:(void*) userInfo
 {
 	#pragma unused(userInfo)
 	
-	NSImage* img = [self image];
+	//NSImage* img = [self image];
+	DKImage* img = [self image];
 	
 	if ( img != nil )
 	{
+#ifndef TARGET_OS_IPHONE
 		NSAssert([NSGraphicsContext currentContext] != nil, @"no context for drawing path decorator motif");
+#endif TARGET_OS_IPHONE
 			
 		NSSize	iSize = [img size];
 		
@@ -447,13 +468,15 @@
 				return nil;
 		}
 		
-		NSAffineTransform* tfm = [NSAffineTransform transform];
+		//NSAffineTransform* tfm = [NSAffineTransform transform];
+		DKAffineTransform* tfm = [DKAffineTransform transform];
 
 		// displace the image to the side of the path by mLateralOffset in the direction normal to the slope. If the offset is 0,
 		// this has no effect except if the alternating flag is also set it flips every other image.
 		
 		if(( mPlacementCount & 1 ) && mAlternateLateralOffsets)
-			slope += pi;
+			//slope += pi;
+			slope += M_PI;
 		
 		CGFloat dx = mLateralOffset * cosf( slope + HALF_PI );
 		CGFloat dy = mLateralOffset * sinf( slope + HALF_PI );
@@ -526,10 +549,15 @@
 			{
 				[mDKCache drawAtPoint:NSZeroPoint];
 			}
+#if TARGET_OS_IPHONE
+         else
+            [img drawAtPoint:NSZeroPoint blendMode:kCGBlendModeSourceAtop alpha:1.0];
+#else
 			else if ( m_pdf != nil  )
 				[m_pdf draw];
 			else
-				[img drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceAtop fraction:1.0];
+            [img drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceAtop fraction:1.0];
+#endif TARGET_OS_IPHONE
 			
 			RESTORE_GRAPHICS_CONTEXT	//[NSGraphicsContext restoreGraphicsState];
 		}
@@ -543,7 +571,8 @@
 }
 
 
-- (id)					placeLinkFromPoint:(NSPoint) pa toPoint:(NSPoint) pb onPath:(NSBezierPath*) path linkNumber:(NSInteger) lkn userInfo:(void*) userInfo
+//- (id)					placeLinkFromPoint:(NSPoint) pa toPoint:(NSPoint) pb onPath:(NSBezierPath*) path linkNumber:(NSInteger) lkn userInfo:(void*) userInfo
+- (id)					placeLinkFromPoint:(NSPoint) pa toPoint:(NSPoint) pb onPath:(DKBezierPath*) path linkNumber:(NSInteger) lkn userInfo:(void*) userInfo
 {
 	#pragma unused(path)
 	
@@ -551,16 +580,20 @@
 	
 	if (( lkn & 1 ) == pass ) 
 	{
-		NSBezierPath* linkPath = [NSBezierPath bezierPathWithStandardChainLinkFromPoint:pa toPoint:pb];
+		//NSBezierPath* linkPath = [NSBezierPath bezierPathWithStandardChainLinkFromPoint:pa toPoint:pb];
+		DKBezierPath* linkPath = [DKBezierPath bezierPathWithStandardChainLinkFromPoint:pa toPoint:pb];
 		
 		[linkPath setLineWidth:0.5];
 		
 		if ( lkn & 1 )
-			[[NSColor lightGrayColor] set];
+			//[[NSColor lightGrayColor] set];
+			[[DKColor lightGrayColor] set];
 		else
-			[[NSColor grayColor] set];
+			//[[NSColor grayColor] set];
+			[[DKColor grayColor] set];
 		[linkPath fill];
-		[[NSColor blackColor] set];
+		//[[NSColor blackColor] set];
+		[[DKColor blackColor] set];
 		[linkPath stroke];
 	}
 	return nil;
@@ -599,7 +632,8 @@
 			
 		m_lowQuality = [obj useLowQualityDrawing];
 
-		NSBezierPath* path = [self renderingPathForObject:obj];
+		//NSBezierPath* path = [self renderingPathForObject:obj];
+		DKBezierPath* path = [self renderingPathForObject:obj];
 		
 		if ([self leaderDistance] > 0 )
 			path = [path bezierPathByTrimmingFromLength:[self leaderDistance]];
@@ -635,7 +669,8 @@
 }
 
 
-- (void)				renderPath:(NSBezierPath*) path
+//- (void)				renderPath:(NSBezierPath*) path
+- (void)				renderPath:(DKBezierPath*) path
 {
 	mPlacementCount = 0;
 	
@@ -666,10 +701,12 @@
 	// save one representation only, whichever is better. On reload, the
 	// lower quality version is recreated from the higher quality one on the fly
 	
+#ifndef TARGET_OS_IPHONE
 	if ( m_pdf != nil )
 		[coder encodeObject:m_pdf forKey:@"pdf_rep"];
 	else
 		[coder encodeObject:[self image] forKey:@"image"];
+#endif TARGET_OS_IPHONE
 		
 	[coder encodeDouble:[self scale] forKey:@"scale"];
 	[coder encodeDouble:[self interval] forKey:@"interval"];
@@ -697,17 +734,25 @@
 		// try to load the best representation - pdf first. If not then other image.
 		// n.b. pdf also sets image so if this succeeds you have both after this.
 		
+#ifndef TARGET_OS_IPHONE
 		NSPDFImageRep* pdfRep = [coder decodeObjectForKey:@"pdf_rep"];
 		if (pdfRep != nil)
 			[self setPDFImageRep:pdfRep];
+#endif TARGET_OS_IPHONE
 		
 		// if the pdf was not able to set up the image, try using the image straight from the archive
 		
 		if([self image] == nil)
 		{
-			NSImage* image = [coder decodeObjectForKey:@"image"];
+			//NSImage* image = [coder decodeObjectForKey:@"image"];
 			
+			DKImage* image = [coder decodeObjectForKey:@"image"];
+#if TARGET_OS_IPHONE
+         NSAssert(image, @"cannot decode DKPathDecorator");
+			if ( image != nil )
+#else
 			if ( image != nil && [image isValid] && [[image representations] count] > 0 )
+#endif TARGET_OS_IPHONE
 				[self setImage:image];
 		}
 		
@@ -736,6 +781,11 @@
 {
 	DKPathDecorator* dc = [super copyWithZone:zone];
 	
+#if TARGET_OS_IPHONE
+   UIImage* imgCopy = [[UIImage alloc] initWithCGImage:self.image.CGImage];
+   [dc setImage:imgCopy];
+   [imgCopy release];
+#else
 	if ( m_pdf )
 	{
 		NSPDFImageRep* pdfCopy = [m_pdf copyWithZone:zone];
@@ -748,6 +798,7 @@
 		[dc setImage:imgCopy];
 		[imgCopy release];
 	}
+#endif TARGET_OS_IPHONE
 	
 	[dc setScale:[self scale]];
 	[dc setInterval:[self interval]];

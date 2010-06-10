@@ -35,6 +35,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(obj)
@@ -46,6 +47,7 @@
 	mZoomRect = NSZeroRect;
 	return 0;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -66,6 +68,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(pc)
@@ -76,6 +79,7 @@
 	mZoomRect = NSRectFromTwoPoints( mAnchor, p );
 	[layer setNeedsDisplayInRect:mZoomRect];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -96,6 +100,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(pc)
@@ -114,6 +119,7 @@
 	mZoomRect = NSZeroRect;
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -131,17 +137,25 @@
 ///
 ///********************************************************************************************************************
 
-- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+//- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+- (void)			drawRect:(NSRect) aRect inView:(DKDrawingView*) aView
 {
 	#pragma unused(aRect)
 	
+#if TARGET_OS_IPHONE
+   (void)aView;
+   twlog("implement drawRect");
+#else
 	if ([aView needsToDrawRect:mZoomRect])
+#endif TARGET_OS_IPHONE
 	{
 		CGFloat sc = 1.0;
 		
-		NSBezierPath* zoomPath = [NSBezierPath bezierPathWithRect:NSInsetRect( mZoomRect, sc, sc )];
+		//NSBezierPath* zoomPath = [NSBezierPath bezierPathWithRect:NSInsetRect( mZoomRect, sc, sc )];
+		DKBezierPath* zoomPath = [DKBezierPath bezierPathWithRect:NSInsetRect( mZoomRect, sc, sc )];
 		[zoomPath setLineWidth:sc];
-		[[NSColor redColor] set];
+		//[[NSColor redColor] set];
+		[[DKColor redColor] set];
 		[zoomPath stroke];
 	}
 }

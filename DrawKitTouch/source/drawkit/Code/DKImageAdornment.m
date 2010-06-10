@@ -19,7 +19,8 @@
 
 @implementation DKImageAdornment
 #pragma mark As a DKImageAdornment
-+ (DKImageAdornment*)	imageAdornmentWithImage:(NSImage*) image
+//+ (DKImageAdornment*)	imageAdornmentWithImage:(NSImage*) image
++ (DKImageAdornment*)	imageAdornmentWithImage:(DKImage*) image
 {
 	DKImageAdornment* gir = [[self alloc] init];
 	
@@ -31,25 +32,30 @@
 
 + (DKImageAdornment*)	imageAdornmentWithImageFromFile:(NSString*) path
 {
-	NSImage* image = [[[NSImage alloc] initWithContentsOfFile:path] autorelease];
+	//NSImage* image = [[[NSImage alloc] initWithContentsOfFile:path] autorelease];
+	DKImage* image = [[[DKImage alloc] initWithContentsOfFile:path] autorelease];
 	return [self imageAdornmentWithImage:image];
 }
 
 
 #pragma mark -
-- (void)				setImage:(NSImage*) image
+//- (void)				setImage:(NSImage*) image
+- (void)				setImage:(DKImage*) image
 {
 	[image retain];
 	[m_image release];
 	m_image = image;
 	
+#ifndef TARGET_OS_IPHONE
 	//[_image setFlipped:YES];
 	[m_image setScalesWhenResized:YES];
 	[m_image setCacheMode:NSImageCacheNever];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSImage*)			image
+//- (NSImage*)			image
+- (DKImage*)			image
 {
 	return m_image;
 }
@@ -59,7 +65,8 @@
 {
 	DKImageDataManager* dm = [drawing imageManager];
 	
-	NSImage* image = [dm makeImageForKey:key];
+	//NSImage* image = [dm makeImageForKey:key];
+	DKImage* image = [dm makeImageForKey:key];
 	[self setImage:image];
 	[self setImageKey:key];
 }
@@ -164,13 +171,21 @@
 
 
 #pragma mark -
+#if TARGET_OS_IPHONE
+- (void)				setOperation:(CGBlendMode) op
+#else
 - (void)				setOperation:(NSCompositingOperation) op
+#endif TARGET_OS_IPHONE
 {
 	m_op = op;
 }
 
 
+#if TARGET_OS_IPHONE
+- (CGBlendMode) operation
+#else
 - (NSCompositingOperation) operation
+#endif TARGET_OS_IPHONE
 {
 	return m_op;
 }
@@ -190,7 +205,8 @@
 
 
 #pragma mark -
-- (NSAffineTransform*)	imageTransformForObject:(id<DKRenderable>) renderableObject
+//- (NSAffineTransform*)	imageTransformForObject:(id<DKRenderable>) renderableObject
+- (DKAffineTransform*)	imageTransformForObject:(id<DKRenderable>) renderableObject
 {
 	// to work around rounding error in image rendering, image needs to be transformed seperately from the clipping path - the
 	// transform here will allow the image to be rendered rotated and scaled to the final position.
@@ -224,7 +240,8 @@
 	else
 		locP = [renderableObject location];
 
-	NSAffineTransform* xform = [NSAffineTransform transform];
+	//NSAffineTransform* xform = [NSAffineTransform transform];
+	DKAffineTransform* xform = [DKAffineTransform transform];
 	[xform translateXBy:locP.x yBy:locP.y];
 	[xform rotateByRadians:[renderableObject angle] + [self angle]];
 	
@@ -234,7 +251,8 @@
 	
 	// factor in the object's parent transform
 	
-	NSAffineTransform* pt = [renderableObject containerTransform];
+	//NSAffineTransform* pt = [renderableObject containerTransform];
+	DKAffineTransform* pt = [renderableObject containerTransform];
 	
 	if ( pt != nil )
 		[xform appendTransform:pt];
@@ -293,7 +311,11 @@
 	{
 		m_scale = 1.0;
 		m_opacity = 1.0;
+#if TARGET_OS_IPHONE
+		m_op = kCGBlendModeNormal;
+#else
 		m_op = NSCompositeSourceOver;
+#endif TARGET_OS_IPHONE
 		m_fittingOption = kDKClipToBounds;
 		m_imageIdentifier = @"";
 	}
@@ -311,7 +333,8 @@
 
 	if([self enabled])
 	{
-		NSImage*	image = [self image];
+		//NSImage*	image = [self image];
+		DKImage*	image = [self image];
 		
 		if ( image == nil )
 		{
@@ -332,17 +355,24 @@
 			
 		// OK, got an image - draw it according to settings with the object's path bounds
 		
-		NSBezierPath*	path = [self renderingPathForObject:object];
+		//NSBezierPath*	path = [self renderingPathForObject:object];
+		DKBezierPath*	path = [self renderingPathForObject:object];
 		NSRect			destRect;
 		
+#if TARGET_OS_IPHONE
+      CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
 		[[NSGraphicsContext currentContext] saveGraphicsState];
+#endif TARGET_OS_IPHONE
 
 		if([self clipping] != kDKClippingNone)
 			[path addClip];
 		else
-			[NSBezierPath clipRect:[object bounds]];
+			//[NSBezierPath clipRect:[object bounds]];
+			[DKBezierPath clipRect:[object bounds]];
 
-		NSAffineTransform* tfm = [self imageTransformForObject:object];
+		//NSAffineTransform* tfm = [self imageTransformForObject:object];
+		DKAffineTransform* tfm = [self imageTransformForObject:object];
 		[tfm concat];
 		
 		// assumes 'location' of object is its centre:
@@ -352,14 +382,23 @@
 		destRect.origin.y = [self origin].y - ( destRect.size.height / 2.0 );
 		
 		// draw the image
+#if TARGET_OS_IPHONE
+      CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+		[image drawInRect:destRect blendMode:[self operation] alpha:[self opacity]];
+#else
 		[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
 		[image setFlipped:YES];
 		[image drawInRect:destRect fromRect:NSZeroRect operation:[self operation] fraction:[self opacity]];
 		[image setFlipped:NO];
+#endif TARGET_OS_IPHONE
 			
 		// clean up
 		
+#if TARGET_OS_IPHONE
+      CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
 		[[NSGraphicsContext currentContext] restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 	}
 }
 

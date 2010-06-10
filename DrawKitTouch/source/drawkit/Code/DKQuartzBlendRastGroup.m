@@ -11,7 +11,8 @@
 #import "DKQuartzBlendRastGroup.h"
 
 
-static CGImageRef	CreateMaskFromImage( NSImage* image );
+//static CGImageRef	CreateMaskFromImage( NSImage* image );
+static CGImageRef	CreateMaskFromImage( DKImage* image );
 
 
 
@@ -43,7 +44,8 @@ static CGImageRef	CreateMaskFromImage( NSImage* image );
 
 
 #pragma mark -
-- (void)			setMaskImage:(NSImage*) image
+//- (void)			setMaskImage:(NSImage*) image
+- (void)			setMaskImage:(DKImage*) image
 {
 	[image retain];
 	[m_maskImage release];
@@ -51,7 +53,8 @@ static CGImageRef	CreateMaskFromImage( NSImage* image );
 }
 
 
-- (NSImage*)		maskImage
+//- (NSImage*)		maskImage
+- (DKImage*)		maskImage
 {
 	return m_maskImage;
 }
@@ -104,9 +107,15 @@ static CGImageRef	CreateMaskFromImage( NSImage* image );
 	if(! [self enabled])
 		return;
 	
+#if TARGET_OS_IPHONE
+   CGContextSaveGState(UIGraphicsGetCurrentContext());
+   
+	CGContextRef context = UIGraphicsGetCurrentContext();
+#else
 	[[NSGraphicsContext currentContext] saveGraphicsState];
 	
 	CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	CGContextSetBlendMode( context, [self blendMode]);
 	CGContextSetAlpha( context, [self alpha]);
 	
@@ -131,7 +140,11 @@ static CGImageRef	CreateMaskFromImage( NSImage* image );
 	}
 	[super render:object];
 	
+#if TARGET_OS_IPHONE
+   CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
 	[[NSGraphicsContext currentContext] restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -179,7 +192,8 @@ static CGImageRef	CreateMaskFromImage( NSImage* image );
 
 
 
-static CGImageRef	CreateMaskFromImage( NSImage* image )
+//static CGImageRef	CreateMaskFromImage( NSImage* image )
+static CGImageRef	CreateMaskFromImage( DKImage* image )
 {
 	// return a bitmap image that can be used as a mask
 	
@@ -206,11 +220,16 @@ static CGImageRef	CreateMaskFromImage( NSImage* image )
 	// draw the image into the bitmap context
 	
 	SAVE_GRAPHICS_CONTEXT	//[NSGraphicsContext saveGraphicsState];
+#if TARGET_OS_IPHONE
+   NSRect imageRect = { .size = size };
+	CGContextDrawImage(bmc, imageRect, image.CGImage);
+#else
 	NSGraphicsContext* gc = [NSGraphicsContext graphicsContextWithGraphicsPort:bmc flipped:YES];
 	
 	[NSGraphicsContext setCurrentContext:gc];
 	
 	[image drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+#endif TARGET_OS_IPHONE
 	
 	mask = CGBitmapContextCreateImage( bmc );
 	

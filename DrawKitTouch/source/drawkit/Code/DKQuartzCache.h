@@ -21,11 +21,19 @@
 
 + (DKQuartzCache*)	cacheForCurrentContextWithSize:(NSSize) size;
 + (DKQuartzCache*)	cacheForCurrentContextInRect:(NSRect) rect;
-+ (DKQuartzCache*)	cacheForImage:(NSImage*) image;
+//+ (DKQuartzCache*)	cacheForImage:(NSImage*) image;
+//+ (DKQuartzCache*)	cacheForImageRep:(NSImageRep*) imageRep;
++ (DKQuartzCache*)	cacheForImage:(DKImage*) image;
+#ifndef TARGET_OS_IPHONE
 + (DKQuartzCache*)	cacheForImageRep:(NSImageRep*) imageRep;
+#endif TARGET_OS_IPHONE
 
 
+#if TARGET_OS_IPHONE
+- (id)				initWithContext:(CGContextRef) context forRect:(NSRect) rect;
+#else
 - (id)				initWithContext:(NSGraphicsContext*) context forRect:(NSRect) rect;
+#endif TARGET_OS_IPHONE
 - (NSSize)			size;
 - (CGContextRef)	context;
 

@@ -1,6 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf290
 {\fonttbl\f0\fnil\fcharset0 Monaco;\f1\fnil\fcharset0 Menlo-Regular;}
-{\colortbl;\red255\green255\blue255;\red0\green116\blue0;\red100\green56\blue32;}
+{\colortbl;\red255\green255\blue255;\red0\green116\blue0;\red100\green56\blue32;\red196\green26\blue22;
+\red63\green110\blue116;}
 \deftab720
 \pard\pardeftab720\ql\qnatural
 
@@ -8,9 +9,7 @@
 // Project notes\
 //\
 \
-emulate, abstract, duplicate, ifdef?\
-A) UIResponder/UIWindow/UIView\
-B) stuff that could be rewritten using CoreGraphics\
+(these are comments we added during initial port, may want to revisit them later)\
 \
 \pard\tx420\pardeftab420\ql\qnatural\pardirnatural
 
@@ -25,16 +24,116 @@ B) stuff that could be rewritten using CoreGraphics\
 \cf2 // added since it's checked in validateMenuItem ...alex\cf0 \
 \cf2 // suppressing 64BIT warnings for initial iPhone fork ...alex\cf0 \
 \cf2 // prefix added to avoid compiler shadow warning ...alex\cf0 \
-\cf2 // we'll make this #if instead of if to avoid constant expression warning ...alex\cf0 \
-\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
-\cf3 #if TARGET_OS_IPHONE\
-#else\
-#endif TARGET_OS_IPHONE\
+\cf2 // we'll make this #if instead of if to avoid constant expression warning ...alex\cf3 \
 \pard\pardeftab720\ql\qnatural
 
 \f0\fs20 \cf0 \CocoaLigature1 \
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf3 \CocoaLigature0 #if TARGET_OS_IPHONE\
+#import \cf4 "DKTDrawingView.h"\cf3 \
+#else\
+#import \cf4 "DKDrawingView.h"\cf3 \
+#endif TARGET_OS_IPHONE\
+#if TARGET_OS_IPHONE\
+#import \cf4 "UIBezierPath+DKTAdditions.h"\cf3 \
+#endif TARGET_OS_IPHONE\
 \
-To produce the DrawKitTouch kinda-sorta-framework, select the 'Create Framework' target and 'Debug' or 'Release' configuration.\
+#if TARGET_OS_IPHONE\
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf0    \cf3 twlog\cf0 (\cf4 "implement synchronizeViewRulersWithUnits"\cf0 );\
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf3 #else\
+#endif TARGET_OS_IPHONE\
+\
+#ifndef TARGET_OS_IPHONE\
+#endif TARGET_OS_IPHONE\
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf5 \
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf3 things to sort out in DKTDrawingView and friends:\
+- ruler support\
+	DKTDrawingView \cf0 awakeFromNib, \cf3 various functions...\
+- text support\
+	DKTDrawingView \cf5 m_textEditViewRef mTextEditViewInUse....\
+   \cf0 DKTextShape\cf3 \
+- printing support\
+	DKTDrawingView \cf5 mPrintInfo mPageBreaksVisible...\cf3 \
+- contextual menu support\
+ 	DKTDrawingView \cf0 menuForEvent\cf5 ...\cf3 \
+- key down event handling\
+	DKTDrawingView \cf0 keyDown, flagsChanged\cf5 ...\
+   \cf0 DKToolController, DKDrawingTool\cf3  \cf0 keyDown...\cf3 \
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf5    \cf0 DKZoomTool\cf3  \cf0 flagsChanged...\
+   DKDrawing nudgeOffset\
+   DKSelectionPDFView drawRect\
+   DKObjectCreationTool finishCreation\cf3 \
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf0    \cf5 DKDrawablePath\cf0  hitSelectedPart\cf3 \
+- mouse down event handling, switch to taps\
+	DKTDrawingView \cf0 mouseDown, mouseDragged, mouseMoved. mouseUp\cf5 ...\cf3 \
+	\cf0 DKGuideLayer mouseDragged\cf5 ...\cf3 \
+	\cf0 DKDrawableObject, DKDrawableShape mouseDownAtPoint, mouseDraggedAtPoint, mouseUpAtPoint\cf5 ...\
+   \cf0 DKDrawingInfoLayer\cf3  \cf0 mouseDown...\
+   DKLayer mouseDown...\
+   DKHotspot [start|continue|end]MouseTracking, [willBegin|is|didEnd]TrackingWithEvent\cf3 \
+- other event handling\
+\cf0 	DKSelectAndEditTool toolControllerWillUnsetTool\
+   DKArcPath arcCreateLoop\cf3 \
+\cf0    \cf5 DKDrawablePath\cf0  pathCreateLoop, lineCreateLoop, polyCreateLoop, freehandCreateLoop, arcCreateLoop, movePathPartcode, shouldEndPathCreationWithEvent\
+   DKDrawingTool mouseDownAtPoint, mouseDraggedToPoint, mouseUpAtPoint\cf3 \
+- NSResponder dispatch mucking with\
+	DKTDrawingView\cf0  UIApplication override maybe adequate substitute for doCommandBySelector?\
+   DKTextPath doCommandBySelector\cf3 \
+- automatic drawing creation\
+	DKTDrawingView \cf0 layoutSubviews adequate substitute for lockFocusIfCanDraw?\cf3 \
+- pdf creation\
+	DKTZoomView \cf0 dataWithPDFInsideRect, from NSView\cf3 \
+- exporting\
+	\cf0 DKDrawing(Export) CGImageWithResolution, thumbnailData, [JPEG|PNG|TIFF]DataWithProperties, multipartTIFFDataWithResolution, [JPEG|TIFF|PNG]DataWithResolution\cf3 \
+- dragging equivalent\
+	NSDraggingDestination, NSDraggingSource protocols\
+	\cf0 DKTextPath, DKImageShape, \cf3 DKDrawableShape, DKDrawablePath, \
+   	DKOjectOwnerLayer, \cf0 DKTextShape\cf3  performDragOperation\
+	DKObjectDrawingLayer, \cf0 DKObjectDrawingLayer\cf3  \cf0 beginDragOfSelectedObjectsWithEvent\
+   DKObjectDrawingLayer draggingUpdated, draggedImage\
+   DKGradientExtensions dragStandardSwatchGradient dragGradient\
+   DKSelectAndEditTool dragObjectsAsGroup\
+   \cf2 DKDrawingView+Drop, \cf3 DKOjectOwnerLayer dragging[Entered|Exited|Updated], prepareForDragOperation\cf0 \
+- quantization\
+	DKImage(Tracing) vectorizeToGrayscale vectorizeToColourWithPrecision\cf3 \
+- \cf0 NSColorList\cf3 :\
+   \cf0 DKStyleRegistry registerSolidColour[Fills|Strokes]FromListNamed
+\f0\fs20 \CocoaLigature1 \
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf3 \CocoaLigature0 - \cf0 NSFontTraitMask\cf3 :\
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+\cf0 	NSMutableAttributedString convertFontsTo[Not]HaveTrait\cf3 \
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+
+\f0\fs20 \cf0 \CocoaLigature1 - text issues\
+	
+\f1\fs24 \CocoaLigature0 DKTextAdornment: NSParagraphStyle; NSTextStorage textToDraw, textForEditing, textAsPathForObject\
+   NSBezierPath+Text: lots...\
+   DKTextPath: NStextView, NSTextStorage, NSParagraphStyle\
+   DKStyle(TextAdditions): NSParagraphyStyle\
+   DKShapeFactory pathFromGlyph
+\f0\fs20 \CocoaLigature1 \
+   \
+   \
+replace resources:\
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+
+\f1\fs24 \cf0 \CocoaLigature0 + (\cf5 DKFillPattern\cf0 *)	defaultPattern\
+\pard\tx420\pardeftab420\ql\qnatural\pardirnatural
+
+\f0\fs20 \cf0 \CocoaLigature1 \
+***************\
+\
+\pard\pardeftab720\ql\qnatural
+\cf0 To produce the DrawKitTouch kinda-sorta-framework, select the 'Create Framework' target and 'Debug' or 'Release' configuration.\
 \
 Note that you should NOT override the 'Use Base SDK' setting in the DrawKitTouch project. Apparently, that's how Xcode makes subprojects compile transparently for the selected target and SDK in the enclosing projects, but it has the side effect of only making the particular architecture supported by that SDK compile. Rather, change the "SDKROOT" line in "DKTTargetDevice.xcconfig" and "DKTTargetSimulatorDevice.xcconfig" to use different base SDKs.\
 \
@@ -52,4 +151,11 @@ See DrawTouchDemo.xcodeproj for an example of how to use this kinda-sorta-framew
 - However, it seems you must add -ObjC to OTHER_LD_FLAGS in the linking project as well as the framework project for categories to show up at runtime. There is discussion to be found of using -all_load (or -force_load in Xcode 3.2+) in the library project to avoid this, but that apparently has the side effect of making your app compilation SDK dependent. As well, it seems to be trickier to convince a device build to link than an SDK build -- at present DrawTouchDemo has -all_load set to sidestep that issue for the moment. Updates to follow on this subject.\
 \
 - However, unlike real frameworks bundled resources do not get transparently included, and there appears to be no easy solution to that issue other than not bundling resources. At the moment the workaround is to manually drag the /Resources folder from the linked .framework into the project file.\
-}
+\
+******************\
+\
+See the umbrella DKDrawKit.h header for #imports that differ between the desktop and iPhone versions. Most notably,\
+all NSView-based classes are replaced with UIView-based analogues with the DKT prefix.\
+\
+All ruler-based functions have been stubbed in DKTZoomView; it's not immediately clear how NSScrollView/NSRulerView\
+functionality would be best implemented in UIKit.}

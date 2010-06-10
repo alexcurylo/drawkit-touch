@@ -104,11 +104,13 @@
 }
 
 
-- (void)		renderPath:(NSBezierPath*) path
+//- (void)		renderPath:(NSBezierPath*) path
+- (void)		renderPath:(DKBezierPath*) path
 {
 	if([self amplitude] > 0 )
 	{
-		NSBezierPath* rp = [path bezierPathWithWavelength:[self wavelength] amplitude:[self amplitude] spread:[self spread]];
+		//NSBezierPath* rp = [path bezierPathWithWavelength:[self wavelength] amplitude:[self amplitude] spread:[self spread]];
+		DKBezierPath* rp = [path bezierPathWithWavelength:[self wavelength] amplitude:[self amplitude] spread:[self spread]];
 		[super renderPath:rp];
 	}
 	else

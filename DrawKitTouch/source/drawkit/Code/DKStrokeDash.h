@@ -45,11 +45,15 @@
 - (void)			setIsBeingEdited:(BOOL) edit;
 - (BOOL)			isBeingEdited;
 
-- (void)			applyToPath:(NSBezierPath*) path;
-- (void)			applyToPath:(NSBezierPath*) path withPhase:(CGFloat) phase;
+//- (void)			applyToPath:(NSBezierPath*) path;
+//- (void)			applyToPath:(NSBezierPath*) path withPhase:(CGFloat) phase;
+- (void)			applyToPath:(DKBezierPath*) path;
+- (void)			applyToPath:(DKBezierPath*) path withPhase:(CGFloat) phase;
 
-- (NSImage*)		dashSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width;
-- (NSImage*)		standardDashSwatchImage;
+//- (NSImage*)		dashSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width;
+//- (NSImage*)		standardDashSwatchImage;
+- (DKImage*)		dashSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width;
+- (DKImage*)		standardDashSwatchImage;
 
 @end
 

@@ -14,32 +14,47 @@
 
 + (DKQuartzCache*)	cacheForCurrentContextWithSize:(NSSize) size
 {
+#if TARGET_OS_IPHONE
+	DKQuartzCache* cache = [[self alloc] initWithContext:UIGraphicsGetCurrentContext() forRect:NSMakeRect( 0, 0, size.width, size.height )];
+#else
 	DKQuartzCache* cache = [[self alloc] initWithContext:[NSGraphicsContext currentContext] forRect:NSMakeRect( 0, 0, size.width, size.height )];
+#endif TARGET_OS_IPHONE
 	return [cache autorelease];
 }
 
 
 + (DKQuartzCache*)	cacheForCurrentContextInRect:(NSRect) rect
 {
+#if TARGET_OS_IPHONE
+	DKQuartzCache* cache = [[self alloc] initWithContext:UIGraphicsGetCurrentContext() forRect:rect];
+#else
 	DKQuartzCache* cache = [[self alloc] initWithContext:[NSGraphicsContext currentContext] forRect:rect];
+#endif TARGET_OS_IPHONE
 	return [cache autorelease];
 }
 
 
-+ (DKQuartzCache*)	cacheForImage:(NSImage*) image
+//+ (DKQuartzCache*)	cacheForImage:(NSImage*) image
++ (DKQuartzCache*)	cacheForImage:(DKImage*) image
 {
 	NSAssert( image != nil, @"cannot create cache for nil image");
 	
+#if TARGET_OS_IPHONE
+	DKQuartzCache* cache = [[self alloc] initWithContext:UIGraphicsGetCurrentContext() forRect:NSMakeRect( 0, 0, [image size].width, [image size].height )];
+	[image drawAtPoint:NSZeroPoint blendMode:kCGBlendModeCopy alpha:1.0];
+#else
 	DKQuartzCache* cache = [[self alloc] initWithContext:[NSGraphicsContext currentContext] forRect:NSMakeRect( 0, 0, [image size].width, [image size].height )];
 	[cache setFlipped:[image isFlipped]];
 	[cache lockFocus];
 	[image drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
 	[cache unlockFocus];
+#endif TARGET_OS_IPHONE
 	
 	return [cache autorelease];
 }
 
 
+#ifndef TARGET_OS_IPHONE
 + (DKQuartzCache*)	cacheForImageRep:(NSImageRep*) imageRep
 {
 	NSAssert( imageRep != nil, @"cannot create cache for nil image rep");
@@ -51,14 +66,18 @@
 	
 	return [cache autorelease];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 
 #pragma mark -
 
 
+#if TARGET_OS_IPHONE
+- (id)				initWithContext:(CGContextRef) context forRect:(NSRect) rect
+#else
 - (id)				initWithContext:(NSGraphicsContext*) context forRect:(NSRect) rect
+#endif TARGET_OS_IPHONE
 {
 	NSAssert( context != nil, @"attempt to init cache with a nil context");
 	NSAssert( !NSEqualSizes( rect.size, NSZeroSize ), @"cannot init cache with zero size" );
@@ -66,11 +85,15 @@
 	self = [super init];
 	if( self )
 	{
-		CGContextRef port = [context graphicsPort];
 		CGSize cg_size = CGSizeMake( NSWidth( rect ), NSHeight( rect ));
-		mCGLayer = CGLayerCreateWithContext( port, cg_size, NULL );
 		mOrigin = rect.origin;
+#if TARGET_OS_IPHONE
+		mCGLayer = CGLayerCreateWithContext( context, cg_size, NULL );
+#else
+		CGContextRef port = [context graphicsPort];
+		mCGLayer = CGLayerCreateWithContext( port, cg_size, NULL );
 		[self setFlipped:[context isFlipped]];
+#endif TARGET_OS_IPHONE
 	}
 	
 	return self;
@@ -114,7 +137,11 @@
 - (void)			drawAtPoint:(NSPoint) point operation:(CGBlendMode) op fraction:(CGFloat) frac
 {
 	CGPoint cg_point = CGPointMake( point.x, point.y );
+#if TARGET_OS_IPHONE
+	CGContextRef port = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef port = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	CGContextSetAlpha(port, frac);
 	CGContextSetBlendMode(port, op);
 	CGContextDrawLayerAtPoint( port, cg_point, mCGLayer );
@@ -125,7 +152,11 @@
 - (void)			drawInRect:(NSRect) rect
 {
 	CGRect cg_rect = CGRectMake( rect.origin.x, rect.origin.y, rect.size.width, rect.size.height );
+#if TARGET_OS_IPHONE
+	CGContextRef port = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef port = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	CGContextDrawLayerInRect( port, cg_rect, mCGLayer );
 }
 
@@ -138,11 +169,17 @@
 	
 	NSAssert( mFocusLocked == NO , @"lockFocus called while already locked");
 	
-	[NSGraphicsContext saveGraphicsState];
+#if TARGET_OS_IPHONE
+   twlog("implement lockFocus");
+   CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
+   [NSGraphicsContext saveGraphicsState];
 	NSGraphicsContext* newContext = [NSGraphicsContext graphicsContextWithGraphicsPort:[self context] flipped:[self flipped]];
 	[NSGraphicsContext setCurrentContext:newContext];
+#endif TARGET_OS_IPHONE
 	
-	NSAffineTransform* transform = [NSAffineTransform transform];
+	//NSAffineTransform* transform = [NSAffineTransform transform];
+	DKAffineTransform* transform = [DKAffineTransform transform];
 	[transform translateXBy:-mOrigin.x yBy:-mOrigin.y];
 	[transform concat];
 	
@@ -155,7 +192,11 @@
 {
 	NSAssert( mFocusLocked == YES, @"unlockFocus called without a matching lockFocus");
 	
-	[NSGraphicsContext restoreGraphicsState];
+#if TARGET_OS_IPHONE
+   CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
+   [NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 	mFocusLocked = NO;
 }
 

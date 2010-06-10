@@ -35,7 +35,8 @@
 - (void)			invert;
 
 - (NSPoint)			transformPoint:(NSPoint) p fromRect:(NSRect) rect;
-- (NSBezierPath*)	transformBezierPath:(NSBezierPath*) path;
+//- (NSBezierPath*)	transformBezierPath:(NSBezierPath*) path;
+- (DKBezierPath*)	transformBezierPath:(DKBezierPath*) path;
 
 @end
 

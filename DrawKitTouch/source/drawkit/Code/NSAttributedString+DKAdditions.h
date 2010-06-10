@@ -18,8 +18,10 @@
 @interface NSAttributedString (DKAdditions)
 
 - (void)	drawInRect:(NSRect) destRect withLayoutSize:(NSSize) layoutSize atAngle:(CGFloat) radians;
-- (void)	drawInRect:(NSRect) destRect withLayoutPath:(NSBezierPath*) layoutPath atAngle:(CGFloat) radians;
-- (void)	drawInRect:(NSRect) destRect withLayoutPath:(NSBezierPath*) layoutPath atAngle:(CGFloat) radians verticalPositioning:(DKVerticalTextAlignment) vAlign verticalOffset:(CGFloat) vPos;
+//- (void)	drawInRect:(NSRect) destRect withLayoutPath:(NSBezierPath*) layoutPath atAngle:(CGFloat) radians;
+//- (void)	drawInRect:(NSRect) destRect withLayoutPath:(NSBezierPath*) layoutPath atAngle:(CGFloat) radians verticalPositioning:(DKVerticalTextAlignment) vAlign verticalOffset:(CGFloat) vPos;
+- (void)	drawInRect:(NSRect) destRect withLayoutPath:(DKBezierPath*) layoutPath atAngle:(CGFloat) radians;
+- (void)	drawInRect:(NSRect) destRect withLayoutPath:(DKBezierPath*) layoutPath atAngle:(CGFloat) radians verticalPositioning:(DKVerticalTextAlignment) vAlign verticalOffset:(CGFloat) vPos;
 - (NSSize)	accurateSize;
 - (BOOL)	isHomogeneous;
 - (BOOL)	attributeIsHomogeneous:(NSString*) attrName;
@@ -38,19 +40,23 @@
 - (void)	convertFontsToFamily:(NSString*) family;
 - (void)	convertFontsToSize:(CGFloat) aSize;
 - (void)	convertFontsByAddingSize:(CGFloat) aSize;
+#ifndef TARGET_OS_IPHONE
 - (void)	convertFontsToHaveTrait:(NSFontTraitMask) traitMask;
 - (void)	convertFontsToNotHaveTrait:(NSFontTraitMask) traitMask;
 
 - (void)	changeFont:(id) sender;
 - (void)	changeAttributes:(id) sender;
+#endif TARGET_OS_IPHONE
 
 @end
 
 
 // can be used by text drawers everywhere
 
+#ifndef TARGET_OS_IPHONE
 NSLayoutManager*		sharedDrawingLayoutManager( void );
 NSLayoutManager*		sharedCaptureLayoutManager( void );
+#endif TARGET_OS_IPHONE
 
 
 

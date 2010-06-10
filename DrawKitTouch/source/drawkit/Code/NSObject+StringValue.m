@@ -8,7 +8,11 @@
 //
 
 #import "NSObject+StringValue.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#else
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 
 @implementation NSObject (StringValue)
 
@@ -60,7 +64,8 @@
 @end
 
 
-@implementation NSColor (StringValue)
+//@implementation NSColor (StringValue)
+@implementation DKColor (StringValue)
 
 - (NSString*)	stringValue
 {

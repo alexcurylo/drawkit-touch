@@ -36,11 +36,13 @@ NSString*	kDKCategoryManagerWillDeleteCategory		= @"kDKCategoryManagerWillDelete
 NSString*	kDKCategoryManagerDidDeleteCategory			= @"kDKCategoryManagerDidDeleteCategory";
 
 
+#ifndef TARGET_OS_IPHONE
 @interface DKCategoryManager (Private)
 
 - (DKCategoryManagerMenuInfo*) findInfoForMenu:(NSMenu*) aMenu;
 
 @end
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 @implementation DKCategoryManager
@@ -1148,8 +1150,12 @@ static id sDearchivingHelper = nil;
 		
 		// update menu item title:
 		
+#if TARGET_OS_IPHONE
+      twlog("need to implement renameCategory for iPhone?");
+#else
 		NSDictionary* info = [NSDictionary dictionaryWithObjectsAndKeys:catName, @"old_name", newname, @"new_name", nil];
 		[mMenusList makeObjectsPerformSelector:@selector(renameCategoryWithInfo:) withObject:info];
+#endif TARGET_OS_IPHONE
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDKCategoryManagerDidRenameCategory object:self];
 	}
@@ -1177,7 +1183,11 @@ static id sDearchivingHelper = nil;
 	[m_recentlyUsed removeAllObjects];
 	[m_recentlyAdded removeAllObjects];
 	
+#if TARGET_OS_IPHONE
+   twlog("need to implement removeAllCategories for iPhone?");
+#else
 	[mMenusList makeObjectsPerformSelector:@selector(removeAll)];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1229,7 +1239,11 @@ static id sDearchivingHelper = nil;
 
 		// update menus
 	
+#if TARGET_OS_IPHONE
+      twlog("need to implement addKey for iPhone?");
+#else
 		[mMenusList makeObjectsPerformSelector:@selector(addKey:) withObject:key];
+#endif TARGET_OS_IPHONE
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:kDKCategoryManagerDidAddKeyToCategory object:self];
@@ -1291,7 +1305,11 @@ static id sDearchivingHelper = nil;
 		// remove from menus - do this first so that the menus are still able to look up category membership
 		// of the object
 	
+#if TARGET_OS_IPHONE
+      twlog("need to implement removeKey for iPhone?");
+#else
 		[mMenusList makeObjectsPerformSelector:@selector(removeKey:) withObject:key];
+#endif TARGET_OS_IPHONE
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDKCategoryManagerWillRemoveKeyFromCategory object:self];
 		[ga removeObject:key];
@@ -1677,10 +1695,14 @@ static id sDearchivingHelper = nil;
 		
 		// manage the menus as required (will remove and add items to keep menu in synch. with array)
 		
+#if TARGET_OS_IPHONE
+      twlog("need to implement addKey for iPhone?");
+#else
 		if( !movedOnly )
 			[mMenusList makeObjectsPerformSelector:@selector(addRecentlyAddedOrUsedKey:) withObject:key];	
 		else
 			[mMenusList makeObjectsPerformSelector:@selector(syncRecentlyUsedMenuForKey:) withObject:key];
+#endif TARGET_OS_IPHONE
 			
 		return YES;
 	}
@@ -1726,7 +1748,11 @@ static id sDearchivingHelper = nil;
 	
 	// remove items(s) from managed menus also
 	
+#if TARGET_OS_IPHONE
+   twlog("need to implement removeKey for iPhone?");
+#else
 	[mMenusList makeObjectsPerformSelector:@selector(addRecentlyAddedOrUsedKey:) withObject:nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1947,6 +1973,7 @@ static id sDearchivingHelper = nil;
 #pragma mark -
 #pragma mark - supporting UI
 
+#ifndef TARGET_OS_IPHONE
 - (DKCategoryManagerMenuInfo*) findInfoForMenu:(NSMenu*) aMenu
 {
 	// private method - returns the management object for the given menu
@@ -1962,6 +1989,7 @@ static id sDearchivingHelper = nil;
 	
 	return nil;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1979,11 +2007,12 @@ static id sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				removeMenu:(NSMenu*) menu
 {
 	[mMenusList removeObject:[self findInfoForMenu:menu]];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -2001,10 +2030,12 @@ static id sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				updateMenusForKey:(NSString*) key
 {
 	[mMenusList makeObjectsPerformSelector:@selector(updateForKey:) withObject:key];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark - a menu with everything, organised hierarchically by category
@@ -2035,6 +2066,7 @@ static id sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				createMenuWithItemDelegate:(id) del isPopUpMenu:(BOOL) isPopUp
 {
 	NSInteger options = kDKIncludeRecentlyAddedItems | kDKIncludeRecentlyUsedItems;
@@ -2044,14 +2076,18 @@ static id sDearchivingHelper = nil;
 		
 	return [self createMenuWithItemDelegate:del options:options];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				createMenuWithItemDelegate:(id) del options:(DKCategoryMenuOptions) options
 {
 	return [self createMenuWithItemDelegate:del itemTarget:nil itemAction:NULL options:options];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				createMenuWithItemDelegate:(id) del itemTarget:(id) target itemAction:(SEL) action options:(DKCategoryMenuOptions) options
 {
 	DKCategoryManagerMenuInfo* menuInfo;
@@ -2063,6 +2099,7 @@ static id sDearchivingHelper = nil;
 	
 	return [menuInfo menu];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark - menus of just the categories
@@ -2081,10 +2118,12 @@ static id sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				categoriesMenuWithSelector:(SEL) sel target:(id) target
 {
 	return [self categoriesMenuWithSelector:sel target:target options:kDKIncludeRecentlyAddedItems | kDKIncludeRecentlyUsedItems | kDKIncludeAllItems];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -2103,6 +2142,7 @@ static id sDearchivingHelper = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				categoriesMenuWithSelector:(SEL) sel target:(id) target options:(NSInteger) options
 {
 	// create and populate a menu with the category names plus optionally the recent items lists
@@ -2114,7 +2154,7 @@ static id sDearchivingHelper = nil;
 	
 	return [menuInfo menu];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -2134,6 +2174,7 @@ static id sDearchivingHelper = nil;
 ///********************************************************************************************************************
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				checkItemsInMenu:(NSMenu*) menu forCategoriesContainingKey:(NSString*) key
 {
 	DKCategoryManagerMenuInfo* menuInfo = [self findInfoForMenu:menu];
@@ -2141,6 +2182,7 @@ static id sDearchivingHelper = nil;
 	if( menuInfo )
 		[menuInfo checkItemsForKey:key];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -2257,6 +2299,7 @@ static id sDearchivingHelper = nil;
 #pragma mark -
 #pragma mark DKCategoryManagerMenuInfo
 
+#ifndef TARGET_OS_IPHONE
 @interface DKCategoryManagerMenuInfo (Private)
 
 - (void)				createMenu;
@@ -3016,3 +3059,6 @@ static id sDearchivingHelper = nil;
 
 
 @end
+
+#endif TARGET_OS_IPHONE
+

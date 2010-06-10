@@ -285,14 +285,18 @@ void LogLoggingState(NSArray* eventTypeNames)
 		
 		NSAssert(nibName != nil, @"Expected valid nibName");
 #if TARGET_OS_IPHONE
-		if (![[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil])
+      [[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil];
+		if (!window)
+          NSLog(@"***Failed to load %@.nib", nibName);
+      else
+			mIsNibLoaded = YES;
 #else
       if (![NSBundle loadNibNamed:nibName owner:self])
-#endif TARGET_OS_IPHONE
       {
 			NSLog(@"***Failed to load %@.nib", nibName);
 			NSBeep();
-		}else
+		}
+     else
 		{
 			// Setup the window
 			NSWindow* window = [self window];
@@ -303,6 +307,7 @@ void LogLoggingState(NSArray* eventTypeNames)
 			[window center];
 			mIsNibLoaded = YES;
 		}
+#endif TARGET_OS_IPHONE
 	}
 }
 
@@ -355,10 +360,16 @@ void LogLoggingState(NSArray* eventTypeNames)
 {
 	[self loadNib];
 	
+#ifndef TARGET_OS_IPHONE
 	NSWindow* window = [self window];
+#endif TARGET_OS_IPHONE
 		
 	NSAssert(window != nil, @"Expected valid window");
+#if TARGET_OS_IPHONE
+	if (!window.superview)
+#else
 	if (![window isVisible])
+#endif TARGET_OS_IPHONE
 	{
 		NSUserDefaults* userPrefs = [NSUserDefaults standardUserDefaults];
 		NSDictionary* eventTypes = [self eventTypes];
@@ -371,18 +382,27 @@ void LogLoggingState(NSArray* eventTypeNames)
 		while ((eventKey = [keyEnumerator nextObject]) != nil)
 		{
 			NSAssert(eventKey != nil, @"Expected valid eventKey");
-			NSButton* eventButton = [eventTypes objectForKey:eventKey];
+			//NSButton* eventButton = [eventTypes objectForKey:eventKey];
+			DKButton* eventButton = [eventTypes objectForKey:eventKey];
 			
 			NSAssert(userPrefs != nil, @"Expected valid userPrefs");
 			BOOL prefState = [userPrefs boolForKey:eventKey];
 			
 			NSAssert(eventButton != nil, @"Expected valid eventButton");
+#if TARGET_OS_IPHONE
+			eventButton.selected = prefState;
+#else
 			[eventButton setState:(prefState) ? NSOnState : NSOffState];
+#endif TARGET_OS_IPHONE
 		}
 	}
 	
 	// Show the window
+#if TARGET_OS_IPHONE
+	[[UIApplication sharedApplication].keyWindow addSubview:window];
+#else
 	[window makeKeyAndOrderFront:nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -396,7 +416,8 @@ void LogLoggingState(NSArray* eventTypeNames)
 	for ( ; i < kNumStandardEventTypes; ++i)
 	{
 		NSString* eventKey = nil;
-		NSButton* eventButton = nil;
+		//NSButton* eventButton = nil;
+		DKButton* eventButton = nil;
 		switch (i)
 		{
 			case 0:
@@ -404,70 +425,90 @@ void LogLoggingState(NSArray* eventTypeNames)
 				eventButton = mUserActions;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
+#endif TARGET_OS_IPHONE
 			break;
 			case 1:
 				eventKey = kScriptEvent;
 				eventButton = mScriptingActions;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 2:
 				eventKey = kReactiveEvent;
 				eventButton = mReactiveEvents;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 3:
 				eventKey = kUIEvent;
 				eventButton = mInterfaceEvents;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 4:
 				eventKey = kFileEvent;
 				eventButton = mFileInteraction;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 5:
 				eventKey = kLifeEvent;
 				eventButton = mObjectLifetime;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 6:
 				eventKey = kStateEvent;
 				eventButton = mObjectChanges;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 7:
 				eventKey = kInfoEvent;
 				eventButton = mMiscInfo;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 8:
 				eventKey = kKVOEvent;
 				eventButton = mKVOInfo;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
-			break;
+#endif TARGET_OS_IPHONE
+            break;
 			case 9:
 				eventKey = kUndoEvent;
 				eventButton = mUndoInfo;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
+#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
+#endif TARGET_OS_IPHONE
 				break;
 			default:
 				NSAssert1(NO, @"Encountered invalid switch case (%u)", i);
@@ -511,12 +552,17 @@ void LogLoggingState(NSArray* eventTypeNames)
 	while ((eventKey = [keyEnumerator nextObject]) != nil)
 	{
 		NSAssert(eventKey != nil, @"Expected valid eventKey");
-		NSButton* eventButton = [eventTypes objectForKey:eventKey];
+		//NSButton* eventButton = [eventTypes objectForKey:eventKey];
+		DKButton* eventButton = [eventTypes objectForKey:eventKey];
 		
 		NSAssert(eventButton != nil, @"Expected valid eventButton");
 		int buttonState = [eventButton state];
 		
+#if TARGET_OS_IPHONE
+		if (buttonState == UIControlStateSelected)
+#else
 		if (buttonState == NSOnState)
+#endif TARGET_OS_IPHONE
 		{
 			[userPrefs setBool:YES forKey:eventKey];
 			LogEvent(eventKey, @"%@ has been turned on", eventKey);

@@ -12,10 +12,17 @@
 //#import <Cocoa/Cocoa.h>
 
 
-@class DKDrawing, DKLayer, DKDrawableObject, DKDrawingDocument, DKViewController;
+@class DKDrawing, DKLayer, DKDrawableObject, DKViewController;
+#ifndef TARGET_OS_IPHONE
+@class DKDrawingDocument;
+#endif TARGET_OS_IPHONE
 
 
+#if TARGET_OS_IPHONE
+@interface DKDrawkitInspectorBase : UIViewController
+#else
 @interface DKDrawkitInspectorBase : NSWindowController
+#endif TARGET_OS_IPHONE
 
 - (void)				documentDidChange:(NSNotification*) note;
 - (void)				layerDidChange:(NSNotification*) note;
@@ -26,14 +33,21 @@
 - (void)				redisplayContentForSubSelection:(NSSet*) subsel ofObject:(DKDrawableObject*) object;
 
 - (id)					selectedObjectForCurrentTarget;
-- (id)					selectedObjectForTargetWindow:(NSWindow*) window;
-- (DKDrawing*)			drawingForTargetWindow:(NSWindow*) window;
+//- (id)					selectedObjectForTargetWindow:(NSWindow*) window;
+- (id)					selectedObjectForTargetWindow:(DKWindow*) window;
+#if TARGET_OS_IPHONE
+- (DKDrawing*)			drawingForTargetView:(UIView*)view;
+#endif TARGET_OS_IPHONE
+//- (DKDrawing*)			drawingForTargetWindow:(NSWindow*) window;
+- (DKDrawing*)			drawingForTargetWindow:(DKWindow*) window;
 
 // these return what they say when the app is in a static state. When responding to documentDidChange:, they can return nil
 // because Cocoa's notifications are sent too early. In that case you should respond to the notification directly and
 // extract the relevant DK objects working back from the window. It sucks, I know.
 
+#ifndef TARGET_OS_IPHONE
 - (DKDrawingDocument*)	currentDocument;
+#endif TARGET_OS_IPHONE
 - (DKDrawing*)			currentDrawing;
 - (DKLayer*)			currentActiveLayer;
 

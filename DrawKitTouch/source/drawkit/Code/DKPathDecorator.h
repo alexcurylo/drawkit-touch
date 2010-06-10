@@ -18,8 +18,11 @@
 @interface DKPathDecorator : DKRasterizer <NSCoding, NSCopying>
 {
 @private
-	NSImage*			m_image;
+	//NSImage*			m_image;
+	DKImage*			m_image;
+#ifndef TARGET_OS_IPHONE
 	NSPDFImageRep*		m_pdf;
+#endif TARGET_OS_IPHONE
 	CGFloat				m_scale;
 	CGFloat				m_interval;
 	CGFloat				m_leader;
@@ -40,14 +43,20 @@
 	NSMutableArray*		mScaleRandCache;
 }
 
-+ (DKPathDecorator*)	pathDecoratorWithImage:(NSImage*) image;
+//+ (DKPathDecorator*)	pathDecoratorWithImage:(NSImage*) image;
++ (DKPathDecorator*)	pathDecoratorWithImage:(DKImage*) image;
 
-- (id)					initWithImage:(NSImage*) image;
+//- (id)					initWithImage:(NSImage*) image;
+- (id)					initWithImage:(DKImage*) image;
 
-- (void)				setImage:(NSImage*) image;
-- (NSImage*)			image;
+//- (void)				setImage:(NSImage*) image;
+//- (NSImage*)			image;
+- (void)				setImage:(DKImage*) image;
+- (DKImage*)			image;
 - (void)				setUpCache;
+#ifndef TARGET_OS_IPHONE
 - (void)				setPDFImageRep:(NSPDFImageRep*) rep;
+#endif TARGET_OS_IPHONE
 
 - (void)				setScale:(CGFloat) scale;
 - (CGFloat)				scale;

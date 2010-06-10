@@ -21,9 +21,11 @@
 - (void)					setRoughness:(CGFloat) roughness;
 - (CGFloat)					roughness;
 
-- (NSString*)				pathKeyForPath:(NSBezierPath*) path;
+//- (NSString*)				pathKeyForPath:(NSBezierPath*) path;
+- (NSString*)				pathKeyForPath:(DKBezierPath*) path;
 - (void)					invalidateCache;
-- (NSBezierPath*)			roughPathFromPath:(NSBezierPath*) path;
+//- (NSBezierPath*)			roughPathFromPath:(NSBezierPath*) path;
+- (DKBezierPath*)			roughPathFromPath:(DKBezierPath*) path;
 
 @end
 

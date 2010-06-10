@@ -8,6 +8,10 @@
 ///
 ///**********************************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+#error there is no NSDocument equivalent in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 #import "DKDrawingDocument.h"
 #import "DKUndoManager.h"
 #import "DKDrawing.h"
@@ -16,7 +20,11 @@
 #import "DKGridLayer.h"
 #import "DKGuideLayer.h"
 #import "DKObjectDrawingLayer.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKPrintDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKStyleRegistry.h"
 #import "DKDrawingInfoLayer.h"
 #import "LogEvent.h"
@@ -300,7 +308,8 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 ///
 ///********************************************************************************************************************
 
-- (DKViewController*)	makeControllerForView:(NSView*) aView
+//- (DKViewController*)	makeControllerForView:(NSView*) aView
+- (DKViewController*)	makeControllerForView:(DKDrawingView*) aView
 {
 	NSAssert( aView != nil, @"attempt to make controller when view is nil");
 	
@@ -335,7 +344,8 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 	DKDrawing* dr = [[DKDrawing alloc] initWithSize:[DKDrawing isoA2PaperSize:NO]];
 
 	// attach a grid layer
-	[DKGridLayer setDefaultGridThemeColour:[[NSColor brownColor] colorWithAlphaComponent:0.5]];
+	//[DKGridLayer setDefaultGridThemeColour:[[NSColor brownColor] colorWithAlphaComponent:0.5]];
+	[DKGridLayer setDefaultGridThemeColour:[[DKColor brownColor] colorWithAlphaComponent:0.5]];
 	DKGridLayer* grid = [[DKGridLayer alloc] init];
 	[dr addLayer:grid];
 	[grid tweakDrawingMargins];
@@ -499,7 +509,9 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 		}
 	}
 	
+#ifndef TARGET_OS_IPHONE
 	NSBeep();
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -865,7 +877,7 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				printShowingPrintPanel:(BOOL) flag
 {
 	DKDrawingView*		pdv = [[self makePrintDrawingView] retain];
@@ -885,6 +897,7 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 	
 	[pdv release];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -957,12 +970,13 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 /// notes:			this forwards the printInfo to the main view so that it can display page breaks
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				setPrintInfo:(NSPrintInfo*) printInfo
 {
 	[super setPrintInfo:printInfo];
 	[mMainDrawingView setPrintInfo:printInfo];
 }
+#endif TARGET_OS_IPHONE
 
 
 //#define qTestAutoBackendCreation 1
@@ -1057,7 +1071,7 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 	[super dealloc];
 }
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)		validateMenuItem:(NSMenuItem*) item
 {
 	SEL action = [item action];
@@ -1081,7 +1095,7 @@ static NSMutableDictionary*		sFileExportBindings = nil;
 	
 	return [super validateMenuItem:item];
 }
-
+#endif TARGET_OS_IPHONE
 
 @end
 

@@ -25,12 +25,14 @@
 	// return the default pattern , which is based on some image - unlikely to be really useful so might be
 	// better to do something else here???
 	
-	return [[[self alloc] initWithImage:[NSImage imageNamed:@"Rect"]] autorelease];
+	//return [[[self alloc] initWithImage:[NSImage imageNamed:@"Rect"]] autorelease];
+	return [[[self alloc] initWithImage:[DKImage imageNamed:@"Rect"]] autorelease];
 }
 
 
 
-+ (DKFillPattern*)	fillPatternWithImage:(NSImage*) image
+//+ (DKFillPattern*)	fillPatternWithImage:(NSImage*) image
++ (DKFillPattern*)	fillPatternWithImage:(DKImage*) image
 {
 	//return [[[self alloc] initWithImage:image] autorelease];
    // added cast to avoid conflict with iPhone SDK function ...alex
@@ -58,12 +60,14 @@
 #pragma mark -
 - (void)			fillRect:(NSRect) rect
 {
-	NSBezierPath*	fp = [NSBezierPath bezierPathWithRect:rect];
+	//NSBezierPath*	fp = [NSBezierPath bezierPathWithRect:rect];
+	DKBezierPath*	fp = [DKBezierPath bezierPathWithRect:rect];
 	[self renderPath:fp];
 }
 
 
-- (void)			drawPatternInPath:(NSBezierPath*) aPath
+//- (void)			drawPatternInPath:(NSBezierPath*) aPath
+- (void)			drawPatternInPath:(DKBezierPath*) aPath
 {
 	// this does all the work. It repeatedly draws the motif path to fill <rect> using the set spacing. If the spacings are zero, a suitable offset is
 	// calculated from the path bounds. The offsets set the row/column spacing and the odd row/col offset. All patterns are based on the
@@ -144,7 +148,8 @@
 	// set up a transform that will transform each motif point to allow for the object's
 	// origin and angle, so the pattern can be rotated as a pattern rather than as individual images
 	
-	NSAffineTransform*	tfm = RotationTransform( angle, cp );
+	//NSAffineTransform*	tfm = RotationTransform( angle, cp );
+	DKAffineTransform*	tfm = RotationTransform( angle, cp );
 	NSPoint				wobblePoint = NSZeroPoint;
 	CGFloat				tempAngle = mangle;
 	
@@ -189,7 +194,8 @@
 					ra = [[mMotifAngleRandCache objectAtIndex:mPlacementCount] floatValue];
 				else
 				{
-					ra = [DKRandom randomPositiveOrNegativeNumber] * 2.0 * pi * [self motifAngleRandomness];
+					//ra = [DKRandom randomPositiveOrNegativeNumber] * 2.0 * pi * [self motifAngleRandomness];
+					ra = [DKRandom randomPositiveOrNegativeNumber] * 2.0 * M_PI * [self motifAngleRandomness];
 					[mMotifAngleRandCache addObject:[NSNumber numberWithFloat:ra]];
 				}
 				tempAngle = mangle;
@@ -355,7 +361,8 @@
 
 #pragma mark -
 #pragma mark As a DKPathDecorator
-- (id)				initWithImage:(NSImage*) image
+//- (id)				initWithImage:(NSImage*) image
+- (id)				initWithImage:(DKImage*) image
 {
 	self = [super initWithImage:image];
 	if(self != nil)
@@ -435,7 +442,8 @@
 }
 
 
-- (void)			renderPath:(NSBezierPath*) fPath
+//- (void)			renderPath:(NSBezierPath*) fPath
+- (void)			renderPath:(DKBezierPath*) fPath
 {
 	if ([self image] != nil )
 	{

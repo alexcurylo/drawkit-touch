@@ -30,16 +30,30 @@
 		FA52003611A851080074DA15 /* DKDrawKitMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52003411A851080074DA15 /* DKDrawKitMacros.h */; };
 		FA52003F11A851850074DA15 /* DKDrawKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52003E11A851850074DA15 /* DKDrawKit.h */; };
 		FA52004011A851850074DA15 /* DKDrawKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52003E11A851850074DA15 /* DKDrawKit.h */; };
-		FA52006B11A8563D0074DA15 /* DKDrawingView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52006911A8563D0074DA15 /* DKDrawingView.h */; };
-		FA52006C11A8563D0074DA15 /* DKDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA52006A11A8563D0074DA15 /* DKDrawingView.m */; };
-		FA52006D11A8563D0074DA15 /* DKDrawingView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52006911A8563D0074DA15 /* DKDrawingView.h */; };
-		FA52006E11A8563D0074DA15 /* DKDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA52006A11A8563D0074DA15 /* DKDrawingView.m */; };
-		FA52007411A856E60074DA15 /* GCZoomView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52007211A856E60074DA15 /* GCZoomView.h */; };
-		FA52007511A856E60074DA15 /* GCZoomView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA52007311A856E60074DA15 /* GCZoomView.m */; };
-		FA52007611A856E60074DA15 /* GCZoomView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52007211A856E60074DA15 /* GCZoomView.h */; };
-		FA52007711A856E60074DA15 /* GCZoomView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA52007311A856E60074DA15 /* GCZoomView.m */; };
 		FA52007D11A857E30074DA15 /* DKTDesktopPlaceholders.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52007C11A857E30074DA15 /* DKTDesktopPlaceholders.h */; };
 		FA52007E11A857E30074DA15 /* DKTDesktopPlaceholders.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52007C11A857E30074DA15 /* DKTDesktopPlaceholders.h */; };
+		FA9FC53311B6BF0900064CCA /* DKTDrawingView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */; };
+		FA9FC53411B6BF0900064CCA /* DKTDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */; };
+		FA9FC53511B6BF0900064CCA /* DKTDrawingView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */; };
+		FA9FC53611B6BF0900064CCA /* DKTDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */; };
+		FA9FC55211B6C12800064CCA /* DKTZoomView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC55011B6C12800064CCA /* DKTZoomView.h */; };
+		FA9FC55311B6C12800064CCA /* DKTZoomView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC55111B6C12800064CCA /* DKTZoomView.m */; };
+		FA9FC55411B6C12800064CCA /* DKTZoomView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC55011B6C12800064CCA /* DKTZoomView.h */; };
+		FA9FC55511B6C12800064CCA /* DKTZoomView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC55111B6C12800064CCA /* DKTZoomView.m */; };
+		FA9FC6E211B761FB00064CCA /* UIColor+DKTAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC6E011B761FB00064CCA /* UIColor+DKTAdditions.h */; };
+		FA9FC6E311B761FB00064CCA /* UIColor+DKTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC6E111B761FB00064CCA /* UIColor+DKTAdditions.m */; };
+		FA9FC6E411B761FB00064CCA /* UIColor+DKTAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC6E011B761FB00064CCA /* UIColor+DKTAdditions.h */; };
+		FA9FC6E511B761FB00064CCA /* UIColor+DKTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC6E111B761FB00064CCA /* UIColor+DKTAdditions.m */; };
+		FA9FCAF511B97AA400064CCA /* DKCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FCAF411B97AA400064CCA /* DKCompatibility.h */; };
+		FA9FCAF611B97AA400064CCA /* DKCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FCAF411B97AA400064CCA /* DKCompatibility.h */; };
+		FA9FCB1311B97EBE00064CCA /* DKCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FCB1211B97EBE00064CCA /* DKCompatibility.m */; };
+		FA9FCB1411B97EBE00064CCA /* DKCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FCB1211B97EBE00064CCA /* DKCompatibility.m */; };
+		FA9FCC2611B9FE3000064CCA /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9FCC2511B9FE3000064CCA /* MobileCoreServices.framework */; };
+		FA9FCC2711B9FE3000064CCA /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9FCC2511B9FE3000064CCA /* MobileCoreServices.framework */; };
+		FA9FD06F11BD85FF00064CCA /* FVCGColorSpaceDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FD06D11BD85FF00064CCA /* FVCGColorSpaceDescription.h */; };
+		FA9FD07011BD85FF00064CCA /* FVCGColorSpaceDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD06E11BD85FF00064CCA /* FVCGColorSpaceDescription.m */; };
+		FA9FD07111BD85FF00064CCA /* FVCGColorSpaceDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FD06D11BD85FF00064CCA /* FVCGColorSpaceDescription.h */; };
+		FA9FD07211BD85FF00064CCA /* FVCGColorSpaceDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD06E11BD85FF00064CCA /* FVCGColorSpaceDescription.m */; };
 		FAA5B6A5119EFE6400CDD184 /* TWDebugging.h in Headers */ = {isa = PBXBuildFile; fileRef = FAA5B6A3119EFE6400CDD184 /* TWDebugging.h */; };
 		FAA5B6A6119EFE6400CDD184 /* TWDebugging.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA5B6A4119EFE6400CDD184 /* TWDebugging.m */; };
 		FAA5B746119F28C000CDD184 /* UIApplication+DKTAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FAA5B744119F28C000CDD184 /* UIApplication+DKTAdditions.h */; };
@@ -49,6 +63,18 @@
 		FAA5B7A9119F334700CDD184 /* TWDebugging.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA5B6A4119EFE6400CDD184 /* TWDebugging.m */; };
 		FAA5B7AA119F334700CDD184 /* UIApplication+DKTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA5B745119F28C000CDD184 /* UIApplication+DKTAdditions.m */; };
 		FAA5B7AC119F334700CDD184 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		FABA1E8511BE04130011301D /* DKTShadow.h in Headers */ = {isa = PBXBuildFile; fileRef = FABA1E8311BE04130011301D /* DKTShadow.h */; };
+		FABA1E8611BE04130011301D /* DKTShadow.m in Sources */ = {isa = PBXBuildFile; fileRef = FABA1E8411BE04130011301D /* DKTShadow.m */; };
+		FABA1E8711BE04130011301D /* DKTShadow.h in Headers */ = {isa = PBXBuildFile; fileRef = FABA1E8311BE04130011301D /* DKTShadow.h */; };
+		FABA1E8811BE04130011301D /* DKTShadow.m in Sources */ = {isa = PBXBuildFile; fileRef = FABA1E8411BE04130011301D /* DKTShadow.m */; };
+		FABA23CE11C0B4A30011301D /* DKTAffineTransform.h in Headers */ = {isa = PBXBuildFile; fileRef = FABA23CC11C0B4A30011301D /* DKTAffineTransform.h */; };
+		FABA23CF11C0B4A30011301D /* DKTAffineTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = FABA23CD11C0B4A30011301D /* DKTAffineTransform.m */; };
+		FABA23D011C0B4A30011301D /* DKTAffineTransform.h in Headers */ = {isa = PBXBuildFile; fileRef = FABA23CC11C0B4A30011301D /* DKTAffineTransform.h */; };
+		FABA23D111C0B4A30011301D /* DKTAffineTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = FABA23CD11C0B4A30011301D /* DKTAffineTransform.m */; };
+		FABA247011C1445E0011301D /* UIBezierPath+DKTAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FABA246E11C1445E0011301D /* UIBezierPath+DKTAdditions.h */; };
+		FABA247111C1445E0011301D /* UIBezierPath+DKTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FABA246F11C1445E0011301D /* UIBezierPath+DKTAdditions.m */; };
+		FABA247211C1445E0011301D /* UIBezierPath+DKTAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FABA246E11C1445E0011301D /* UIBezierPath+DKTAdditions.h */; };
+		FABA247311C1445E0011301D /* UIBezierPath+DKTAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FABA246F11C1445E0011301D /* UIBezierPath+DKTAdditions.m */; };
 		FADE31E511A86FDB00EF6715 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADE31E411A86FDB00EF6715 /* CoreGraphics.framework */; };
 		FADE31E611A86FDB00EF6715 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADE31E411A86FDB00EF6715 /* CoreGraphics.framework */; };
 		FADE322611A8A85700EF6715 /* DKToolController.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE322411A8A85700EF6715 /* DKToolController.h */; };
@@ -89,10 +115,6 @@
 		FADE32F511A8B39F00EF6715 /* NSBezierPath+Shapes.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE32F311A8B39F00EF6715 /* NSBezierPath+Shapes.m */; };
 		FADE32F611A8B39F00EF6715 /* NSBezierPath+Shapes.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE32F211A8B39F00EF6715 /* NSBezierPath+Shapes.h */; };
 		FADE32F711A8B39F00EF6715 /* NSBezierPath+Shapes.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE32F311A8B39F00EF6715 /* NSBezierPath+Shapes.m */; };
-		FADE330211A8B44300EF6715 /* NSColor+DKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE330011A8B44300EF6715 /* NSColor+DKAdditions.h */; };
-		FADE330311A8B44300EF6715 /* NSColor+DKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE330111A8B44300EF6715 /* NSColor+DKAdditions.m */; };
-		FADE330411A8B44300EF6715 /* NSColor+DKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE330011A8B44300EF6715 /* NSColor+DKAdditions.h */; };
-		FADE330511A8B44300EF6715 /* NSColor+DKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE330111A8B44300EF6715 /* NSColor+DKAdditions.m */; };
 		FADE333511A8B75F00EF6715 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADE333411A8B75F00EF6715 /* UIKit.framework */; };
 		FADE333611A8B75F00EF6715 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADE333411A8B75F00EF6715 /* UIKit.framework */; };
 		FADE339011A8C14000EF6715 /* NSBezierPath+Geometry.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE338E11A8C14000EF6715 /* NSBezierPath+Geometry.h */; };
@@ -353,10 +375,6 @@
 		FADE395B11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE395911A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.m */; };
 		FADE395C11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE395811A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.h */; };
 		FADE395D11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE395911A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.m */; };
-		FADE396011A9AB5400EF6715 /* DKAuxiliaryMenus.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE395E11A9AB5400EF6715 /* DKAuxiliaryMenus.h */; };
-		FADE396111A9AB5400EF6715 /* DKAuxiliaryMenus.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE395F11A9AB5400EF6715 /* DKAuxiliaryMenus.m */; };
-		FADE396211A9AB5400EF6715 /* DKAuxiliaryMenus.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE395E11A9AB5400EF6715 /* DKAuxiliaryMenus.h */; };
-		FADE396311A9AB5400EF6715 /* DKAuxiliaryMenus.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE395F11A9AB5400EF6715 /* DKAuxiliaryMenus.m */; };
 		FADE396D11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE396A11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.h */; };
 		FADE396E11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE396B11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.m */; };
 		FADE396F11A9ACCD00EF6715 /* NSBezierPath-OAInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE396C11A9ACCD00EF6715 /* NSBezierPath-OAInternal.h */; };
@@ -375,14 +393,6 @@
 		FADE3A0011A9B94600EF6715 /* NSObject+StringValue.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE39FE11A9B94600EF6715 /* NSObject+StringValue.m */; };
 		FADE3A0111A9B94600EF6715 /* NSObject+StringValue.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE39FD11A9B94600EF6715 /* NSObject+StringValue.h */; };
 		FADE3A0211A9B94600EF6715 /* NSObject+StringValue.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE39FE11A9B94600EF6715 /* NSObject+StringValue.m */; };
-		FADE3A0511A9B97200EF6715 /* DKBezierTextContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A0311A9B97200EF6715 /* DKBezierTextContainer.h */; };
-		FADE3A0611A9B97200EF6715 /* DKBezierTextContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A0411A9B97200EF6715 /* DKBezierTextContainer.m */; };
-		FADE3A0711A9B97200EF6715 /* DKBezierTextContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A0311A9B97200EF6715 /* DKBezierTextContainer.h */; };
-		FADE3A0811A9B97200EF6715 /* DKBezierTextContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A0411A9B97200EF6715 /* DKBezierTextContainer.m */; };
-		FADE3A0B11A9B98500EF6715 /* DKBezierLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A0911A9B98500EF6715 /* DKBezierLayoutManager.h */; };
-		FADE3A0C11A9B98500EF6715 /* DKBezierLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A0A11A9B98500EF6715 /* DKBezierLayoutManager.m */; };
-		FADE3A0D11A9B98500EF6715 /* DKBezierLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A0911A9B98500EF6715 /* DKBezierLayoutManager.h */; };
-		FADE3A0E11A9B98500EF6715 /* DKBezierLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A0A11A9B98500EF6715 /* DKBezierLayoutManager.m */; };
 		FADE3A1111A9B99F00EF6715 /* NSAttributedString+DKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A0F11A9B99F00EF6715 /* NSAttributedString+DKAdditions.h */; };
 		FADE3A1211A9B99F00EF6715 /* NSAttributedString+DKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A1011A9B99F00EF6715 /* NSAttributedString+DKAdditions.m */; };
 		FADE3A1311A9B99F00EF6715 /* NSAttributedString+DKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A0F11A9B99F00EF6715 /* NSAttributedString+DKAdditions.h */; };
@@ -395,10 +405,6 @@
 		FADE3A1E11A9BA0A00EF6715 /* DKTextSubstitutor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A1C11A9BA0A00EF6715 /* DKTextSubstitutor.m */; };
 		FADE3A1F11A9BA0A00EF6715 /* DKTextSubstitutor.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A1B11A9BA0A00EF6715 /* DKTextSubstitutor.h */; };
 		FADE3A2011A9BA0A00EF6715 /* DKTextSubstitutor.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A1C11A9BA0A00EF6715 /* DKTextSubstitutor.m */; };
-		FADE3A2311A9BA2300EF6715 /* DKGreekingLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A2111A9BA2300EF6715 /* DKGreekingLayoutManager.h */; };
-		FADE3A2411A9BA2300EF6715 /* DKGreekingLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A2211A9BA2300EF6715 /* DKGreekingLayoutManager.m */; };
-		FADE3A2511A9BA2300EF6715 /* DKGreekingLayoutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A2111A9BA2300EF6715 /* DKGreekingLayoutManager.h */; };
-		FADE3A2611A9BA2300EF6715 /* DKGreekingLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A2211A9BA2300EF6715 /* DKGreekingLayoutManager.m */; };
 		FADE3A6111A9BFAC00EF6715 /* NSString+DKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A5F11A9BFAC00EF6715 /* NSString+DKAdditions.h */; };
 		FADE3A6211A9BFAC00EF6715 /* NSString+DKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3A6011A9BFAC00EF6715 /* NSString+DKAdditions.m */; };
 		FADE3A6311A9BFAC00EF6715 /* NSString+DKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3A5F11A9BFAC00EF6715 /* NSString+DKAdditions.h */; };
@@ -563,10 +569,6 @@
 		FADE3CFD11AA268000EF6715 /* DKDrawing+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3CFB11AA268000EF6715 /* DKDrawing+Export.m */; };
 		FADE3CFE11AA268000EF6715 /* DKDrawing+Export.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3CFA11AA268000EF6715 /* DKDrawing+Export.h */; };
 		FADE3CFF11AA268000EF6715 /* DKDrawing+Export.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3CFB11AA268000EF6715 /* DKDrawing+Export.m */; };
-		FADE3D0311AA26FA00EF6715 /* DKDrawingDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D0111AA26FA00EF6715 /* DKDrawingDocument.h */; };
-		FADE3D0411AA26FA00EF6715 /* DKDrawingDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D0211AA26FA00EF6715 /* DKDrawingDocument.m */; };
-		FADE3D0511AA26FA00EF6715 /* DKDrawingDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D0111AA26FA00EF6715 /* DKDrawingDocument.h */; };
-		FADE3D0611AA26FA00EF6715 /* DKDrawingDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D0211AA26FA00EF6715 /* DKDrawingDocument.m */; };
 		FADE3D0911AA271400EF6715 /* DKDrawkitInspectorBase.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D0711AA271400EF6715 /* DKDrawkitInspectorBase.h */; };
 		FADE3D0A11AA271400EF6715 /* DKDrawkitInspectorBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D0811AA271400EF6715 /* DKDrawkitInspectorBase.m */; };
 		FADE3D0B11AA271400EF6715 /* DKDrawkitInspectorBase.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D0711AA271400EF6715 /* DKDrawkitInspectorBase.h */; };
@@ -587,10 +589,6 @@
 		FADE3D4811AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D4611AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m */; };
 		FADE3D4911AA2A4A00EF6715 /* DKBSPDirectObjectStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D4511AA2A4A00EF6715 /* DKBSPDirectObjectStorage.h */; };
 		FADE3D4A11AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D4611AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m */; };
-		FADE3D9A11AA303E00EF6715 /* DKDrawingView+Drop.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D9811AA303E00EF6715 /* DKDrawingView+Drop.h */; };
-		FADE3D9B11AA303E00EF6715 /* DKDrawingView+Drop.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D9911AA303E00EF6715 /* DKDrawingView+Drop.m */; };
-		FADE3D9C11AA303E00EF6715 /* DKDrawingView+Drop.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D9811AA303E00EF6715 /* DKDrawingView+Drop.h */; };
-		FADE3D9D11AA303E00EF6715 /* DKDrawingView+Drop.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D9911AA303E00EF6715 /* DKDrawingView+Drop.m */; };
 		FADE3DA011AA307C00EF6715 /* DKGradient+UISupport.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D9E11AA307C00EF6715 /* DKGradient+UISupport.h */; };
 		FADE3DA111AA307C00EF6715 /* DKGradient+UISupport.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3D9F11AA307C00EF6715 /* DKGradient+UISupport.m */; };
 		FADE3DA211AA307C00EF6715 /* DKGradient+UISupport.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3D9E11AA307C00EF6715 /* DKGradient+UISupport.h */; };
@@ -611,10 +609,6 @@
 		FADE3DDC11AA339B00EF6715 /* DKStyle+SimpleAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3DDA11AA339B00EF6715 /* DKStyle+SimpleAccess.m */; };
 		FADE3DDD11AA339B00EF6715 /* DKStyle+SimpleAccess.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3DD911AA339B00EF6715 /* DKStyle+SimpleAccess.h */; };
 		FADE3DDE11AA339B00EF6715 /* DKStyle+SimpleAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3DDA11AA339B00EF6715 /* DKStyle+SimpleAccess.m */; };
-		FADE3DE311AA33F100EF6715 /* DKStyleReader.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3DE111AA33F100EF6715 /* DKStyleReader.h */; };
-		FADE3DE411AA33F100EF6715 /* DKStyleReader.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3DE211AA33F100EF6715 /* DKStyleReader.m */; };
-		FADE3DE511AA33F100EF6715 /* DKStyleReader.h in Headers */ = {isa = PBXBuildFile; fileRef = FADE3DE111AA33F100EF6715 /* DKStyleReader.h */; };
-		FADE3DE611AA33F100EF6715 /* DKStyleReader.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE3DE211AA33F100EF6715 /* DKStyleReader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -640,11 +634,22 @@
 		FA52002D11A850770074DA15 /* DKDrawKit_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKDrawKit_Prefix.pch; path = Code/DKDrawKit_Prefix.pch; sourceTree = "<group>"; };
 		FA52003411A851080074DA15 /* DKDrawKitMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKDrawKitMacros.h; path = Code/DKDrawKitMacros.h; sourceTree = "<group>"; };
 		FA52003E11A851850074DA15 /* DKDrawKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKDrawKit.h; path = Code/DKDrawKit.h; sourceTree = "<group>"; };
-		FA52006911A8563D0074DA15 /* DKDrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKDrawingView.h; path = Code/DKDrawingView.h; sourceTree = "<group>"; };
-		FA52006A11A8563D0074DA15 /* DKDrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKDrawingView.m; path = Code/DKDrawingView.m; sourceTree = "<group>"; };
 		FA52007211A856E60074DA15 /* GCZoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCZoomView.h; path = Code/GCZoomView.h; sourceTree = "<group>"; };
 		FA52007311A856E60074DA15 /* GCZoomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCZoomView.m; path = Code/GCZoomView.m; sourceTree = "<group>"; };
 		FA52007C11A857E30074DA15 /* DKTDesktopPlaceholders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTDesktopPlaceholders.h; sourceTree = "<group>"; };
+		FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTDrawingView.h; path = Code/DKTDrawingView.h; sourceTree = "<group>"; };
+		FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKTDrawingView.m; path = Code/DKTDrawingView.m; sourceTree = "<group>"; };
+		FA9FC55011B6C12800064CCA /* DKTZoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTZoomView.h; path = Code/DKTZoomView.h; sourceTree = "<group>"; };
+		FA9FC55111B6C12800064CCA /* DKTZoomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKTZoomView.m; path = Code/DKTZoomView.m; sourceTree = "<group>"; };
+		FA9FC55711B6C16600064CCA /* DKDrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKDrawingView.h; path = Code/DKDrawingView.h; sourceTree = "<group>"; };
+		FA9FC55811B6C16600064CCA /* DKDrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKDrawingView.m; path = Code/DKDrawingView.m; sourceTree = "<group>"; };
+		FA9FC6E011B761FB00064CCA /* UIColor+DKTAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+DKTAdditions.h"; path = "Code/UIColor+DKTAdditions.h"; sourceTree = "<group>"; };
+		FA9FC6E111B761FB00064CCA /* UIColor+DKTAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+DKTAdditions.m"; path = "Code/UIColor+DKTAdditions.m"; sourceTree = "<group>"; };
+		FA9FCAF411B97AA400064CCA /* DKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKCompatibility.h; path = Code/DKCompatibility.h; sourceTree = "<group>"; };
+		FA9FCB1211B97EBE00064CCA /* DKCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKCompatibility.m; path = Code/DKCompatibility.m; sourceTree = "<group>"; };
+		FA9FCC2511B9FE3000064CCA /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		FA9FD06D11BD85FF00064CCA /* FVCGColorSpaceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FVCGColorSpaceDescription.h; sourceTree = "<group>"; };
+		FA9FD06E11BD85FF00064CCA /* FVCGColorSpaceDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FVCGColorSpaceDescription.m; sourceTree = "<group>"; };
 		FAA5B69A119EFCFF00CDD184 /* DKTProjectBase.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = DKTProjectBase.xcconfig; sourceTree = "<group>"; };
 		FAA5B69B119EFCFF00CDD184 /* DKTProjectDebug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = DKTProjectDebug.xcconfig; sourceTree = "<group>"; };
 		FAA5B69C119EFCFF00CDD184 /* DKTProjectPrefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTProjectPrefix.pch; sourceTree = "<group>"; };
@@ -671,6 +676,12 @@
 		FAA5B84E119F725000CDD184 /* marker_v_top.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = marker_v_top.tif; sourceTree = "<group>"; };
 		FAA5B84F119F725000CDD184 /* Rect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rect.png; sourceTree = "<group>"; };
 		FAA5B863119F753900CDD184 /* framework.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = framework.plist; sourceTree = "<group>"; };
+		FABA1E8311BE04130011301D /* DKTShadow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTShadow.h; path = Code/DKTShadow.h; sourceTree = "<group>"; };
+		FABA1E8411BE04130011301D /* DKTShadow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKTShadow.m; path = Code/DKTShadow.m; sourceTree = "<group>"; };
+		FABA23CC11C0B4A30011301D /* DKTAffineTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTAffineTransform.h; path = Code/DKTAffineTransform.h; sourceTree = "<group>"; };
+		FABA23CD11C0B4A30011301D /* DKTAffineTransform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKTAffineTransform.m; path = Code/DKTAffineTransform.m; sourceTree = "<group>"; };
+		FABA246E11C1445E0011301D /* UIBezierPath+DKTAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIBezierPath+DKTAdditions.h"; path = "Code/UIBezierPath+DKTAdditions.h"; sourceTree = "<group>"; };
+		FABA246F11C1445E0011301D /* UIBezierPath+DKTAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIBezierPath+DKTAdditions.m"; path = "Code/UIBezierPath+DKTAdditions.m"; sourceTree = "<group>"; };
 		FADE31E411A86FDB00EF6715 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		FADE322411A8A85700EF6715 /* DKToolController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKToolController.h; path = Code/DKToolController.h; sourceTree = "<group>"; };
 		FADE322511A8A85700EF6715 /* DKToolController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKToolController.m; path = Code/DKToolController.m; sourceTree = "<group>"; };
@@ -988,6 +999,7 @@
 				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
 				FADE31E511A86FDB00EF6715 /* CoreGraphics.framework in Frameworks */,
 				FADE333511A8B75F00EF6715 /* UIKit.framework in Frameworks */,
+				FA9FCC2611B9FE3000064CCA /* MobileCoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -998,6 +1010,7 @@
 				FAA5B7AC119F334700CDD184 /* Foundation.framework in Frameworks */,
 				FADE31E611A86FDB00EF6715 /* CoreGraphics.framework in Frameworks */,
 				FADE333611A8B75F00EF6715 /* UIKit.framework in Frameworks */,
+				FA9FCC2711B9FE3000064CCA /* MobileCoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1032,6 +1045,7 @@
 			children = (
 				FADE31E411A86FDB00EF6715 /* CoreGraphics.framework */,
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+				FA9FCC2511B9FE3000064CCA /* MobileCoreServices.framework */,
 				FADE333411A8B75F00EF6715 /* UIKit.framework */,
 			);
 			name = Frameworks;
@@ -1041,8 +1055,11 @@
 			isa = PBXGroup;
 			children = (
 				FA52003E11A851850074DA15 /* DKDrawKit.h */,
+				FA9FCAF411B97AA400064CCA /* DKCompatibility.h */,
+				FA9FCB1211B97EBE00064CCA /* DKCompatibility.m */,
 				FA52004211A852DA0074DA15 /* Classes */,
 				FA52004311A852E80074DA15 /* Other Sources */,
+				FA9FC55E11B6C18800064CCA /* Removed from DrawKitTouch */,
 				FADE3CDE11AA253600EF6715 /* Not in DrawKit project? */,
 			);
 			path = drawkit;
@@ -1065,6 +1082,7 @@
 				FADE33B811A8C26000EF6715 /* gpc */,
 				FADE32C711A8B06900EF6715 /* LogEvent */,
 				FADE3B5211AA015800EF6715 /* potrace */,
+				FA9FD06C11BD85FF00064CCA /* FVCGColorSpaceDescription */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -1113,8 +1131,6 @@
 				FADE386611A99A8200EF6715 /* DKImageDataManager.m */,
 				FADE387311A99AFE00EF6715 /* DKKeyedUnarchiver.h */,
 				FADE387411A99AFE00EF6715 /* DKKeyedUnarchiver.m */,
-				FADE395E11A9AB5400EF6715 /* DKAuxiliaryMenus.h */,
-				FADE395F11A9AB5400EF6715 /* DKAuxiliaryMenus.m */,
 				FADE3B0511A9D85F00EF6715 /* DKUnarchivingHelper.h */,
 				FADE3B0611A9D85F00EF6715 /* DKUnarchivingHelper.m */,
 				FADE38B211A99D1A00EF6715 /* DKPasteboardInfo.h */,
@@ -1130,16 +1146,51 @@
 		FA52006F11A856510074DA15 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FA52006911A8563D0074DA15 /* DKDrawingView.h */,
-				FA52006A11A8563D0074DA15 /* DKDrawingView.m */,
-				FADE3D9811AA303E00EF6715 /* DKDrawingView+Drop.h */,
-				FADE3D9911AA303E00EF6715 /* DKDrawingView+Drop.m */,
-				FA52007211A856E60074DA15 /* GCZoomView.h */,
-				FA52007311A856E60074DA15 /* GCZoomView.m */,
+				FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */,
+				FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */,
+				FA9FC55011B6C12800064CCA /* DKTZoomView.h */,
+				FA9FC55111B6C12800064CCA /* DKTZoomView.m */,
 				FADE378011A9901700EF6715 /* DKSelectionPDFView.h */,
 				FADE378111A9901700EF6715 /* DKSelectionPDFView.m */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		FA9FC55E11B6C18800064CCA /* Removed from DrawKitTouch */ = {
+			isa = PBXGroup;
+			children = (
+				FADE395E11A9AB5400EF6715 /* DKAuxiliaryMenus.h */,
+				FADE395F11A9AB5400EF6715 /* DKAuxiliaryMenus.m */,
+				FADE3A0911A9B98500EF6715 /* DKBezierLayoutManager.h */,
+				FADE3A0A11A9B98500EF6715 /* DKBezierLayoutManager.m */,
+				FADE3A0311A9B97200EF6715 /* DKBezierTextContainer.h */,
+				FADE3A0411A9B97200EF6715 /* DKBezierTextContainer.m */,
+				FADE3CCC11AA232500EF6715 /* DKCIFilterRastGroup.h */,
+				FADE3CCD11AA232500EF6715 /* DKCIFilterRastGroup.m */,
+				FADE3D0111AA26FA00EF6715 /* DKDrawingDocument.h */,
+				FADE3D0211AA26FA00EF6715 /* DKDrawingDocument.m */,
+				FA9FC55711B6C16600064CCA /* DKDrawingView.h */,
+				FA9FC55811B6C16600064CCA /* DKDrawingView.m */,
+				FADE3D9811AA303E00EF6715 /* DKDrawingView+Drop.h */,
+				FADE3D9911AA303E00EF6715 /* DKDrawingView+Drop.m */,
+				FADE3A2111A9BA2300EF6715 /* DKGreekingLayoutManager.h */,
+				FADE3A2211A9BA2300EF6715 /* DKGreekingLayoutManager.m */,
+				FA52007211A856E60074DA15 /* GCZoomView.h */,
+				FA52007311A856E60074DA15 /* GCZoomView.m */,
+				FADE330011A8B44300EF6715 /* NSColor+DKAdditions.h */,
+				FADE330111A8B44300EF6715 /* NSColor+DKAdditions.m */,
+			);
+			name = "Removed from DrawKitTouch";
+			sourceTree = "<group>";
+		};
+		FA9FD06C11BD85FF00064CCA /* FVCGColorSpaceDescription */ = {
+			isa = PBXGroup;
+			children = (
+				FA9FD06D11BD85FF00064CCA /* FVCGColorSpaceDescription.h */,
+				FA9FD06E11BD85FF00064CCA /* FVCGColorSpaceDescription.m */,
+			);
+			name = FVCGColorSpaceDescription;
+			path = ThirdParty/FVCGColorSpaceDescription;
 			sourceTree = "<group>";
 		};
 		FAA5B699119EFCFF00CDD184 /* config */ = {
@@ -1295,12 +1346,6 @@
 			isa = PBXGroup;
 			children = (
 				FADE32F911A8B3C700EF6715 /* Bezier Paths */,
-				FADE3A0311A9B97200EF6715 /* DKBezierTextContainer.h */,
-				FADE3A0411A9B97200EF6715 /* DKBezierTextContainer.m */,
-				FADE3A0911A9B98500EF6715 /* DKBezierLayoutManager.h */,
-				FADE3A0A11A9B98500EF6715 /* DKBezierLayoutManager.m */,
-				FADE3A2111A9BA2300EF6715 /* DKGreekingLayoutManager.h */,
-				FADE3A2211A9BA2300EF6715 /* DKGreekingLayoutManager.m */,
 				FADE3AD811A9D3BE00EF6715 /* DKCategoryManager.h */,
 				FADE3AD911A9D3BE00EF6715 /* DKCategoryManager.m */,
 				FADE3B8511AA02CE00EF6715 /* DKColourQuantizer.h */,
@@ -1317,12 +1362,14 @@
 				FADE3A1611A9B9ED00EF6715 /* DKShapeFactory.m */,
 				FADE386D11A99AD400EF6715 /* DKUniqueID.h */,
 				FADE386E11A99AD400EF6715 /* DKUniqueID.m */,
+				FABA23CC11C0B4A30011301D /* DKTAffineTransform.h */,
+				FABA23CD11C0B4A30011301D /* DKTAffineTransform.m */,
 				FADE394C11A9AAE300EF6715 /* NSAffineTransform+DKAdditions.h */,
 				FADE394D11A9AAE300EF6715 /* NSAffineTransform+DKAdditions.m */,
 				FADE3A0F11A9B99F00EF6715 /* NSAttributedString+DKAdditions.h */,
 				FADE3A1011A9B99F00EF6715 /* NSAttributedString+DKAdditions.m */,
-				FADE330011A8B44300EF6715 /* NSColor+DKAdditions.h */,
-				FADE330111A8B44300EF6715 /* NSColor+DKAdditions.m */,
+				FA9FC6E011B761FB00064CCA /* UIColor+DKTAdditions.h */,
+				FA9FC6E111B761FB00064CCA /* UIColor+DKTAdditions.m */,
 				FADE38A611A99CC700EF6715 /* NSDictionary+DeepCopy.h */,
 				FADE38A711A99CC700EF6715 /* NSDictionary+DeepCopy.m */,
 				FADE3B4A11AA00E900EF6715 /* NSImage+Tracing.h */,
@@ -1331,6 +1378,8 @@
 				FADE3B0011A9D84500EF6715 /* NSMutableArray+DKAdditions.m */,
 				FADE39FD11A9B94600EF6715 /* NSObject+StringValue.h */,
 				FADE39FE11A9B94600EF6715 /* NSObject+StringValue.m */,
+				FABA1E8311BE04130011301D /* DKTShadow.h */,
+				FABA1E8411BE04130011301D /* DKTShadow.m */,
 				FADE38FE11A9A15800EF6715 /* NSShadow+Scaling.h */,
 				FADE38FF11A9A15800EF6715 /* NSShadow+Scaling.m */,
 				FADE3A5F11A9BFAC00EF6715 /* NSString+DKAdditions.h */,
@@ -1344,6 +1393,8 @@
 		FADE32F911A8B3C700EF6715 /* Bezier Paths */ = {
 			isa = PBXGroup;
 			children = (
+				FABA246E11C1445E0011301D /* UIBezierPath+DKTAdditions.h */,
+				FABA246F11C1445E0011301D /* UIBezierPath+DKTAdditions.m */,
 				FADE396C11A9ACCD00EF6715 /* NSBezierPath-OAInternal.h */,
 				FADE396A11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.h */,
 				FADE396B11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.m */,
@@ -1639,8 +1690,6 @@
 		FADE3CCB11AA231300EF6715 /* Groups */ = {
 			isa = PBXGroup;
 			children = (
-				FADE3CCC11AA232500EF6715 /* DKCIFilterRastGroup.h */,
-				FADE3CCD11AA232500EF6715 /* DKCIFilterRastGroup.m */,
 				FADE3CD211AA233B00EF6715 /* DKQuartzBlendRastGroup.h */,
 				FADE3CD311AA233B00EF6715 /* DKQuartzBlendRastGroup.m */,
 			);
@@ -1665,8 +1714,6 @@
 		FADE3D0011AA26D900EF6715 /* UI Support */ = {
 			isa = PBXGroup;
 			children = (
-				FADE3D0111AA26FA00EF6715 /* DKDrawingDocument.h */,
-				FADE3D0211AA26FA00EF6715 /* DKDrawingDocument.m */,
 				FADE3D0711AA271400EF6715 /* DKDrawkitInspectorBase.h */,
 				FADE3D0811AA271400EF6715 /* DKDrawkitInspectorBase.m */,
 			);
@@ -1707,8 +1754,6 @@
 				FA52002F11A850770074DA15 /* DKDrawKit_Prefix.pch in Headers */,
 				FA52003511A851080074DA15 /* DKDrawKitMacros.h in Headers */,
 				FA52003F11A851850074DA15 /* DKDrawKit.h in Headers */,
-				FA52006B11A8563D0074DA15 /* DKDrawingView.h in Headers */,
-				FA52007411A856E60074DA15 /* GCZoomView.h in Headers */,
 				FA52007D11A857E30074DA15 /* DKTDesktopPlaceholders.h in Headers */,
 				FADE322611A8A85700EF6715 /* DKToolController.h in Headers */,
 				FADE323311A8A8A500EF6715 /* DKViewController.h in Headers */,
@@ -1720,7 +1765,6 @@
 				FADE32AA11A8AE1000EF6715 /* GCThreadQueue.h in Headers */,
 				FADE32CA11A8B06900EF6715 /* LogEvent.h in Headers */,
 				FADE32F411A8B39F00EF6715 /* NSBezierPath+Shapes.h in Headers */,
-				FADE330211A8B44300EF6715 /* NSColor+DKAdditions.h in Headers */,
 				FADE339011A8C14000EF6715 /* NSBezierPath+Geometry.h in Headers */,
 				FADE33AE11A8C1B900EF6715 /* NSBezierPath+Editing.h in Headers */,
 				FADE33B011A8C1B900EF6715 /* NSBezierPath+GPC.h in Headers */,
@@ -1790,18 +1834,14 @@
 				FADE394E11A9AAE300EF6715 /* NSAffineTransform+DKAdditions.h in Headers */,
 				FADE395411A9AAFA00EF6715 /* NSBezierPath+Combinatorial.h in Headers */,
 				FADE395A11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.h in Headers */,
-				FADE396011A9AB5400EF6715 /* DKAuxiliaryMenus.h in Headers */,
 				FADE396D11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.h in Headers */,
 				FADE396F11A9ACCD00EF6715 /* NSBezierPath-OAInternal.h in Headers */,
 				FADE39AA11A9B29700EF6715 /* DKGradientExtensions.h in Headers */,
 				FADE39F911A9B92400EF6715 /* NSBezierPath+Text.h in Headers */,
 				FADE39FF11A9B94600EF6715 /* NSObject+StringValue.h in Headers */,
-				FADE3A0511A9B97200EF6715 /* DKBezierTextContainer.h in Headers */,
-				FADE3A0B11A9B98500EF6715 /* DKBezierLayoutManager.h in Headers */,
 				FADE3A1111A9B99F00EF6715 /* NSAttributedString+DKAdditions.h in Headers */,
 				FADE3A1711A9B9ED00EF6715 /* DKShapeFactory.h in Headers */,
 				FADE3A1D11A9BA0A00EF6715 /* DKTextSubstitutor.h in Headers */,
-				FADE3A2311A9BA2300EF6715 /* DKGreekingLayoutManager.h in Headers */,
 				FADE3A6111A9BFAC00EF6715 /* NSString+DKAdditions.h in Headers */,
 				FADE3ABB11A9D1E100EF6715 /* DKPathDecorator.h in Headers */,
 				FADE3ADA11A9D3BE00EF6715 /* DKCategoryManager.h in Headers */,
@@ -1846,19 +1886,24 @@
 				FADE3CC711AA22D000EF6715 /* DKZigZagStroke.h in Headers */,
 				FADE3CD411AA233B00EF6715 /* DKQuartzBlendRastGroup.h in Headers */,
 				FADE3CFC11AA268000EF6715 /* DKDrawing+Export.h in Headers */,
-				FADE3D0311AA26FA00EF6715 /* DKDrawingDocument.h in Headers */,
 				FADE3D0911AA271400EF6715 /* DKDrawkitInspectorBase.h in Headers */,
 				FADE3D3511AA29E400EF6715 /* DKDrawingInfoLayer.h in Headers */,
 				FADE3D3B11AA29F800EF6715 /* DKImageOverlayLayer.h in Headers */,
 				FADE3D4111AA2A2F00EF6715 /* DKObjectDrawingLayer+Duplication.h in Headers */,
 				FADE3D4711AA2A4A00EF6715 /* DKBSPDirectObjectStorage.h in Headers */,
-				FADE3D9A11AA303E00EF6715 /* DKDrawingView+Drop.h in Headers */,
 				FADE3DA011AA307C00EF6715 /* DKGradient+UISupport.h in Headers */,
 				FADE3DA611AA309A00EF6715 /* DKSweptAngleGradient.h in Headers */,
 				FADE3DAF11AA30BE00EF6715 /* DKZigZagFill.h in Headers */,
 				FADE3DD511AA336B00EF6715 /* DKRouteFinder.h in Headers */,
 				FADE3DDB11AA339B00EF6715 /* DKStyle+SimpleAccess.h in Headers */,
-				FADE3DE311AA33F100EF6715 /* DKStyleReader.h in Headers */,
+				FA9FC53311B6BF0900064CCA /* DKTDrawingView.h in Headers */,
+				FA9FC55211B6C12800064CCA /* DKTZoomView.h in Headers */,
+				FA9FC6E211B761FB00064CCA /* UIColor+DKTAdditions.h in Headers */,
+				FA9FCAF511B97AA400064CCA /* DKCompatibility.h in Headers */,
+				FA9FD06F11BD85FF00064CCA /* FVCGColorSpaceDescription.h in Headers */,
+				FABA1E8511BE04130011301D /* DKTShadow.h in Headers */,
+				FABA23CE11C0B4A30011301D /* DKTAffineTransform.h in Headers */,
+				FABA247011C1445E0011301D /* UIBezierPath+DKTAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1871,8 +1916,6 @@
 				FA52003011A850770074DA15 /* DKDrawKit_Prefix.pch in Headers */,
 				FA52003611A851080074DA15 /* DKDrawKitMacros.h in Headers */,
 				FA52004011A851850074DA15 /* DKDrawKit.h in Headers */,
-				FA52006D11A8563D0074DA15 /* DKDrawingView.h in Headers */,
-				FA52007611A856E60074DA15 /* GCZoomView.h in Headers */,
 				FA52007E11A857E30074DA15 /* DKTDesktopPlaceholders.h in Headers */,
 				FADE322811A8A85700EF6715 /* DKToolController.h in Headers */,
 				FADE323511A8A8A500EF6715 /* DKViewController.h in Headers */,
@@ -1884,7 +1927,6 @@
 				FADE32AC11A8AE1000EF6715 /* GCThreadQueue.h in Headers */,
 				FADE32CC11A8B06900EF6715 /* LogEvent.h in Headers */,
 				FADE32F611A8B39F00EF6715 /* NSBezierPath+Shapes.h in Headers */,
-				FADE330411A8B44300EF6715 /* NSColor+DKAdditions.h in Headers */,
 				FADE339211A8C14000EF6715 /* NSBezierPath+Geometry.h in Headers */,
 				FADE33B211A8C1B900EF6715 /* NSBezierPath+Editing.h in Headers */,
 				FADE33B411A8C1B900EF6715 /* NSBezierPath+GPC.h in Headers */,
@@ -1954,18 +1996,14 @@
 				FADE395011A9AAE300EF6715 /* NSAffineTransform+DKAdditions.h in Headers */,
 				FADE395611A9AAFA00EF6715 /* NSBezierPath+Combinatorial.h in Headers */,
 				FADE395C11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.h in Headers */,
-				FADE396211A9AB5400EF6715 /* DKAuxiliaryMenus.h in Headers */,
 				FADE397011A9ACCD00EF6715 /* NSBezierPath-OAExtensions.h in Headers */,
 				FADE397211A9ACCD00EF6715 /* NSBezierPath-OAInternal.h in Headers */,
 				FADE39AC11A9B29700EF6715 /* DKGradientExtensions.h in Headers */,
 				FADE39FB11A9B92400EF6715 /* NSBezierPath+Text.h in Headers */,
 				FADE3A0111A9B94600EF6715 /* NSObject+StringValue.h in Headers */,
-				FADE3A0711A9B97200EF6715 /* DKBezierTextContainer.h in Headers */,
-				FADE3A0D11A9B98500EF6715 /* DKBezierLayoutManager.h in Headers */,
 				FADE3A1311A9B99F00EF6715 /* NSAttributedString+DKAdditions.h in Headers */,
 				FADE3A1911A9B9ED00EF6715 /* DKShapeFactory.h in Headers */,
 				FADE3A1F11A9BA0A00EF6715 /* DKTextSubstitutor.h in Headers */,
-				FADE3A2511A9BA2300EF6715 /* DKGreekingLayoutManager.h in Headers */,
 				FADE3A6311A9BFAC00EF6715 /* NSString+DKAdditions.h in Headers */,
 				FADE3ABD11A9D1E100EF6715 /* DKPathDecorator.h in Headers */,
 				FADE3ADC11A9D3BE00EF6715 /* DKCategoryManager.h in Headers */,
@@ -2010,19 +2048,24 @@
 				FADE3CC911AA22D000EF6715 /* DKZigZagStroke.h in Headers */,
 				FADE3CD611AA233B00EF6715 /* DKQuartzBlendRastGroup.h in Headers */,
 				FADE3CFE11AA268000EF6715 /* DKDrawing+Export.h in Headers */,
-				FADE3D0511AA26FA00EF6715 /* DKDrawingDocument.h in Headers */,
 				FADE3D0B11AA271400EF6715 /* DKDrawkitInspectorBase.h in Headers */,
 				FADE3D3711AA29E400EF6715 /* DKDrawingInfoLayer.h in Headers */,
 				FADE3D3D11AA29F800EF6715 /* DKImageOverlayLayer.h in Headers */,
 				FADE3D4311AA2A2F00EF6715 /* DKObjectDrawingLayer+Duplication.h in Headers */,
 				FADE3D4911AA2A4A00EF6715 /* DKBSPDirectObjectStorage.h in Headers */,
-				FADE3D9C11AA303E00EF6715 /* DKDrawingView+Drop.h in Headers */,
 				FADE3DA211AA307C00EF6715 /* DKGradient+UISupport.h in Headers */,
 				FADE3DA811AA309A00EF6715 /* DKSweptAngleGradient.h in Headers */,
 				FADE3DB111AA30BE00EF6715 /* DKZigZagFill.h in Headers */,
 				FADE3DD711AA336B00EF6715 /* DKRouteFinder.h in Headers */,
 				FADE3DDD11AA339B00EF6715 /* DKStyle+SimpleAccess.h in Headers */,
-				FADE3DE511AA33F100EF6715 /* DKStyleReader.h in Headers */,
+				FA9FC53511B6BF0900064CCA /* DKTDrawingView.h in Headers */,
+				FA9FC55411B6C12800064CCA /* DKTZoomView.h in Headers */,
+				FA9FC6E411B761FB00064CCA /* UIColor+DKTAdditions.h in Headers */,
+				FA9FCAF611B97AA400064CCA /* DKCompatibility.h in Headers */,
+				FA9FD07111BD85FF00064CCA /* FVCGColorSpaceDescription.h in Headers */,
+				FABA1E8711BE04130011301D /* DKTShadow.h in Headers */,
+				FABA23D011C0B4A30011301D /* DKTAffineTransform.h in Headers */,
+				FABA247211C1445E0011301D /* UIBezierPath+DKTAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2107,8 +2150,6 @@
 			files = (
 				FAA5B6A6119EFE6400CDD184 /* TWDebugging.m in Sources */,
 				FAA5B747119F28C000CDD184 /* UIApplication+DKTAdditions.m in Sources */,
-				FA52006C11A8563D0074DA15 /* DKDrawingView.m in Sources */,
-				FA52007511A856E60074DA15 /* GCZoomView.m in Sources */,
 				FADE322711A8A85700EF6715 /* DKToolController.m in Sources */,
 				FADE323411A8A8A500EF6715 /* DKViewController.m in Sources */,
 				FADE325211A8A99B00EF6715 /* DKDrawing.m in Sources */,
@@ -2118,7 +2159,6 @@
 				FADE32AB11A8AE1000EF6715 /* GCThreadQueue.m in Sources */,
 				FADE32CB11A8B06900EF6715 /* LogEvent.m in Sources */,
 				FADE32F511A8B39F00EF6715 /* NSBezierPath+Shapes.m in Sources */,
-				FADE330311A8B44300EF6715 /* NSColor+DKAdditions.m in Sources */,
 				FADE339111A8C14000EF6715 /* NSBezierPath+Geometry.m in Sources */,
 				FADE33AF11A8C1B900EF6715 /* NSBezierPath+Editing.m in Sources */,
 				FADE33B111A8C1B900EF6715 /* NSBezierPath+GPC.m in Sources */,
@@ -2179,17 +2219,13 @@
 				FADE394F11A9AAE300EF6715 /* NSAffineTransform+DKAdditions.m in Sources */,
 				FADE395511A9AAFA00EF6715 /* NSBezierPath+Combinatorial.m in Sources */,
 				FADE395B11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.m in Sources */,
-				FADE396111A9AB5400EF6715 /* DKAuxiliaryMenus.m in Sources */,
 				FADE396E11A9ACCD00EF6715 /* NSBezierPath-OAExtensions.m in Sources */,
 				FADE39AB11A9B29700EF6715 /* DKGradientExtensions.m in Sources */,
 				FADE39FA11A9B92400EF6715 /* NSBezierPath+Text.m in Sources */,
 				FADE3A0011A9B94600EF6715 /* NSObject+StringValue.m in Sources */,
-				FADE3A0611A9B97200EF6715 /* DKBezierTextContainer.m in Sources */,
-				FADE3A0C11A9B98500EF6715 /* DKBezierLayoutManager.m in Sources */,
 				FADE3A1211A9B99F00EF6715 /* NSAttributedString+DKAdditions.m in Sources */,
 				FADE3A1811A9B9ED00EF6715 /* DKShapeFactory.m in Sources */,
 				FADE3A1E11A9BA0A00EF6715 /* DKTextSubstitutor.m in Sources */,
-				FADE3A2411A9BA2300EF6715 /* DKGreekingLayoutManager.m in Sources */,
 				FADE3A6211A9BFAC00EF6715 /* NSString+DKAdditions.m in Sources */,
 				FADE3ABC11A9D1E100EF6715 /* DKPathDecorator.m in Sources */,
 				FADE3ADB11A9D3BE00EF6715 /* DKCategoryManager.m in Sources */,
@@ -2228,19 +2264,24 @@
 				FADE3CC811AA22D000EF6715 /* DKZigZagStroke.m in Sources */,
 				FADE3CD511AA233B00EF6715 /* DKQuartzBlendRastGroup.m in Sources */,
 				FADE3CFD11AA268000EF6715 /* DKDrawing+Export.m in Sources */,
-				FADE3D0411AA26FA00EF6715 /* DKDrawingDocument.m in Sources */,
 				FADE3D0A11AA271400EF6715 /* DKDrawkitInspectorBase.m in Sources */,
 				FADE3D3611AA29E400EF6715 /* DKDrawingInfoLayer.m in Sources */,
 				FADE3D3C11AA29F800EF6715 /* DKImageOverlayLayer.m in Sources */,
 				FADE3D4211AA2A2F00EF6715 /* DKObjectDrawingLayer+Duplication.m in Sources */,
 				FADE3D4811AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m in Sources */,
-				FADE3D9B11AA303E00EF6715 /* DKDrawingView+Drop.m in Sources */,
 				FADE3DA111AA307C00EF6715 /* DKGradient+UISupport.m in Sources */,
 				FADE3DA711AA309A00EF6715 /* DKSweptAngleGradient.m in Sources */,
 				FADE3DB011AA30BE00EF6715 /* DKZigZagFill.m in Sources */,
 				FADE3DD611AA336B00EF6715 /* DKRouteFinder.m in Sources */,
 				FADE3DDC11AA339B00EF6715 /* DKStyle+SimpleAccess.m in Sources */,
-				FADE3DE411AA33F100EF6715 /* DKStyleReader.m in Sources */,
+				FA9FC53411B6BF0900064CCA /* DKTDrawingView.m in Sources */,
+				FA9FC55311B6C12800064CCA /* DKTZoomView.m in Sources */,
+				FA9FC6E311B761FB00064CCA /* UIColor+DKTAdditions.m in Sources */,
+				FA9FCB1311B97EBE00064CCA /* DKCompatibility.m in Sources */,
+				FA9FD07011BD85FF00064CCA /* FVCGColorSpaceDescription.m in Sources */,
+				FABA1E8611BE04130011301D /* DKTShadow.m in Sources */,
+				FABA23CF11C0B4A30011301D /* DKTAffineTransform.m in Sources */,
+				FABA247111C1445E0011301D /* UIBezierPath+DKTAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2250,8 +2291,6 @@
 			files = (
 				FAA5B7A9119F334700CDD184 /* TWDebugging.m in Sources */,
 				FAA5B7AA119F334700CDD184 /* UIApplication+DKTAdditions.m in Sources */,
-				FA52006E11A8563D0074DA15 /* DKDrawingView.m in Sources */,
-				FA52007711A856E60074DA15 /* GCZoomView.m in Sources */,
 				FADE322911A8A85700EF6715 /* DKToolController.m in Sources */,
 				FADE323611A8A8A500EF6715 /* DKViewController.m in Sources */,
 				FADE325411A8A99B00EF6715 /* DKDrawing.m in Sources */,
@@ -2261,7 +2300,6 @@
 				FADE32AD11A8AE1000EF6715 /* GCThreadQueue.m in Sources */,
 				FADE32CD11A8B06900EF6715 /* LogEvent.m in Sources */,
 				FADE32F711A8B39F00EF6715 /* NSBezierPath+Shapes.m in Sources */,
-				FADE330511A8B44300EF6715 /* NSColor+DKAdditions.m in Sources */,
 				FADE339311A8C14000EF6715 /* NSBezierPath+Geometry.m in Sources */,
 				FADE33B311A8C1B900EF6715 /* NSBezierPath+Editing.m in Sources */,
 				FADE33B511A8C1B900EF6715 /* NSBezierPath+GPC.m in Sources */,
@@ -2322,17 +2360,13 @@
 				FADE395111A9AAE300EF6715 /* NSAffineTransform+DKAdditions.m in Sources */,
 				FADE395711A9AAFA00EF6715 /* NSBezierPath+Combinatorial.m in Sources */,
 				FADE395D11A9AB2700EF6715 /* DKObjectDrawingLayer+Alignment.m in Sources */,
-				FADE396311A9AB5400EF6715 /* DKAuxiliaryMenus.m in Sources */,
 				FADE397111A9ACCD00EF6715 /* NSBezierPath-OAExtensions.m in Sources */,
 				FADE39AD11A9B29700EF6715 /* DKGradientExtensions.m in Sources */,
 				FADE39FC11A9B92400EF6715 /* NSBezierPath+Text.m in Sources */,
 				FADE3A0211A9B94600EF6715 /* NSObject+StringValue.m in Sources */,
-				FADE3A0811A9B97200EF6715 /* DKBezierTextContainer.m in Sources */,
-				FADE3A0E11A9B98500EF6715 /* DKBezierLayoutManager.m in Sources */,
 				FADE3A1411A9B99F00EF6715 /* NSAttributedString+DKAdditions.m in Sources */,
 				FADE3A1A11A9B9ED00EF6715 /* DKShapeFactory.m in Sources */,
 				FADE3A2011A9BA0A00EF6715 /* DKTextSubstitutor.m in Sources */,
-				FADE3A2611A9BA2300EF6715 /* DKGreekingLayoutManager.m in Sources */,
 				FADE3A6411A9BFAC00EF6715 /* NSString+DKAdditions.m in Sources */,
 				FADE3ABE11A9D1E100EF6715 /* DKPathDecorator.m in Sources */,
 				FADE3ADD11A9D3BE00EF6715 /* DKCategoryManager.m in Sources */,
@@ -2371,19 +2405,24 @@
 				FADE3CCA11AA22D000EF6715 /* DKZigZagStroke.m in Sources */,
 				FADE3CD711AA233B00EF6715 /* DKQuartzBlendRastGroup.m in Sources */,
 				FADE3CFF11AA268000EF6715 /* DKDrawing+Export.m in Sources */,
-				FADE3D0611AA26FA00EF6715 /* DKDrawingDocument.m in Sources */,
 				FADE3D0C11AA271400EF6715 /* DKDrawkitInspectorBase.m in Sources */,
 				FADE3D3811AA29E400EF6715 /* DKDrawingInfoLayer.m in Sources */,
 				FADE3D3E11AA29F800EF6715 /* DKImageOverlayLayer.m in Sources */,
 				FADE3D4411AA2A2F00EF6715 /* DKObjectDrawingLayer+Duplication.m in Sources */,
 				FADE3D4A11AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m in Sources */,
-				FADE3D9D11AA303E00EF6715 /* DKDrawingView+Drop.m in Sources */,
 				FADE3DA311AA307C00EF6715 /* DKGradient+UISupport.m in Sources */,
 				FADE3DA911AA309A00EF6715 /* DKSweptAngleGradient.m in Sources */,
 				FADE3DB211AA30BE00EF6715 /* DKZigZagFill.m in Sources */,
 				FADE3DD811AA336B00EF6715 /* DKRouteFinder.m in Sources */,
 				FADE3DDE11AA339B00EF6715 /* DKStyle+SimpleAccess.m in Sources */,
-				FADE3DE611AA33F100EF6715 /* DKStyleReader.m in Sources */,
+				FA9FC53611B6BF0900064CCA /* DKTDrawingView.m in Sources */,
+				FA9FC55511B6C12800064CCA /* DKTZoomView.m in Sources */,
+				FA9FC6E511B761FB00064CCA /* UIColor+DKTAdditions.m in Sources */,
+				FA9FCB1411B97EBE00064CCA /* DKCompatibility.m in Sources */,
+				FA9FD07211BD85FF00064CCA /* FVCGColorSpaceDescription.m in Sources */,
+				FABA1E8811BE04130011301D /* DKTShadow.m in Sources */,
+				FABA23D111C0B4A30011301D /* DKTAffineTransform.m in Sources */,
+				FABA247311C1445E0011301D /* UIBezierPath+DKTAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2433,7 +2472,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FAA5B69B119EFCFF00CDD184 /* DKTProjectDebug.xcconfig */;
 			buildSettings = {
-				SDKROOT = iphoneos3.1.3;
 			};
 			name = Debug;
 		};
@@ -2441,7 +2479,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FAA5B69D119EFCFF00CDD184 /* DKTProjectRelease.xcconfig */;
 			buildSettings = {
-				SDKROOT = iphoneos3.1.3;
 			};
 			name = Release;
 		};

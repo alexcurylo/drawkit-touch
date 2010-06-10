@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKDistortionTransform.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 27/10/2006.
 ///
@@ -239,11 +239,13 @@ static NSPoint	Map( NSPoint inPoint, NSSize sourceSize, NSPoint quad[4])
 }
 
 
-- (NSBezierPath*)	transformBezierPath:(NSBezierPath*) path
+//- (NSBezierPath*)	transformBezierPath:(NSBezierPath*) path
+- (DKBezierPath*)	transformBezierPath:(DKBezierPath*) path
 {
 	// transforms every point in the path, making a new path
 	
-	NSBezierPath*		newPath = [path copy];
+	//NSBezierPath*		newPath = [path copy];
+	DKBezierPath*		newPath = [path copy];
 	NSPoint				ap[3];
 	NSBezierPathElement	elem;
 	int					i, ec;

@@ -26,10 +26,12 @@ typedef enum
 DKPathUnflatteningPolicy;
 
 
-@interface NSBezierPath (GPC)
+//@interface NSBezierPath (GPC)
+@interface DKBezierPath (GPC)
 
 
-+ (NSBezierPath*)		bezierPathWithGPCPolygon:(gpc_polygon*) poly;
+//+ (NSBezierPath*)		bezierPathWithGPCPolygon:(gpc_polygon*) poly;
++ (DKBezierPath*)		bezierPathWithGPCPolygon:(gpc_polygon*) poly;
 + (void)				setPathUnflatteningPolicy:(DKPathUnflatteningPolicy) sp;
 + (DKPathUnflatteningPolicy) pathUnflatteningPolicy;
 
@@ -38,21 +40,29 @@ DKPathUnflatteningPolicy;
 
 - (NSInteger)			subPathCountStartingAtElement:(NSInteger) se;
 
-- (BOOL)				intersectsPath:(NSBezierPath*) path;
-- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op;
-- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op unflattenResult:(BOOL) uf;
+//- (BOOL)				intersectsPath:(NSBezierPath*) path;
+//- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op;
+//- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op unflattenResult:(BOOL) uf;
+- (BOOL)				intersectsPath:(DKBezierPath*) path;
+- (DKBezierPath*)		pathFromPath:(DKBezierPath*) otherPath usingBooleanOperation:(gpc_op) op;
+- (DKBezierPath*)		pathFromPath:(DKBezierPath*) otherPath usingBooleanOperation:(gpc_op) op unflattenResult:(BOOL) uf;
 
 
 // boolean ops on bezier paths yay!
 
-- (NSBezierPath*)		pathFromUnionWithPath:(NSBezierPath*) otherPath;
-- (NSBezierPath*)		pathFromIntersectionWithPath:(NSBezierPath*) otherPath;
-- (NSBezierPath*)		pathFromDifferenceWithPath:(NSBezierPath*) otherPath;
-- (NSBezierPath*)		pathFromExclusiveOrWithPath:(NSBezierPath*) otherPath;
+//- (NSBezierPath*)		pathFromUnionWithPath:(NSBezierPath*) otherPath;
+//- (NSBezierPath*)		pathFromIntersectionWithPath:(NSBezierPath*) otherPath;
+//- (NSBezierPath*)		pathFromDifferenceWithPath:(NSBezierPath*) otherPath;
+//- (NSBezierPath*)		pathFromExclusiveOrWithPath:(NSBezierPath*) otherPath;
+- (DKBezierPath*)		pathFromUnionWithPath:(DKBezierPath*) otherPath;
+- (DKBezierPath*)		pathFromIntersectionWithPath:(DKBezierPath*) otherPath;
+- (DKBezierPath*)		pathFromDifferenceWithPath:(DKBezierPath*) otherPath;
+- (DKBezierPath*)		pathFromExclusiveOrWithPath:(DKBezierPath*) otherPath;
 
 // unflatten a poly-based path using curve fitting
 
-- (NSBezierPath*)		bezierPathByUnflatteningPath;
+//- (NSBezierPath*)		bezierPathByUnflatteningPath;
+- (DKBezierPath*)		bezierPathByUnflatteningPath;
 
 
 @end

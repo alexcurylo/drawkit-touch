@@ -44,7 +44,8 @@
 - (void)				setStylePickupEnabled:(BOOL) pickup;
 - (BOOL)				stylePickupEnabled;
 
-- (NSImage*)			image;
+//- (NSImage*)			image;
+- (DKImage*)			image;
 
 @end
 

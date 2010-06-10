@@ -249,14 +249,16 @@ static NSUInteger euclid_hcf( NSUInteger a, NSUInteger b )
 
 
 #pragma mark -
-- (void)		applyToPath:(NSBezierPath*) path
+//- (void)		applyToPath:(NSBezierPath*) path
+- (void)		applyToPath:(DKBezierPath*) path
 {
 	m_phase = LIMIT([self phase], 0, [self length]);
 	[self applyToPath:path withPhase:[self phase]];
 }
 
 
-- (void)		applyToPath:(NSBezierPath*) path withPhase:(CGFloat) phase
+//- (void)		applyToPath:(NSBezierPath*) path withPhase:(CGFloat) phase
+- (void)		applyToPath:(DKBezierPath*) path withPhase:(CGFloat) phase
 {
 	// if scales to line width, use path's line width to multiply each element of the pattern
 	
@@ -279,17 +281,24 @@ static NSUInteger euclid_hcf( NSUInteger a, NSUInteger b )
 #pragma mark -
 
 
-- (NSImage*)	dashSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width
+//- (NSImage*)	dashSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width
+- (DKImage*)	dashSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width
 {
+#if TARGET_OS_IPHONE
+   UIGraphicsBeginImageContext(size);
+#else
 	NSImage*		image = [[NSImage alloc] initWithSize:size];
-	NSBezierPath*	path;
+#endif TARGET_OS_IPHONE
+	//NSBezierPath*	path;
+	DKBezierPath*	path;
 	NSPoint			a, b;
 	
 	a.x = 0;
 	b.x = size.width;
 	a.y = b.y = size.height / 2.0;
 	
-	path = [NSBezierPath bezierPath];
+	//path = [NSBezierPath bezierPath];
+	path = [DKBezierPath bezierPath];
 	[path setLineWidth:width];
 	[path setLineCapStyle:NSButtLineCapStyle];
 	[self applyToPath:path];
@@ -298,16 +307,26 @@ static NSUInteger euclid_hcf( NSUInteger a, NSUInteger b )
 	
 	// draw into image
 	
+#if TARGET_OS_IPHONE
+	[[UIColor blackColor] set];
+	[path stroke];
+
+   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+   UIGraphicsEndImageContext();
+   return image;
+#else
 	[image lockFocus];
 	[[NSColor blackColor] set];
 	[path stroke];
 	[image unlockFocus];
 	
 	return [image autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSImage*)	standardDashSwatchImage
+//- (NSImage*)	standardDashSwatchImage
+- (DKImage*)	standardDashSwatchImage
 {
 	return [self dashSwatchImageWithSize:kDKStandardDashSwatchImageSize strokeWidth:kDKStandardDashSwatchStrokeWidth];
 }

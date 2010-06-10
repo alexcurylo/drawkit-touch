@@ -10,10 +10,14 @@
 
 #import "DKDrawkitInspectorBase.h"
 #import "DKDrawableObject.h"
-#import "DKDrawingDocument.h"
 #import "DKDrawing.h"
 #import "DKObjectDrawingLayer.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
+#import "DKDrawingDocument.h"
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "LogEvent.h"
 
 @implementation DKDrawkitInspectorBase
@@ -24,7 +28,11 @@
 {
 	LogEvent_(kReactiveEvent, @"document did change (%@), window = %@", [note name], [note object]);
 	
+#if TARGET_OS_IPHONE
+	if([[note name] isEqualToString:UIWindowDidResignKeyNotification])
+#else
 	if([[note name] isEqualToString:NSWindowDidResignMainNotification])
+#endif TARGET_OS_IPHONE
 		[self redisplayContentForSelection:nil];
 	else
 		[self redisplayContentForSelection:[self selectedObjectForTargetWindow:[note object]]];
@@ -112,9 +120,29 @@
 	return nil;
 }
 
-
-- (DKDrawing*)			drawingForTargetWindow:(NSWindow*) window
+#if TARGET_OS_IPHONE
+- (DKDrawing*)			drawingForTargetView:(UIView*)view
 {
+   if ([view isKindOfClass:[DKTDrawingView class]])
+      return [(DKTDrawingView *)view drawing];
+   
+   for (UIView *subview in view.subviews)
+   {
+      DKDrawing *drawing = [self drawingForTargetView:subview];
+      if (drawing)
+         return drawing;
+   }
+   
+   return nil;
+}
+#endif TARGET_OS_IPHONE
+
+//- (DKDrawing*)			drawingForTargetWindow:(NSWindow*) window
+- (DKDrawing*)			drawingForTargetWindow:(DKWindow*) window
+{
+#if TARGET_OS_IPHONE
+   return [self drawingForTargetView:window];
+#else
 	NSDocument* cd = [[NSDocumentController sharedDocumentController] documentForWindow:window];
 	DKDrawing*	drawing = nil;
 	
@@ -127,10 +155,12 @@
 		return drawing;
 		
 	return nil;
+#endif TARGET_OS_IPHONE
 }
 
 
-- (id)					selectedObjectForTargetWindow:(NSWindow*) window
+//- (id)					selectedObjectForTargetWindow:(NSWindow*) window
+- (id)					selectedObjectForTargetWindow:(DKWindow*) window
 {
 	DKDrawing*	drawing = [self drawingForTargetWindow:window];
 	
@@ -150,6 +180,8 @@
 
 
 #pragma mark -
+
+#ifndef TARGET_OS_IPHONE
 - (DKDrawingDocument*)	currentDocument
 {
 	NSDocument* cd = [[NSDocumentController sharedDocumentController] currentDocument];
@@ -159,16 +191,21 @@
 	else
 		return nil;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (DKDrawing*)			currentDrawing
 {
+#if TARGET_OS_IPHONE
+   return [self drawingForTargetWindow:[UIApplication sharedApplication].keyWindow];
+#else
 	DKDrawingDocument* cd = [self currentDocument];
 	
 	if ( cd )
 		return [cd drawing];
 	else
 		return nil;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -183,8 +220,12 @@
 {
 	// returns the controller for the current main view IFF it is a DKDrawingView, otherwise nil
 	
+#if TARGET_OS_IPHONE
+	id firstR = [[[UIApplication sharedApplication] keyWindow] findFirstResponder];
+#else
 	id firstR = [[NSApp mainWindow] firstResponder];
-	
+#endif TARGET_OS_IPHONE
+   
 	if([firstR isKindOfClass:[DKDrawingView class]])
 		return [(DKDrawingView*)firstR controller];
 	
@@ -196,7 +237,14 @@
 #pragma mark As an NSWindowController
 - (void)				showWindow:(id) sender
 {
+#if TARGET_OS_IPHONE
+   (void)sender;
+   twlog("showWindow called on an inspector controller!");
+   twcheck(self.view.superview);
+	self.view.hidden = NO;
+#else
 	[super showWindow:sender];
+#endif TARGET_OS_IPHONE
 	[self redisplayContentForSelection:[self selectedObjectForCurrentTarget]];
 }
 
@@ -220,8 +268,13 @@
 {
 	// sets up the notifications - call super if you override it
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentDidChange:) name:NSWindowDidBecomeMainNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentDidChange:) name:NSWindowDidResignMainNotification object:nil];
+#if TARGET_OS_IPHONE
+   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentDidChange:) name:UIWindowDidBecomeKeyNotification object:nil];
+   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentDidChange:) name:UIWindowDidResignKeyNotification object:nil];
+#else
+   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentDidChange:) name:NSWindowDidBecomeMainNotification object:nil];
+   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(documentDidChange:) name:NSWindowDidResignMainNotification object:nil];
+#endif TARGET_OS_IPHONE
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layerDidChange:) name:kDKDrawingActiveLayerDidChange object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedObjectDidChange:) name:kDKLayerSelectionDidChange object:nil];

@@ -283,7 +283,8 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)			image
+//- (NSImage*)			image
+- (DKImage*)			image
 {
 	return [[self prototype] swatchImageWithSize:kDKDefaultToolSwatchSize];
 }
@@ -314,7 +315,11 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 		// let the object know we are finishing, whether it is valid or not
 		@try
 		{
+#if TARGET_OS_IPHONE
+         twlog("implement finishCreation mouseup equivalent");
+#else
 			[m_protoObject mouseUpAtPoint:mLastPoint inPart:mPartcode event:[NSApp currentEvent]];
+#endif TARGET_OS_IPHONE
 			[m_protoObject creationTool:self willEndCreationAtPoint:mLastPoint];
 		}
 		@catch( NSException* e )
@@ -558,12 +563,12 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)			cursor
 {
 	return [NSCursor crosshairCursor];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -588,6 +593,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSInteger)					mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(aDel)
@@ -671,6 +677,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 
 	return mPartcode;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -691,6 +698,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(layer)
@@ -703,6 +711,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 		mLastPoint = p;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -726,6 +735,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 #pragma unused(pc)
@@ -743,6 +753,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 
 	return [self finishCreation:aDel];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (BOOL)			isValidTargetLayer:(DKLayer*) aLayer

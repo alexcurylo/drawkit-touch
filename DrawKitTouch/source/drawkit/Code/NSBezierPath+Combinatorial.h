@@ -20,14 +20,19 @@ typedef enum
 DKBooleanOperation;
 
 
-@interface NSBezierPath (Combinatorial)
+//@interface NSBezierPath (Combinatorial)
+@interface DKBezierPath (Combinatorial)
 
 
-- (void)			showIntersectionsWithPath:(NSBezierPath*) path;
-- (NSBezierPath*)	renormalizePath;
-- (NSArray*)		dividePathWithPath:(NSBezierPath*) path;
+//- (void)			showIntersectionsWithPath:(NSBezierPath*) path;
+//- (NSBezierPath*)	renormalizePath;
+//- (NSArray*)		dividePathWithPath:(NSBezierPath*) path;
+- (void)			showIntersectionsWithPath:(DKBezierPath*) path;
+- (DKBezierPath*)	renormalizePath;
+- (NSArray*)		dividePathWithPath:(DKBezierPath*) path;
 
-- (NSBezierPath*)	performBooleanOp:(DKBooleanOperation) op withPath:(NSBezierPath*) path;
+//- (NSBezierPath*)	performBooleanOp:(DKBooleanOperation) op withPath:(NSBezierPath*) path;
+- (DKBezierPath*)	performBooleanOp:(DKBooleanOperation) op withPath:(DKBezierPath*) path;
 
 
 

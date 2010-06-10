@@ -11,7 +11,11 @@
 
 #import "DKZoomTool.h"
 #import "DKLayer.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKGeometryUtilities.h"
 
 @implementation DKZoomTool
@@ -22,8 +26,12 @@
 {
 	mMode = zoomOut;
 	
+#if TARGET_OS_IPHONE
+   twlog("implement setZoomsOut");
+#else
 	if( zoomOut )
 		mModeModifierMask = 0;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -35,13 +43,23 @@
 
 - (void)		setModeModifierMask:(NSUInteger) msk
 {
+#if TARGET_OS_IPHONE
+   (void)msk;
+   twlog("implement setModeModifierMask");
+#else
 	mModeModifierMask = msk;
+#endif TARGET_OS_IPHONE
 }
 
 
 - (NSUInteger)	modeModifierMask
 {
+#if TARGET_OS_IPHONE
+   twlog("implement modeModifierMask");
+   return 0;
+#else
 	return mModeModifierMask;
+#endif TARGET_OS_IPHONE
 }
 
 #pragma mark - As a DKDrawingTool
@@ -64,6 +82,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(obj)
@@ -77,6 +96,7 @@
 	mZoomRect = NSZeroRect;
 	return 0;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -97,6 +117,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(pc)
@@ -110,6 +131,7 @@
 		[layer setNeedsDisplayInRect:mZoomRect];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -130,6 +152,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(pc)
@@ -160,6 +183,7 @@
 	mZoomRect = NSZeroRect;
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -177,7 +201,8 @@
 ///
 ///********************************************************************************************************************
 
-- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+//- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+- (void)			drawRect:(NSRect) aRect inView:(DKDrawingView*) aView
 {
 	#pragma unused(aRect)
 	
@@ -186,10 +211,12 @@
 		CGFloat sc = 1.0 / [(DKDrawingView*)aView scale];
 		CGFloat dash[] = { 4.0 * sc, 3.0 * sc };
 		
-		NSBezierPath* zoomPath = [NSBezierPath bezierPathWithRect:NSInsetRect( mZoomRect, sc, sc )];
+		//NSBezierPath* zoomPath = [NSBezierPath bezierPathWithRect:NSInsetRect( mZoomRect, sc, sc )];
+		DKBezierPath* zoomPath = [DKBezierPath bezierPathWithRect:NSInsetRect( mZoomRect, sc, sc )];
 		[zoomPath setLineWidth:sc];
 		[zoomPath setLineDash:dash count:2 phase:0.0];
-		[[NSColor grayColor] set];
+		//[[NSColor grayColor] set];
+		[[DKColor grayColor] set];
 		[zoomPath stroke];
 	}
 }
@@ -210,7 +237,7 @@
 
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)			flagsChanged:(NSEvent*) event inLayer:(DKLayer*) layer
 {
 	if([self modeModifierMask] != 0)
@@ -225,7 +252,7 @@
 		}
 	}
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -263,7 +290,7 @@
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor
 {
 	NSImage* img;
@@ -276,7 +303,7 @@
 	NSCursor* curs = [[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint( 12, 12 )];	
 	return [curs autorelease];
 }
-
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark - as a NSObject
@@ -286,7 +313,9 @@
 	self = [super init];
 	if( self )
 	{
+#ifndef TARGET_OS_IPHONE
 		mModeModifierMask = NSAlternateKeyMask;
+#endif TARGET_OS_IPHONE
 	}
 	
 	return self;

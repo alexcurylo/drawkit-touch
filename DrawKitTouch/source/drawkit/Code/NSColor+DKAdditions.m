@@ -8,6 +8,10 @@
 ///
 ///**********************************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+#error use UIColor+DKAdditions.h in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 #import "NSColor+DKAdditions.h"
 
 #import "LogEvent.h"

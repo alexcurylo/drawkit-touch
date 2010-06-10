@@ -56,10 +56,12 @@ NSRect				MapRectFromRectToRect( const NSRect inRect, const NSRect srcRect, cons
 NSRect				ScaleRect( const NSRect inRect, const CGFloat scale );
 NSRect				ScaledRectForSize( const NSSize inSize, NSRect const fitRect );
 NSRect				CentreRectInRect(const NSRect r, const NSRect cr );
-NSBezierPath*		RotatedRect( const NSRect r, const CGFloat radians );
+//NSBezierPath*		RotatedRect( const NSRect r, const CGFloat radians );
+DKBezierPath*		RotatedRect( const NSRect r, const CGFloat radians );
 
 NSRect				NormalizedRect( const NSRect r );
-NSAffineTransform*	RotationTransform( const CGFloat radians, const NSPoint aboutPoint );
+//NSAffineTransform*	RotationTransform( const CGFloat radians, const NSPoint aboutPoint );
+DKAffineTransform*	RotationTransform( const CGFloat radians, const NSPoint aboutPoint );
 
 //NSPoint			PerspectiveMap( NSPoint inPoint, NSSize sourceSize, NSPoint quad[4]);
 

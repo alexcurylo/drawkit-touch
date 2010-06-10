@@ -71,14 +71,18 @@ enum
 + (void)					loadDefaults;
 + (void)					resetRegistry;
 
+#ifndef TARGET_OS_IPHONE
 + (void)					registerSolidColourFillsFromListNamed:(NSString*) name asCategory:(NSString*) catName;
 + (void)					registerSolidColourStrokesFromListNamed:(NSString*) name asCategory:(NSString*) catName;
+#endif TARGET_OS_IPHONE
 
 + (void)					setShouldNotAddDKDefaultCategory:(BOOL) noDKDefaults;
 
 // getting a fully-managed menu for all styles, organised by category:
 
+#ifndef TARGET_OS_IPHONE
 + (NSMenu*)					managedStylesMenuWithItemTarget:(id) target itemAction:(SEL) selector;
+#endif TARGET_OS_IPHONE
 
 // low-level instance methods
 
@@ -100,7 +104,9 @@ enum
 - (void)					setNeedsUIUpdate;
 - (void)					styleDidChange:(NSNotification*) note;
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)					managedStylesMenuWithItemTarget:(id) target itemAction:(SEL) selector;
+#endif TARGET_OS_IPHONE
 
 @end
 

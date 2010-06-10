@@ -34,7 +34,8 @@ static CGFloat			sAspect = 1.0;
 static CGFloat			sAngleConstraint = 0.261799387799; // pi/12 or 15 degrees
 static NSPoint			sTempRotationPt;
 static NSPoint			sMouseForPathSnap;
-static NSColor*			sInfoWindowColour = nil;
+//static NSColor*			sInfoWindowColour = nil;
+static DKColor*			sInfoWindowColour = nil;
 static NSInteger				sKnobMask = kDKDrawableShapeAllKnobs;
 static NSSize			sTempSavedOffset;
 
@@ -154,7 +155,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-+ (void)				setInfoWindowBackgroundColour:(NSColor*) colour
+//+ (void)				setInfoWindowBackgroundColour:(NSColor*) colour
++ (void)				setInfoWindowBackgroundColour:(DKColor*) colour
 {
 	[colour retain];
 	[sInfoWindowColour release];
@@ -177,6 +179,7 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 + (NSCursor*)			cursorForShapePartcode:(NSInteger) pc
 {
 	static NSMutableDictionary*		cursorCache = nil;
@@ -243,6 +246,7 @@ static NSSize			sTempSavedOffset;
 	
 	return curs;
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark Convenience methods
@@ -302,7 +306,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawableShape*)	drawableShapeWithCanonicalBezierPath:(NSBezierPath*) path
+//+ (DKDrawableShape*)	drawableShapeWithCanonicalBezierPath:(NSBezierPath*) path
++ (DKDrawableShape*)	drawableShapeWithCanonicalBezierPath:(DKBezierPath*) path
 {
 	NSAssert( NSEqualRects([path bounds], [self unitRectAtOrigin]), @"path bounds must be canonical!");
 	
@@ -325,7 +330,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path
+//+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path
++ (DKDrawableShape*)	drawableShapeWithBezierPath:(DKBezierPath*) path
 {
 	return [self drawableShapeWithBezierPath:path rotatedToAngle:0.0];
 }
@@ -346,7 +352,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle
+//+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle
++ (DKDrawableShape*)	drawableShapeWithBezierPath:(DKBezierPath*) path rotatedToAngle:(CGFloat) angle
 {
 	DKDrawableShape*	shape = [[self alloc] initWithBezierPath:path rotatedToAngle:angle];
 	return [shape autorelease];
@@ -368,7 +375,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle
+//+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle
++ (DKDrawableShape*)	drawableShapeWithBezierPath:(DKBezierPath*) path withStyle:(DKStyle*) aStyle
 {
 	return [self drawableShapeWithBezierPath:path rotatedToAngle:0.0 withStyle:aStyle];
 }
@@ -390,7 +398,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle withStyle:(DKStyle*) aStyle
+//+ (DKDrawableShape*)	drawableShapeWithBezierPath:(NSBezierPath*) path rotatedToAngle:(CGFloat) angle withStyle:(DKStyle*) aStyle
++ (DKDrawableShape*)	drawableShapeWithBezierPath:(DKBezierPath*) path rotatedToAngle:(CGFloat) angle withStyle:(DKStyle*) aStyle
 {
 	DKDrawableShape*	shape = [[self alloc] initWithBezierPath:path rotatedToAngle:angle style:aStyle];
 	return [shape autorelease];
@@ -455,7 +464,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithCanonicalBezierPath:(NSBezierPath*) path
+//- (id)					initWithCanonicalBezierPath:(NSBezierPath*) path
+- (id)					initWithCanonicalBezierPath:(DKBezierPath*) path
 {
 	return [self initWithCanonicalBezierPath:path style:[DKStyle defaultStyle]];
 }
@@ -476,7 +486,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithBezierPath:(NSBezierPath*) aPath
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath
+- (id)					initWithBezierPath:(DKBezierPath*) aPath
 {
 	return [self initWithBezierPath:aPath rotatedToAngle:0.0];
 }
@@ -498,7 +509,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle
+- (id)					initWithBezierPath:(DKBezierPath*) aPath rotatedToAngle:(CGFloat) angle
 {
 	return [self initWithBezierPath:aPath rotatedToAngle:angle style:[DKStyle defaultStyle]];
 }
@@ -541,7 +553,8 @@ static NSSize			sTempSavedOffset;
 
 
 
-- (id)					initWithCanonicalBezierPath:(NSBezierPath*) path style:(DKStyle*) aStyle
+//- (id)					initWithCanonicalBezierPath:(NSBezierPath*) path style:(DKStyle*) aStyle
+- (id)					initWithCanonicalBezierPath:(DKBezierPath*) path style:(DKStyle*) aStyle
 {
 	NSAssert( path != nil, @"can't initialize with a nil path");
 	
@@ -562,14 +575,16 @@ static NSSize			sTempSavedOffset;
 
 
 
-- (id)					initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle
+- (id)					initWithBezierPath:(DKBezierPath*) aPath style:(DKStyle*) aStyle
 {
 	return [self initWithBezierPath:aPath rotatedToAngle:0.0 style:aStyle];
 }
 
 
 
-- (id)					initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle style:(DKStyle*) style
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath rotatedToAngle:(CGFloat) angle style:(DKStyle*) style
+- (id)					initWithBezierPath:(DKBezierPath*) aPath rotatedToAngle:(CGFloat) angle style:(DKStyle*) style
 {
 	NSAssert( aPath != nil, @"attempt to initialise shape with a nil path");
 	
@@ -590,8 +605,10 @@ static NSSize			sTempSavedOffset;
 	
 	if( self != nil )
 	{
-		NSAffineTransform*	xfm = [self inverseTransform];
-		NSBezierPath* transformedPath = [xfm transformBezierPath:aPath];
+		//NSAffineTransform*	xfm = [self inverseTransform];
+		//NSBezierPath* transformedPath = [xfm transformBezierPath:aPath];
+		DKAffineTransform*	xfm = [self inverseTransform];
+		DKBezierPath* transformedPath = [xfm transformBezierPath:aPath];
 		
 		[self setPath:transformedPath];
 		[self setAngle:angle];
@@ -618,7 +635,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (void)				setPath:(NSBezierPath*) path
+//- (void)				setPath:(NSBezierPath*) path
+- (void)				setPath:(DKBezierPath*) path
 {
 	NSAssert( path != nil, @"can't set a nil path");
 	NSAssert( ![path isEmpty], @"can't set an empty path");
@@ -661,9 +679,11 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		path
+//- (NSBezierPath*)		path
+- (DKBezierPath*)		path
 {
-	NSBezierPath* pth = m_path;
+	//NSBezierPath* pth = m_path;
+	DKBezierPath* pth = m_path;
 
 	if ([self distortionTransform] != nil)
 		pth = [[self distortionTransform] transformBezierPath:pth];
@@ -715,7 +735,8 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (void)				adoptPath:(NSBezierPath*) path
+//- (void)				adoptPath:(NSBezierPath*) path
+- (void)				adoptPath:(DKBezierPath*) path
 {
 	// if the current size is zero, a path cannot be adopted because the transform ends up performing a divide by zero,
 	// and the canonical path cannot be calculated.
@@ -748,11 +769,13 @@ static NSSize			sTempSavedOffset;
 
 	// get the shape's transform and invert it
 	
-	NSAffineTransform* xfm = [self inverseTransform];
+	//NSAffineTransform* xfm = [self inverseTransform];
+	DKAffineTransform* xfm = [self inverseTransform];
 	
 	// transform the path back to the shape's canonical bounds and origin
 	
-	NSBezierPath* transformedPath = [xfm transformBezierPath:path];
+	//NSBezierPath* transformedPath = [xfm transformBezierPath:path];
+	DKBezierPath* transformedPath = [xfm transformBezierPath:path];
 	
 	// now set that path as the shape's path
 	
@@ -776,9 +799,11 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		transformedPath
+//- (NSBezierPath*)		transformedPath
+- (DKBezierPath*)		transformedPath
 {
-	NSBezierPath* path = [self path];
+//	NSBezierPath* path = [self path];
+	DKBezierPath* path = [self path];
 	
 	if ( path != nil && ![path isEmpty])
 		return [[self transformIncludingParent] transformBezierPath:path];
@@ -805,10 +830,13 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	transformIncludingParent
+//- (NSAffineTransform*)	transformIncludingParent
+- (DKAffineTransform*)	transformIncludingParent
 {
-	NSAffineTransform* xform = [self transform];
-	NSAffineTransform* parentTransform = [self containerTransform];
+	//NSAffineTransform* xform = [self transform];
+	//NSAffineTransform* parentTransform = [self containerTransform];
+	DKAffineTransform* xform = [self transform];
+	DKAffineTransform* parentTransform = [self containerTransform];
 	
 	if ( parentTransform )
 		[xform appendTransform:parentTransform];
@@ -833,9 +861,11 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	inverseTransform
+//- (NSAffineTransform*)	inverseTransform
+- (DKAffineTransform*)	inverseTransform
 {
-	NSAffineTransform* tfm = [self transform];
+	//NSAffineTransform* tfm = [self transform];
+	DKAffineTransform* tfm = [self transform];
 	[tfm invert];
 	
 	return tfm;
@@ -947,7 +977,8 @@ static NSSize			sTempSavedOffset;
 	
 	if ( knobPartCode == kDKDrawableShapeOriginTarget )
 	{
-		NSAffineTransform* ti = [self transform];
+		//NSAffineTransform* ti = [self transform];
+		DKAffineTransform* ti = [self transform];
 		[ti invert];
 		
 		NSPoint op = [ti transformPoint:p];
@@ -1136,7 +1167,8 @@ static NSSize			sTempSavedOffset;
 {
 	CGFloat angl = [self angle];
 	
-	NSBezierPath* path = [[self transformedPath] rotatedPath:-angl];
+	//NSBezierPath* path = [[self transformedPath] rotatedPath:-angl];
+	DKBezierPath* path = [[self transformedPath] rotatedPath:-angl];
 	
 	[self setAngle:0.0];
 	[self adoptPath:path];
@@ -1164,7 +1196,8 @@ static NSSize			sTempSavedOffset;
 {
 	// resets the bounding box and rotation angle. The shape's appearance and apparent position etc are not changed.
 	
-	NSBezierPath* path = [[self transformedPath] copy];
+	//NSBezierPath* path = [[self transformedPath] copy];
+	DKBezierPath* path = [[self transformedPath] copy];
 	
 	[self setAngle:0.0];
 	[self adoptPath:path];
@@ -1289,7 +1322,8 @@ static NSSize			sTempSavedOffset;
 	if ([self distortionTransform] != nil)
 		rloc = [[self distortionTransform] transformPoint:rloc fromRect:[[self class] unitRectAtOrigin]];
 
-	NSAffineTransform*  tx = [self transformIncludingParent];
+	//NSAffineTransform*  tx = [self transformIncludingParent];
+	DKAffineTransform*  tx = [self transformIncludingParent];
 	return [tx transformPoint:rloc];
 }
 
@@ -1469,7 +1503,8 @@ static NSSize			sTempSavedOffset;
 		NSPoint		kp = [self knobPoint:knobPartCode];
 		DKKnob*		knobs = [[self layer] knobs];
 		DKKnobType	knobType = [self knobTypeForPartCode:knobPartCode];
-		NSColor*	selColour = (knobType == kDKRotationKnobType || knobType == kDKCentreTargetKnobType)? nil : [[self layer] selectionColour];
+		//NSColor*	selColour = (knobType == kDKRotationKnobType || knobType == kDKCentreTargetKnobType)? nil : [[self layer] selectionColour];
+		DKColor*	selColour = (knobType == kDKRotationKnobType || knobType == kDKCentreTargetKnobType)? nil : [[self layer] selectionColour];
 		
 		[knobs drawKnobAtPoint:kp ofType:knobType angle:[self angle] highlightColour:selColour];
 			
@@ -1485,8 +1520,9 @@ static NSSize			sTempSavedOffset;
 		{
 			NSRect kr = [self knobRect:knobPartCode];
 			
-			[[NSColor magentaColor] set];
-			NSFrameRectWithWidth( kr, 0.0 );
+			//[[NSColor magentaColor] set];
+			[[DKColor magentaColor] set];
+			DKFrameRectWithWidth( kr, 0.0 );
 		}
 #endif
 	}
@@ -1629,7 +1665,8 @@ static NSSize			sTempSavedOffset;
 	if ( knobPartCode < kDKDrawableShapeTopLeftDistort && [self distortionTransform] != nil )
 		kp = [[self distortionTransform] transformPoint:kp fromRect:r];
 
-	NSAffineTransform*  tx = [self transformIncludingParent];
+	//NSAffineTransform*  tx = [self transformIncludingParent];
+	DKAffineTransform*  tx = [self transformIncludingParent];
 	return [tx transformPoint:kp];
 }
 
@@ -1797,7 +1834,8 @@ static NSSize			sTempSavedOffset;
 	
 	[self notifyVisualChange];
 
-	NSAffineTransform*		tfm = [self transform];
+	//NSAffineTransform*		tfm = [self transform];
+	DKAffineTransform*		tfm = [self transform];
 	[tfm invert];
 	
 	p = [tfm transformPoint:p];
@@ -1857,9 +1895,11 @@ static NSSize			sTempSavedOffset;
 - (void)				drawDistortionEnvelope
 {
 	NSPoint					q[4];
-	NSBezierPath*			ep;
+	//NSBezierPath*			ep;
+	DKBezierPath*			ep;
 	
-	ep = [NSBezierPath bezierPath];
+	//ep = [NSBezierPath bezierPath];
+	ep = [DKBezierPath bezierPath];
 	
 	q[0] = [self knobPoint:kDKDrawableShapeTopLeftDistort];
 	q[1] = [self knobPoint:kDKDrawableShapeTopRightDistort];
@@ -1872,7 +1912,8 @@ static NSSize			sTempSavedOffset;
 	[ep lineToPoint:q[3]];
 	[ep closePath];
 	
-	[[NSColor purpleColor] setStroke];
+	//[[NSColor purpleColor] setStroke];
+	[[DKColor purpleColor] setStroke];
 	[ep setLineWidth:1.0];
 	[ep stroke];
 	
@@ -2114,7 +2155,8 @@ static NSSize			sTempSavedOffset;
 
 - (DKDrawablePath*)		makePath
 {
-	NSBezierPath* path = [[self transformedPath] copy];
+	//NSBezierPath* path = [[self transformedPath] copy];
+	DKBezierPath* path = [[self transformedPath] copy];
 	
 	Class pathClass = [DKDrawableObject classForConversionRequestFor:[DKDrawablePath class]];
 	DKDrawablePath* dp = [pathClass drawablePathWithBezierPath:path withStyle:[self style]];
@@ -2149,7 +2191,8 @@ static NSSize			sTempSavedOffset;
 	
 	NSArray*			subpaths = [[self renderingPath] subPaths];
 	NSEnumerator*		iter = [subpaths objectEnumerator];
-	NSBezierPath*		pp;
+	//NSBezierPath*		pp;
+	DKBezierPath*		pp;
 	NSMutableArray*		newObjects;
 	DKDrawableShape*	dp;
 	
@@ -2329,7 +2372,8 @@ static NSSize			sTempSavedOffset;
 	// if there is a native shape or path on the pb, use its path for this shape. This conveniently allows you to draw a fancy
 	// path and apply it to an existing shape - especially useful for image and text shapes.
 	
-	NSPasteboard* pb = [NSPasteboard generalPasteboard];
+	//NSPasteboard* pb = [NSPasteboard generalPasteboard];
+	DKPasteboard* pb = [DKPasteboard generalPasteboard];
 	NSArray* objects = [DKDrawableObject nativeObjectsFromPasteboard:pb];
 	
 	// this only works if there is just one object on the pb - otherwise it's ambiguous which path to use
@@ -2338,7 +2382,8 @@ static NSSize			sTempSavedOffset;
 	{
 		DKDrawableObject* od = [objects lastObject];
 		
-		NSBezierPath* path = [od renderingPath];
+		//NSBezierPath* path = [od renderingPath];
+		DKBezierPath* path = [od renderingPath];
 		NSRect br = [path bounds];
 		
 		if ( path != nil && ![path isEmpty] && br.size.width > 0.0 && br.size.height > 0.0 )
@@ -2346,7 +2391,8 @@ static NSSize			sTempSavedOffset;
 			// set this path, but we don't want to use adoptPath: here because it changes our location, etc. Instead
 			// we need to transform the path back to its canonical form and set it directly.
 
-			NSAffineTransform* tfm;
+			//NSAffineTransform* tfm;
+			DKAffineTransform* tfm;
 			
 			if([od isKindOfClass:[DKDrawablePath class]])
 			{
@@ -2358,7 +2404,8 @@ static NSSize			sTempSavedOffset;
 				x = NSMidX( br );
 				y = NSMidY( br );
 				
-				tfm = [NSAffineTransform transform];
+				//tfm = [NSAffineTransform transform];
+				tfm = [DKAffineTransform transform];
 				
 				[tfm scaleXBy:1.0 / NSWidth( br) yBy:1.0 / NSHeight( br )];
 				[tfm translateXBy:-x yBy:-y];
@@ -2380,9 +2427,14 @@ static NSSize			sTempSavedOffset;
 }
 
 
-- (BOOL)				canPastePathWithPasteboard:(NSPasteboard*) pb
+//- (BOOL)				canPastePathWithPasteboard:(NSPasteboard*) pb
+- (BOOL)				canPastePathWithPasteboard:(DKPasteboard*) pb
 {
+#if TARGET_OS_IPHONE
+   BOOL type = [pb containsPasteboardTypes:[NSArray arrayWithObject:kDKDrawableObjectInfoPasteboardType]];
+#else
 	NSString* type = [pb availableTypeFromArray:[NSArray arrayWithObject:kDKDrawableObjectInfoPasteboardType]];
+#endif TARGET_OS_IPHONE
 	if( type )
 	{
 		DKPasteboardInfo* info = [DKPasteboardInfo pasteboardInfoWithPasteboard:pb];
@@ -2483,8 +2535,17 @@ static NSSize			sTempSavedOffset;
 + (NSArray*)			pasteboardTypesForOperation:(DKPasteboardOperationType) op
 {
 	#pragma unused(op)
+#if TARGET_OS_IPHONE
+	NSMutableArray* types = [NSMutableArray arrayWithObjects:kDKStylePasteboardType, kDKStyleKeyPasteboardType, nil];
+   [types addObjectsFromArray:UIPasteboardTypeListImage];
+   [types addObjectsFromArray:UIPasteboardTypeListURL];
+   [types addObjectsFromArray:UIPasteboardTypeListString];
+   [types addObjectsFromArray:UIPasteboardTypeListColor];
+   return types;
+#else
 	return [NSArray arrayWithObjects:NSColorPboardType, NSPDFPboardType, NSTIFFPboardType, NSFilenamesPboardType,
-				NSStringPboardType, kDKStyleKeyPasteboardType, kDKStylePasteboardType, nil];
+           NSStringPboardType, kDKStyleKeyPasteboardType, kDKStylePasteboardType, nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -2508,7 +2569,8 @@ static NSSize			sTempSavedOffset;
 	self = [super initWithStyle:aStyle];
 	if (self != nil)
 	{
-		m_path = [[NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]] retain];
+		//m_path = [[NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]] retain];
+		m_path = [[DKBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]] retain];
 		
 		if (m_path == nil)
 		{
@@ -2642,7 +2704,8 @@ static NSSize			sTempSavedOffset;
 		
 		CGFloat strokeWidth = hasStroke? MAX( 2, [[self style] maxStrokeWidth]) : 0;
 		
-		DKStyle* temp = [DKStyle styleWithFillColour:hasFill? [NSColor blackColor] : nil strokeColour:hasStroke? [NSColor blackColor] : nil strokeWidth:strokeWidth];
+		//DKStyle* temp = [DKStyle styleWithFillColour:hasFill? [NSColor blackColor] : nil strokeColour:hasStroke? [NSColor blackColor] : nil strokeWidth:strokeWidth];
+		DKStyle* temp = [DKStyle styleWithFillColour:hasFill? [DKColor blackColor] : nil strokeColour:hasStroke? [DKColor blackColor] : nil strokeWidth:strokeWidth];
 		[temp render:self];
 	}
 	else
@@ -2681,7 +2744,8 @@ static NSSize			sTempSavedOffset;
 		{
 			// draw the bounding box:
 			
-			NSBezierPath* pp = [NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
+			//NSBezierPath* pp = [NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
+			DKBezierPath* pp = [DKBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
 			
 			if ([self distortionTransform] != nil )
 				pp = [[self distortionTransform] transformBezierPath:pp];
@@ -2806,8 +2870,12 @@ static NSSize			sTempSavedOffset;
 				{
 					kr = ScaleRect([self knobRect:knob], 2.0 );
 
+#if TARGET_OS_IPHONE
+               if ( CGRectContainsPoint(kr, pt) )
+#else
 					if ( NSMouseInRect( pt, kr, [[self drawing] isFlipped] ))
-						return knob;
+#endif TARGET_OS_IPHONE
+               return knob;
 				}
 				else
 				{
@@ -2846,8 +2914,12 @@ static NSSize			sTempSavedOffset;
 			if ( snap )
 				kr = ScaleRect( kr, 2.0 );
 			
-			if ( NSMouseInRect( pt, kr, [[self drawing] isFlipped] ))
-				return knob;
+#if TARGET_OS_IPHONE
+            if ( CGRectContainsPoint(kr, pt) )
+#else
+            if ( NSMouseInRect( pt, kr, [[self drawing] isFlipped] ))
+#endif TARGET_OS_IPHONE
+                  return knob;
 				
 			knob <<= 1;
 		}
@@ -2856,7 +2928,11 @@ static NSSize			sTempSavedOffset;
 	// to allow snap to work with any part of the path, check if we are close to the path and if so return a special
 	// partcode that pointForPartcode knows about. Need to record mouse point as it's not passed along in the next call.
 	
-	if ( snap && NSMouseInRect( pt, [self bounds], YES) && [self pointHitsPath:pt])
+#if TARGET_OS_IPHONE
+   if ( snap && CGRectContainsPoint( [self bounds], pt) && [self pointHitsPath:pt])
+#else
+   if ( snap && NSMouseInRect( pt, [self bounds], YES) && [self pointHitsPath:pt])
+#endif TARGET_OS_IPHONE
 	{
 		// need to now check that the point is close to the actual path, not just somewhere in the shape
 		
@@ -2953,7 +3029,7 @@ static NSSize			sTempSavedOffset;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	[super mouseDownAtPoint:mp inPart:partcode event:evt];
@@ -2979,6 +3055,7 @@ static NSSize			sTempSavedOffset;
 	else
 		[self updateInfoForOperation:kDKShapeOperationResize atPoint:mp];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -2996,7 +3073,7 @@ static NSSize			sTempSavedOffset;
 /// notes:			calls necessary methods to interactively drag the hit part
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	// modifier keys constrain shape sizing and rotation thus:
@@ -3077,6 +3154,7 @@ static NSSize			sTempSavedOffset;
 	}
 	[self setMouseHasMovedSinceStartOfTracking:YES];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3094,7 +3172,7 @@ static NSSize			sTempSavedOffset;
 /// notes:			cleans up after a drag operation completes
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	#pragma unused(mp)
@@ -3123,7 +3201,7 @@ static NSSize			sTempSavedOffset;
 	
 	[[self layer] hideInfoWindow];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 
@@ -3187,6 +3265,7 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu
 {
 	// put the conversion item into the submenu if it exists
@@ -3206,7 +3285,7 @@ static NSSize			sTempSavedOffset;
 	[super populateContextualMenu:theMenu];
 	return YES;
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -3222,9 +3301,11 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		renderingPath
+//- (NSBezierPath*)		renderingPath
+- (DKBezierPath*)		renderingPath
 {
-	NSBezierPath* rPath = [self transformedPath];
+	//NSBezierPath* rPath = [self transformedPath];
+	DKBezierPath* rPath = [self transformedPath];
 
 	// if drawing is in low quality mode, set a coarse flatness value:
 	
@@ -3341,11 +3422,13 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	transform
+//- (NSAffineTransform*)	transform
+- (DKAffineTransform*)	transform
 {
 	// returns a transform which will transform a path at the origin to the correct location, scale and angle of this object.
 	
-	NSAffineTransform* xform = [NSAffineTransform transform];
+	//NSAffineTransform* xform = [NSAffineTransform transform];
+	DKAffineTransform* xform = [DKAffineTransform transform];
 	
 	[xform translateXBy:[self location].x yBy:[self location].y];
 	[xform rotateByRadians:[self angle]];
@@ -3377,14 +3460,14 @@ static NSSize			sTempSavedOffset;
 ///					and return a cursor.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursorForPartcode:(NSInteger) partcode mouseButtonDown:(BOOL) button
 {
 	#pragma unused(button)
 	
 	return [[self class] cursorForShapePartcode:partcode];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3404,13 +3487,15 @@ static NSSize			sTempSavedOffset;
 ///
 ///********************************************************************************************************************
 
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	NSAssert( aGroup != nil, @"expected valid group");
 	NSAssert( aTransform != nil, @"expected valid transform");
 
 	NSPoint loc = [self location];
-	NSBezierPath* path = [[self transformedPath] copy];
+	//NSBezierPath* path = [[self transformedPath] copy];
+	DKBezierPath* path = [[self transformedPath] copy];
 	
 	[path transformUsingAffineTransform:aTransform];
 	loc = [aTransform transformPoint:loc];
@@ -3687,6 +3772,7 @@ static NSSize			sTempSavedOffset;
 #pragma mark -
 #pragma mark As part of NSDraggingDestination protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				performDragOperation:(id <NSDraggingInfo>) sender
 {
 	// this is called when the owning layer permits it, and the drag pasteboard contains a type that matches the class's
@@ -3717,10 +3803,13 @@ static NSSize			sTempSavedOffset;
 	
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
+
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL	action = [item action];
@@ -3750,6 +3839,7 @@ static NSSize			sTempSavedOffset;
 	
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 
 @end

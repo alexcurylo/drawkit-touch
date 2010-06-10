@@ -140,7 +140,8 @@ static NSDictionary*				sTraceParams = nil;	// use default
 	NSEnumerator*		iter = [result objectEnumerator];
 	DKImageVectorRep*	rep;
 	DKDrawableShape*	shape;
-	NSBezierPath*		path;
+	//NSBezierPath*		path;
+	DKBezierPath*		path;
 	NSMutableArray*		listOfShapes;
 	
 	listOfShapes = [[NSMutableArray alloc] init];
@@ -161,7 +162,8 @@ static NSDictionary*				sTraceParams = nil;	// use default
 			
 			if ( sTraceParams && [sTraceParams objectForKey:kDKIncludeStrokeStyle])
 			{
-				NSColor* strokeColour = [sTraceParams objectForKey:kDKStrokeStyleColour];
+				//NSColor* strokeColour = [sTraceParams objectForKey:kDKStrokeStyleColour];
+				DKColor* strokeColour = [sTraceParams objectForKey:kDKStrokeStyleColour];
 				CGFloat	 strokeWidth = [[sTraceParams objectForKey:kDKStrokeStyleWidth] doubleValue];
 			
 				DKStroke* stroke = [DKStroke strokeWithWidth:strokeWidth colour:strokeColour];
@@ -183,7 +185,8 @@ static NSDictionary*				sTraceParams = nil;	// use default
 	NSEnumerator*		iter = [result objectEnumerator];
 	DKImageVectorRep*	rep;
 	DKDrawableShape*	shape;
-	NSBezierPath*		path;
+	//NSBezierPath*		path;
+	DKBezierPath*		path;
 	NSMutableArray*		listOfShapes;
 	
 	listOfShapes = [[NSMutableArray alloc] init];
@@ -204,7 +207,8 @@ static NSDictionary*				sTraceParams = nil;	// use default
 			
 			if ( sTraceParams && [sTraceParams objectForKey:kDKIncludeStrokeStyle])
 			{
-				NSColor* strokeColour = [sTraceParams objectForKey:kDKStrokeStyleColour];
+				//NSColor* strokeColour = [sTraceParams objectForKey:kDKStrokeStyleColour];
+				DKColor* strokeColour = [sTraceParams objectForKey:kDKStrokeStyleColour];
 				CGFloat	 strokeWidth = [[sTraceParams objectForKey:kDKStrokeStyleWidth] doubleValue];
 			
 				DKStroke* stroke = [DKStroke strokeWithWidth:strokeWidth colour:strokeColour];

@@ -9,6 +9,9 @@
 #import "DKTargetHandle.h"
 #import "NSBezierPath+Geometry.h"
 #import "DKGeometryUtilities.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
 
 
 @implementation DKTargetHandle
@@ -20,11 +23,14 @@
 }
 
 
-+ (NSBezierPath*)		pathWithSize:(NSSize) size
+//+ (NSBezierPath*)		pathWithSize:(NSSize) size
++ (DKBezierPath*)		pathWithSize:(NSSize) size
 {
-	NSBezierPath*	path = nil;
+	//NSBezierPath*	path = nil;
+	DKBezierPath*	path = nil;
 	
-	path = [NSBezierPath bezierPath];
+	//path = [NSBezierPath bezierPath];
+	path = [DKBezierPath bezierPath];
 	NSSize	half;
 	NSPoint	p = NSZeroPoint;
 	
@@ -49,15 +55,18 @@
 }
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
 	return nil;
 }
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
+	//return [NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
+	return [DKColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
 }
 
 

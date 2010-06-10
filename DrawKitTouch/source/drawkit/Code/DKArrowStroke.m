@@ -43,16 +43,23 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	{
 		// set default dimensioning lines attributes
 		
+#if TARGET_OS_IPHONE
+      twlog("implement dimensioningLineTextAttributes");
+#else
 		sDimLinesAttributes = [[NSMutableDictionary alloc] init];
 		
-		[sDimLinesAttributes setObject:[NSFont fontWithName:@"Helvetica Bold" size:8] forKey:NSFontAttributeName];
-		[sDimLinesAttributes setObject:[NSColor blackColor] forKey:NSForegroundColorAttributeName];
+		//[sDimLinesAttributes setObject:[NSFont fontWithName:@"Helvetica Bold" size:8] forKey:NSFontAttributeName];
+		//[sDimLinesAttributes setObject:[NSColor blackColor] forKey:NSForegroundColorAttributeName];
+		[sDimLinesAttributes setObject:[DKFont fontWithName:@"Helvetica Bold" size:8] forKey:NSFontAttributeName];
+		[sDimLinesAttributes setObject:[DKColor blackColor] forKey:NSForegroundColorAttributeName];
 		
 		NSMutableParagraphStyle* ps = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
 		
-		[ps setAlignment:NSCenterTextAlignment];
+		//[ps setAlignment:NSCenterTextAlignment];
+		[ps setAlignment:DKCenterTextAlignment];
 		[sDimLinesAttributes setObject:ps forKey:NSParagraphStyleAttributeName];
 		[ps release];
+#endif TARGET_OS_IPHONE
 	}
 	
 	return sDimLinesAttributes;
@@ -180,7 +187,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 #endif
 
 
-- (void)				setOutlineColour:(NSColor*) colour
+//- (void)				setOutlineColour:(NSColor*) colour
+- (void)				setOutlineColour:(DKColor*) colour
 {
 	[colour retain];
 	[m_outlineColour release];
@@ -188,7 +196,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 }
 
 
-- (NSColor*)			outlineColour
+//- (NSColor*)			outlineColour
+- (DKColor*)			outlineColour
 {
 	return m_outlineColour;
 }
@@ -207,10 +216,16 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 
 
 #pragma mark -
-- (NSImage*)			arrowSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width
+//- (NSImage*)			arrowSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width
+- (DKImage*)			arrowSwatchImageWithSize:(NSSize) size strokeWidth:(CGFloat) width
 {
+#if TARGET_OS_IPHONE
+   UIGraphicsBeginImageContext(size);
+#else
 	NSImage*		image = [[NSImage alloc] initWithSize:size];
-	NSBezierPath*	path;
+#endif TARGET_OS_IPHONE
+	//NSBezierPath*	path;
+	DKBezierPath*	path;
 	NSPoint			a, b;
 	NSSize			extra = [self extraSpaceNeeded];
 	
@@ -218,7 +233,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	b.x = size.width - extra.width;
 	a.y = b.y = size.height / 2.0;
 	
-	path = [NSBezierPath bezierPath];
+	//path = [NSBezierPath bezierPath];
+	path = [DKBezierPath bezierPath];
 	[path moveToPoint:a];
 	[path lineToPoint:b];
 	
@@ -227,6 +243,16 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	
 	DKDrawablePath* temp = [DKDrawablePath drawablePathWithBezierPath:path];
 	
+#if TARGET_OS_IPHONE
+	[self render:temp];
+
+   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+   UIGraphicsEndImageContext();
+   
+	m_width = saved;
+	
+	return image;
+#else
 	[image setFlipped:YES];
 	// draw into image
 	
@@ -236,10 +262,12 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	m_width = saved;
 	
 	return [image autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSImage*)			standardArrowSwatchImage
+//- (NSImage*)			standardArrowSwatchImage
+- (DKImage*)			standardArrowSwatchImage
 {
 	return [self arrowSwatchImageWithSize:kDKStandardArrowSwatchImageSize strokeWidth:kDKStandardArrowSwatchStrokeWidth];
 }
@@ -278,12 +306,14 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 }
 
 
-- (NSBezierPath*)		arrowHeadElementForKind:(DKArrowHeadKind) kind
+//- (NSBezierPath*)		arrowHeadElementForKind:(DKArrowHeadKind) kind
+- (DKBezierPath*)		arrowHeadElementForKind:(DKArrowHeadKind) kind
 {
 	// returns the arrow head for the given kind in the unit rect centered at the origin - it must be scaled, rotated
 	// and translated to the right place on the path.
 	
-	NSBezierPath* path = nil;
+	//NSBezierPath* path = nil;
+	DKBezierPath* path = nil;
 	
 	switch( kind )
 	{
@@ -328,7 +358,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	// the paths are all centred on the origin. More usefully the origin should be at the point or other place
 	// where the real path terminates, so offset the result by half a unit to the right
 	
-	NSAffineTransform* tsl = [NSAffineTransform transform];
+	//NSAffineTransform* tsl = [NSAffineTransform transform];
+	DKAffineTransform* tsl = [DKAffineTransform transform];
 	[tsl translateXBy:0.5 yBy:0];
 	[path transformUsingAffineTransform:tsl];
 	
@@ -336,7 +367,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 }
 
 
-- (NSBezierPath*)		arrowHeadForPath:(NSBezierPath*) path ofKind:(DKArrowHeadKind) kind orientation:(BOOL) flip multiple:(NSInteger) n
+//- (NSBezierPath*)		arrowHeadForPath:(NSBezierPath*) path ofKind:(DKArrowHeadKind) kind orientation:(BOOL) flip multiple:(NSInteger) n
+- (DKBezierPath*)		arrowHeadForPath:(DKBezierPath*) path ofKind:(DKArrowHeadKind) kind orientation:(BOOL) flip multiple:(NSInteger) n
 {
 	// this method returns the arrow head element indicated by the parameters
 	
@@ -349,10 +381,12 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 		// this arrowhead is curved to match the actual curvature of the path at the place where the arrow heads will go
 		// angle in degrees is half the atan(y/x)
 		
-		CGFloat	degrees = (atan2f([self arrowHeadWidth], [self arrowHeadLength]) * 90.0 ) / pi;
+		//CGFloat	degrees = (atan2f([self arrowHeadWidth], [self arrowHeadLength]) * 90.0 ) / pi;
+		CGFloat	degrees = (atan2f([self arrowHeadWidth], [self arrowHeadLength]) * 90.0 ) / M_PI;
 		CGFloat	hyp = hypotf([self arrowHeadWidth], [self arrowHeadLength]);
 		
-		NSBezierPath* headPath;
+		//NSBezierPath* headPath;
+		DKBezierPath* headPath;
 		
 		if ( flip )
 			headPath = [path bezierPathWithArrowHeadForEndOfLength:hyp angle:degrees closingPath:YES];
@@ -363,7 +397,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 		{
 			// add the bar
 			
-			NSBezierPath* barPath = [NSBezierPath bezierPathWithRect:NSMakeRect( -0.25f, [self arrowHeadWidth] * -0.75f, 0.5f, [self arrowHeadWidth] * 1.5)];
+			//NSBezierPath* barPath = [NSBezierPath bezierPathWithRect:NSMakeRect( -0.25f, [self arrowHeadWidth] * -0.75f, 0.5f, [self arrowHeadWidth] * 1.5)];
+			DKBezierPath* barPath = [DKBezierPath bezierPathWithRect:NSMakeRect( -0.25f, [self arrowHeadWidth] * -0.75f, 0.5f, [self arrowHeadWidth] * 1.5)];
 			
 			CGFloat		slope;
 			NSPoint		ep;
@@ -373,7 +408,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 			else
 				ep = [path pointOnPathAtLength:0.0 slope:&slope];
 				
-			NSAffineTransform* tfm = [NSAffineTransform transform];
+			//NSAffineTransform* tfm = [NSAffineTransform transform];
+			DKAffineTransform* tfm = [DKAffineTransform transform];
 			[tfm translateXBy:ep.x yBy:ep.y];
 			[tfm rotateByRadians:slope];
 			
@@ -409,12 +445,14 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 				break;
 		}
 		
-		NSBezierPath*	arrow = [NSBezierPath bezierPath];
+		//NSBezierPath*	arrow = [NSBezierPath bezierPath];
+		DKBezierPath*	arrow = [DKBezierPath bezierPath];
 		NSInteger				i;
 		
 		for( i = 0; i < n; ++i )
 		{
-			NSBezierPath* head = [self arrowHeadElementForKind:kind];
+			//NSBezierPath* head = [self arrowHeadElementForKind:kind];
+			DKBezierPath* head = [self arrowHeadElementForKind:kind];
 			
 			if ( head != nil )
 			{
@@ -442,9 +480,11 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 				// flipped heads point the other way
 				
 				if ( flip )
-					slope += pi;
+					//slope += pi;
+					slope += M_PI;
 				
-				NSAffineTransform* scl = [NSAffineTransform transform];
+				//NSAffineTransform* scl = [NSAffineTransform transform];
+				DKAffineTransform* scl = [DKAffineTransform transform];
 				
 				switch( kind )
 				{
@@ -465,10 +505,12 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 						break;
 				}
 				
-				NSAffineTransform* rot = [NSAffineTransform transform];
+				//NSAffineTransform* rot = [NSAffineTransform transform];
+				DKAffineTransform* rot = [DKAffineTransform transform];
 				[rot rotateByRadians:slope];
 				
-				NSAffineTransform* tsl = [NSAffineTransform transform];
+				//NSAffineTransform* tsl = [NSAffineTransform transform];
+				DKAffineTransform* tsl = [DKAffineTransform transform];
 				[tsl translateXBy:sp.x yBy:sp.y];
 				[scl appendTransform:rot];
 				[scl appendTransform:tsl];
@@ -483,7 +525,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 }
 
 
-- (NSBezierPath*)		arrowHeadForPathStart:(NSBezierPath*) path
+//- (NSBezierPath*)		arrowHeadForPathStart:(NSBezierPath*) path
+- (DKBezierPath*)		arrowHeadForPathStart:(DKBezierPath*) path
 {
 	// returns the arrow head path for the start, translated, scaled etc to the right place
 	
@@ -491,7 +534,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 }
 
 
-- (NSBezierPath*)		arrowHeadForPathEnd:(NSBezierPath*) path
+//- (NSBezierPath*)		arrowHeadForPathEnd:(NSBezierPath*) path
+- (DKBezierPath*)		arrowHeadForPathEnd:(DKBezierPath*) path
 {
 	// returns the arrow head path for the end, translated, scaled etc to the right place
 	
@@ -502,7 +546,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 
 #pragma mark -
 
-- (NSBezierPath*)			arrowPathFromOriginalPath:(NSBezierPath*) inPath fromObject:(id) obj
+//- (NSBezierPath*)			arrowPathFromOriginalPath:(NSBezierPath*) inPath fromObject:(id) obj
+- (DKBezierPath*)			arrowPathFromOriginalPath:(DKBezierPath*) inPath fromObject:(id) obj
 {
 	// given the input path, this returns the complete arrow path including arrow heads, tails and any dimensioning text. The path may
 	// be filled to render the completed object.
@@ -518,7 +563,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	trimStart = [self trimLengthForKind:[self arrowHeadAtStart]];
 	trimEnd = [self trimLengthForKind:[self arrowHeadAtEnd]];
 
-	NSBezierPath* shaft = inPath;		// shaft of the arrow will become the new path
+	//NSBezierPath* shaft = inPath;		// shaft of the arrow will become the new path
+	DKBezierPath* shaft = inPath;		// shaft of the arrow will become the new path
 	
 	if ( trimStart > 0.0 )
 		shaft = [shaft bezierPathByTrimmingFromLength:trimStart];
@@ -533,7 +579,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 		
 	// copy the path at this point for use with later dimensioning text calculation
 	
-	NSBezierPath* shaftCopy = [shaft copy];
+	//NSBezierPath* shaftCopy = [shaft copy];
+	DKBezierPath* shaftCopy = [shaft copy];
 	
 	// if the dimensioning options are for the dim text to be applied in line, a section of sufficient
 	// length needs to be knocked out of the middle of the path
@@ -593,7 +640,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 					break;
 			}
 			
-			NSBezierPath* textPath = [shaftCopy bezierPathWithTextOnPath:dim yOffset:dy];
+			//NSBezierPath* textPath = [shaftCopy bezierPathWithTextOnPath:dim yOffset:dy];
+			DKBezierPath* textPath = [shaftCopy bezierPathWithTextOnPath:dim yOffset:dy];
 			
 			if ( textPath != nil && [textPath elementCount] > 1 )
 				[shaft appendBezierPath:textPath];
@@ -624,7 +672,15 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 
 - (void)						setFormat:(NSString*) format
 {
+#if TARGET_OS_IPHONE
+   NSArray *formats = [format componentsSeparatedByString:@";"];
+   if (formats.count)
+      [m_dims_formatter setPositiveFormat:[formats objectAtIndex:0]];
+   if (1 < formats.count)
+      [m_dims_formatter setNegativeFormat:[formats lastObject]];
+#else
 	[m_dims_formatter setFormat:format];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -717,8 +773,14 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 
 - (CGFloat)			widthOfDimensionTextForObject:(id) obj
 {
+#if TARGET_OS_IPHONE
+   (void)obj;
+   twlog("implement widthOfDimensionTextForObject");
+   return 0;
+#else
 	NSAttributedString* dimStr = [self dimensionTextForObject:obj];
 	return [dimStr size].width;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -791,18 +853,30 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 }
 
 
-- (void)			setFont:(NSFont*) font
+//- (void)			setFont:(NSFont*) font
+- (void)			setFont:(DKFont*) font
 {
+#if TARGET_OS_IPHONE
+   (void)font;
+   twlog("implement setFont");
+#else
 	NSMutableDictionary* dict = [[self textAttributes] mutableCopy];
 	[dict setObject:font forKey:NSFontAttributeName];
 	[self setTextAttributes:dict];
 	[dict release];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSFont*)			font
+//- (NSFont*)			font
+- (DKFont*)			font
 {
+#if TARGET_OS_IPHONE
+   twlog("implement font");
+   return nil;
+#else
 	return [[self textAttributes] objectForKey:NSFontAttributeName];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -902,11 +976,15 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 
 		if ([self dimensioningLineOptions] != kDKDimensionNone )
 		{
+#if TARGET_OS_IPHONE
+         twlog("implement extraSpaceNeeded");
+#else
 			NSAttributedString* str = [self dimensionTextForObject:nil];
 			NSSize strSize = [str size];
 			
 			es.height = MAX( es.width, strSize.height * 0.7f );
 			es.width = MAX( es.height, strSize.height * 0.7f );
+#endif TARGET_OS_IPHONE
 		}
 
 		return es;
@@ -926,7 +1004,8 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 	if([self shadow] != nil && [DKStyle willDrawShadows])
 		[[self shadow] setAbsolute];
 	
-	NSBezierPath* ap = [self arrowPathFromOriginalPath:[obj renderingPath] fromObject:obj];
+	//NSBezierPath* ap = [self arrowPathFromOriginalPath:[obj renderingPath] fromObject:obj];
+	DKBezierPath* ap = [self arrowPathFromOriginalPath:[obj renderingPath] fromObject:obj];
 	
 	if ( ap != nil )
 	{

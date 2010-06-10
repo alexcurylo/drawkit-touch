@@ -18,21 +18,27 @@
 }
 
 
-+ (NSBezierPath*)		pathWithSize:(NSSize) size
+//+ (NSBezierPath*)		pathWithSize:(NSSize) size
++ (DKBezierPath*)		pathWithSize:(NSSize) size
 {
-	return [NSBezierPath bezierPathWithOvalInRect:NSMakeRect( 0, 0, size.width, size.height )];
+	//return [NSBezierPath bezierPathWithOvalInRect:NSMakeRect( 0, 0, size.width, size.height )];
+	return [DKBezierPath bezierPathWithOvalInRect:NSMakeRect( 0, 0, size.width, size.height )];
 }
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor purpleColor];
+	//return [NSColor purpleColor];
+	return [DKColor purpleColor];
 }
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor whiteColor];
+	//return [NSColor whiteColor];
+	return [DKColor whiteColor];
 }
 
 

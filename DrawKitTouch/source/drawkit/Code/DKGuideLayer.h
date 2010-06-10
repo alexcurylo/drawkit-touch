@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKGuideLayer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 28/08/2006.
 ///
@@ -54,8 +54,10 @@
 
 // setting a common colour for the guides:
 
-- (void)				setGuideColour:(NSColor*) colour;
-- (NSColor*)			guideColour;
+//- (void)				setGuideColour:(NSColor*) colour;
+//- (NSColor*)			guideColour;
+- (void)				setGuideColour:(DKColor*) colour;
+- (DKColor*)			guideColour;
 
 // set whether guides snap to grid or not
 
@@ -105,7 +107,8 @@
 @private
 	CGFloat				m_position;
 	BOOL				m_isVertical;
-	NSColor*			m_colour;
+	//NSColor*			m_colour;
+	DKColor*			m_colour;
 }
 
 - (void)				setGuidePosition:(CGFloat) pos;
@@ -114,8 +117,10 @@
 - (void)				setIsVerticalGuide:(BOOL) vert;
 - (BOOL)				isVerticalGuide;
 
-- (void)				setGuideColour:(NSColor*) colour;
-- (NSColor*)			guideColour;
+//- (void)				setGuideColour:(NSColor*) colour;
+//- (NSColor*)			guideColour;
+- (void)				setGuideColour:(DKColor*) colour;
+- (DKColor*)			guideColour;
 
 - (void)				drawInRect:(NSRect) rect lineWidth:(CGFloat) lw;
 

@@ -148,6 +148,7 @@ static DKToolRegistry*	s_toolRegistry = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (DKDrawingTool*)		drawingToolWithKeyboardEquivalent:(NSEvent*) keyEvent
 {
 	NSAssert( keyEvent != nil, @"event was nil");
@@ -178,6 +179,7 @@ static DKToolRegistry*	s_toolRegistry = nil;
 	}
 	return nil;
 }
+#endif TARGET_OS_IPHONE
 
 
 

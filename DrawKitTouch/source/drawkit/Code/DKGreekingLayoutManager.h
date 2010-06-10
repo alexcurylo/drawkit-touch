@@ -6,8 +6,10 @@
 //  Copyright 2009 Apptree.net. All rights reserved.
 //
 
-// not in iPhone SDK, should be left to .pch ...alex
-//#import <Cocoa/Cocoa.h>
+#if TARGET_OS_IPHONE
+#error NSLayoutManager not available in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 #import "DKCommonTypes.h"
 
 
@@ -16,14 +18,17 @@
 @interface DKGreekingLayoutManager : NSLayoutManager
 {
 	DKGreeking		mGreeking;
-	NSColor*		mGreekingColour;
+	//NSColor*		mGreekingColour;
+	DKColor*		mGreekingColour;
 }
 
 - (void)			setGreeking:(DKGreeking) greeking;
 - (DKGreeking)		greeking;
 
-- (void)			setGreekingColour:(NSColor*) aColour;
-- (NSColor*)		greekingColour;
+//- (void)			setGreekingColour:(NSColor*) aColour;
+//- (NSColor*)		greekingColour;
+- (void)			setGreekingColour:(DKColor*) aColour;
+- (DKColor*)		greekingColour;
 
 @end
 

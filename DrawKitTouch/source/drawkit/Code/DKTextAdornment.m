@@ -16,8 +16,6 @@
 #import "NSBezierPath+Geometry.h"
 #import "DKDrawableShape.h"
 #import "NSObject+StringValue.h"
-#import "DKBezierTextContainer.h"
-#import "DKBezierLayoutManager.h"
 #import "DKShapeGroup.h"
 #import "NSAttributedString+DKAdditions.h"
 #import "DKDrawKitMacros.h"
@@ -26,22 +24,33 @@
 #import "DKFill.h"
 #import "DKStroke.h"
 #import "DKTextSubstitutor.h"
+#ifndef TARGET_OS_IPHONE
+#import "DKBezierTextContainer.h"
+#import "DKBezierLayoutManager.h"
 #import "DKGreekingLayoutManager.h"
+#endif TARGET_OS_IPHONE
 
 
 
 @interface DKTextAdornment (Private)
 
-- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path;
-- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path layoutManager:(NSLayoutManager*) lm;
+#ifndef TARGET_OS_IPHONE
+//- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path;
+//- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path layoutManager:(NSLayoutManager*) lm;
+- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(DKBezierPath*) path;
+- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(DKBezierPath*) path layoutManager:(NSLayoutManager*) lm;
 - (void)					drawText:(NSTextStorage*) contents centredAtPoint:(NSPoint) p;
-- (NSAffineTransform*)		textTransformForObject:(id<DKRenderable>) obj;
+#endif TARGET_OS_IPHONE
+//- (NSAffineTransform*)		textTransformForObject:(id<DKRenderable>) obj;
+- (DKAffineTransform*)		textTransformForObject:(id<DKRenderable>) obj;
 - (void)					drawKnockoutWithObject:(id<DKRenderable>) obj;
 - (void)					changeTextAttribute:(NSString*) attribute toValue:(id) val;
 - (NSPoint)					textOriginForSize:(NSSize) textSize objectSize:(NSSize) osize;
 - (CGFloat)					verticalTextOffsetForTextSize:(NSSize) textSize objectSize:(NSSize) osize;
 - (void)					applyNonCocoaTextAttributes:(NSDictionary*) attrs;
+#ifndef TARGET_OS_IPHONE
 - (NSLayoutManager*)		layoutManager;
+#endif TARGET_OS_IPHONE
 - (void)					masterStringChanged:(NSNotification*) note;
 
 @end
@@ -88,16 +97,23 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	{
 		dta = [[NSMutableDictionary alloc] init];
 		
-		NSFont* font = [NSFont fontWithName:@"Helvetica" size:14];
+#if TARGET_OS_IPHONE
+      twlog("implement defaultTextAttributes");
+#else
+		//NSFont* font = [NSFont fontWithName:@"Helvetica" size:14];
+		DKFont* font = [DKFont fontWithName:@"Helvetica" size:14];
 		[dta setObject:font forKey:NSFontAttributeName];
 		
 		NSMutableParagraphStyle* ps = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-		[ps setAlignment:NSCenterTextAlignment];
+		//[ps setAlignment:NSCenterTextAlignment];
+		[ps setAlignment:DKCenterTextAlignment];
 		[dta setObject:ps forKey:NSParagraphStyleAttributeName];
 		[ps release];
 		
-		NSColor* tc = [NSColor blackColor];
+		//NSColor* tc = [NSColor blackColor];
+		DKColor* tc = [DKColor blackColor];
 		[dta setObject:tc forKey:NSForegroundColorAttributeName];
+#endif TARGET_OS_IPHONE
 	}
 	
 	return dta;
@@ -174,11 +190,13 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)			textForEditing
 {
 	NSTextStorage* edText = [[NSTextStorage alloc] initWithAttributedString:[self label]];
 	return [edText autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)					setPlaceholderString:(NSString*) str
@@ -196,8 +214,14 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 
 
 #pragma mark -
-- (NSBezierPath*)			textAsPathForObject:(id) object
+//- (NSBezierPath*)			textAsPathForObject:(id) object
+- (DKBezierPath*)			textAsPathForObject:(id) object
 {
+#if TARGET_OS_IPHONE
+   (void)object;
+   twlog("implement textAsPathForObject");
+   return nil;
+#else
 	// returns a  NSBezierPath object, representing the adornment's laid-out text. All settings are honoured.
 	// do not use ghosted attributes:
 	
@@ -219,7 +243,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	if ( str == nil )
 		return nil;
 	
-	NSBezierPath*	path = [self renderingPathForObject:object];
+	//NSBezierPath*	path = [self renderingPathForObject:object];
+	DKBezierPath*	path = [self renderingPathForObject:object];
 	
 	if ( [self layoutMode] == kDKTextLayoutAlongReversedPath )
 		path = [path bezierPathByReversingPath];
@@ -231,7 +256,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		
 		if([self verticalAlignment] == kDKTextPathVerticalAlignmentCentredOnPath)
 		{
-			NSFont*	font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+			//NSFont*	font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+			DKFont*	font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
 			baseOffset = [self baselineOffsetForTextHeight:[font xHeight]];
 		}
 		else
@@ -246,28 +272,41 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		
 		// by drawing into a temporary flipped image context, text will be right side up with its lines in the right order
 		
-		NSImage* tempImage = [[NSImage alloc] initWithSize:NSMakeSize( 1, 1 )];
+		//NSImage* tempImage = [[NSImage alloc] initWithSize:NSMakeSize( 1, 1 )];
+		DKImage* tempImage = [[DKImage alloc] initWithSize:NSMakeSize( 1, 1 )];
+#ifndef TARGET_OS_IPHONE
 		[tempImage setFlipped:YES];
 		[tempImage lockFocus];
+#endif TARGET_OS_IPHONE
 		
 		[self drawText:str withObject:object withPath:path layoutManager:captureLM];
+#ifndef TARGET_OS_IPHONE
 		[tempImage unlockFocus];
+#endif TARGET_OS_IPHONE
 		[tempImage release];
 		
 		// get the text path and position it aligned with the object
 		
-		NSBezierPath* newPath = [[captureLM textPath] copy];
+		//NSBezierPath* newPath = [[captureLM textPath] copy];
+		DKBezierPath* newPath = [[captureLM textPath] copy];
 		
 		NSAffineTransform* tfm = [self textTransformForObject:object];
 		[newPath transformUsingAffineTransform:tfm];
 		
 		return [newPath autorelease];
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
 - (NSArray*)				textPathsForObject:(id) object usedSize:(NSSize*) aSize
 {
+#if TARGET_OS_IPHONE
+   (void)object;
+   (void)aSize;
+   twlog("textPathsForObject textAsPathForObject");
+   return nil;
+#else
 	// returns a list of NSBezierPath objects, representing the individual glyphs of the adornment's laid-out text. All settings are honoured.
 	
 	BOOL ghosted = [object isGhosted];
@@ -282,7 +321,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	if ( str == nil )
 		return nil;
 	
-	NSBezierPath*	path = [self renderingPathForObject:object];
+	//NSBezierPath*	path = [self renderingPathForObject:object];
+	DKBezierPath*	path = [self renderingPathForObject:object];
 	
 	if ( [self layoutMode] == kDKTextLayoutAlongReversedPath )
 		path = [path bezierPathByReversingPath];
@@ -305,27 +345,35 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		
 		return glyphs;
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
 - (DKStyle*)				styleFromTextAttributes
 {
+#if TARGET_OS_IPHONE
+   twlog("implement styleFromTextAttributes");
+   return nil;
+#else
 	// for use with paths such as those returned by the above methods, this returns a style that attempts to mimic the current text attributes
 	// When applied to the above paths, it should give similar results to the original text appearance.
 	
 	DKStyle*	styl = [[DKStyle alloc] init];
 	
 	DKFill*		fill;
-	NSColor*	fc = [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
+	//NSColor*	fc = [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
+	DKColor*	fc = [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
 	
 	if ( fc )
 		fill = [DKFill fillWithColour:fc];
 	else
-		fill = [DKFill fillWithColour:[NSColor blackColor]];
+		//fill = [DKFill fillWithColour:[NSColor blackColor]];
+		fill = [DKFill fillWithColour:[DKColor blackColor]];
 	
 	// copy the shadow - text shadow is flipped
 	
-	NSShadow*	shad = [[[self textAttributes] objectForKey:NSShadowAttributeName] copy];
+	//NSShadow*	shad = [[[self textAttributes] objectForKey:NSShadowAttributeName] copy];
+	DKShadow*	shad = [[[self textAttributes] objectForKey:NSShadowAttributeName] copy];
 	
 	if ( shad )
 	{
@@ -340,7 +388,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	
 	// see if there are any stroke attributes:
 	
-	NSColor*	strokeColour = [[self textAttributes] objectForKey:NSStrokeColorAttributeName];
+	//NSColor*	strokeColour = [[self textAttributes] objectForKey:NSStrokeColorAttributeName];
+	DKColor*	strokeColour = [[self textAttributes] objectForKey:NSStrokeColorAttributeName];
 	CGFloat		sw = [[[self textAttributes] objectForKey:NSStrokeWidthAttributeName] doubleValue];
 	
 	if ( strokeColour && sw != 0.0 )
@@ -350,6 +399,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	}
 	
 	return [styl autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -513,7 +563,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
-- (void)					setTextKnockoutColour:(NSColor*) colour
+//- (void)					setTextKnockoutColour:(NSColor*) colour
+- (void)					setTextKnockoutColour:(DKColor*) colour
 {
 	[colour retain];
 	[mTextKnockoutColour release];
@@ -521,13 +572,15 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
-- (NSColor*)				textKnockoutColour
+//- (NSColor*)				textKnockoutColour
+- (DKColor*)				textKnockoutColour
 {
 	return mTextKnockoutColour;
 }
 
 
-- (void)					setTextKnockoutStrokeColour:(NSColor*) colour
+//- (void)					setTextKnockoutStrokeColour:(NSColor*) colour
+- (void)					setTextKnockoutStrokeColour:(DKColor*) colour
 {
 	[colour retain];
 	[mTextKnockoutStrokeColour release];
@@ -535,7 +588,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
-- (NSColor*)				textKnockoutStrokeColour
+//- (NSColor*)				textKnockoutStrokeColour
+- (DKColor*)				textKnockoutStrokeColour
 {
 	return mTextKnockoutStrokeColour;
 }
@@ -612,7 +666,9 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	else
 		[str addAttribute:attribute value:val range:NSMakeRange( 0, [str length])];
 	
+#ifndef TARGET_OS_IPHONE
 	[str fixAttributesInRange:NSMakeRange( 0, [str length])];
+#endif TARGET_OS_IPHONE
 	[str endEditing];
 	
 	// setting the label notifies us to invalidate cache
@@ -624,38 +680,55 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 #pragma mark -
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)					changeFont:(id) sender
 {
 	NSMutableAttributedString* str = [[[self textSubstitutor] masterString] mutableCopy];
 	[str changeFont:sender];
 	[self setLabel:str];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)					changeAttributes:(id) sender
 {
 	NSMutableAttributedString* str = [[[self textSubstitutor] masterString] mutableCopy];
 	[str changeAttributes:sender];
 	[self setLabel:str];
 }
+#endif TARGET_OS_IPHONE
 
 
-- (void)					setFont:(NSFont*) font
+//- (void)					setFont:(NSFont*) font
+- (void)					setFont:(DKFont*) font
 {
 	NSAssert( font != nil, @"font was nil");
 	
+#if TARGET_OS_IPHONE
+   twlog("implement setFont");
+#else
 	[self changeTextAttribute:NSFontAttributeName toValue:font];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSFont*)					font
+//- (NSFont*)					font
+- (DKFont*)					font
 {
-	NSFont* font = [[self textAttributes] objectForKey:NSFontAttributeName];
+#if TARGET_OS_IPHONE
+   twlog("implement font");
+   return nil;
+#else
+	//NSFont* font = [[self textAttributes] objectForKey:NSFontAttributeName];
+	DKFont* font = [[self textAttributes] objectForKey:NSFontAttributeName];
 	
 	if( font == nil )
-		font = [NSFont fontWithName:@"Helvetica" size:14];
+		//font = [NSFont fontWithName:@"Helvetica" size:14];
+		font = [DKFont fontWithName:@"Helvetica" size:14];
 	
 	return font;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -675,6 +748,10 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 
 - (void)					scaleTextBy:(CGFloat) factor
 {
+#if TARGET_OS_IPHONE
+   (void)factor;
+   twlog("implement scaleTextBy");
+#else
 	// adjusts the text by multiplying all font sizes by <factor>. Values of 0 or 1.0 do nothing.
 	
 	if( factor > 0.0 && factor != 1.0 )
@@ -682,18 +759,24 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		NSMutableAttributedString* ms = [[self label] mutableCopy];
 		NSRange		range;
 		NSUInteger	indx = 0;
-		NSFont*		attr;
+		//NSFont*		attr;
+		DKFont*		attr;
 		CGFloat		fontSize;
 		
 		while( indx < [ms length])
 		{
-			attr = (NSFont*)[ms attribute:NSFontAttributeName atIndex:indx effectiveRange:&range];
+			//attr = (NSFont*)[ms attribute:NSFontAttributeName atIndex:indx effectiveRange:&range];
+			attr = (DKFont*)[ms attribute:NSFontAttributeName atIndex:indx effectiveRange:&range];
 			
 			if( attr )
 			{
 				fontSize = [attr pointSize] * factor;
 				
+#if TARGET_OS_IPHONE
+            attr = [attr fontWithSize:fontSize];
+#else
 				attr = [[NSFontManager sharedFontManager] convertFont:attr toSize:fontSize];
+#endif TARGET_OS_IPHONE
 				
 				[ms addAttribute:NSFontAttributeName value:attr range:range];
 			}
@@ -703,21 +786,34 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		[self setLabel:ms];
 		[ms release];
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
-- (void)					setColour:(NSColor*) colour
+//- (void)					setColour:(NSColor*) colour
+- (void)					setColour:(DKColor*) colour
 {
 	if( colour == nil )
-		colour = [NSColor blackColor];
+		//colour = [NSColor blackColor];
+		colour = [DKColor blackColor];
 	
+#if TARGET_OS_IPHONE
+   twlog("implement setColor");
+#else
 	[self changeTextAttribute:NSForegroundColorAttributeName toValue:colour];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSColor*)				colour
+//- (NSColor*)				colour
+- (DKColor*)				colour
 {
+#if TARGET_OS_IPHONE
+   twlog("implement colour");
+   return nil;
+#else
 	return [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -848,20 +944,29 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)					setParagraphStyle:(NSParagraphStyle*) style
 {
 	[self changeTextAttribute:NSParagraphStyleAttributeName toValue:style];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSParagraphStyle*)		paragraphStyle
 {
 	return [[self textAttributes] objectForKey:NSParagraphStyleAttributeName];
 }
+#endif TARGET_OS_IPHONE
 
 
-- (void)					setAlignment:(NSTextAlignment) align
+//- (void)					setAlignment:(NSTextAlignment) align
+- (void)					setAlignment:(DKTextAlignment) align
 {
+#if TARGET_OS_IPHONE
+   (void)align;
+   twlog("implement setAlignment");
+#else
 	NSMutableParagraphStyle* mps = [[self paragraphStyle] mutableCopy];
 	
 	if ( mps == nil )
@@ -870,36 +975,67 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	[mps setAlignment:align];
 	[self setParagraphStyle:mps];
 	[mps release];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSTextAlignment)			alignment
+//- (NSTextAlignment)			alignment
+- (DKTextAlignment)			alignment
 {
+#if TARGET_OS_IPHONE
+   twlog("implement alignment");
+   return UITextAlignmentLeft;
+#else
 	return [[self paragraphStyle] alignment];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (void)					setBackgroundColour:(NSColor*) colour
+//- (void)					setBackgroundColour:(NSColor*) colour
+- (void)					setBackgroundColour:(DKColor*) colour
 {
+#if TARGET_OS_IPHONE
+   (void)colour;
+   twlog("implement setBackgroundColour");
+#else
 	[self changeTextAttribute:NSBackgroundColorAttributeName toValue:colour];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSColor*)				backgroundColour
+//- (NSColor*)				backgroundColour
+- (DKColor*)				backgroundColour
 {
+#if TARGET_OS_IPHONE
+   twlog("implement backgroundColour");
+   return nil;
+#else
 	return [[self textAttributes] objectForKey:NSBackgroundColorAttributeName];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (void)					setOutlineColour:(NSColor*) aColour
+//- (void)					setOutlineColour:(NSColor*) aColour
+- (void)					setOutlineColour:(DKColor*) aColour
 {
+#if TARGET_OS_IPHONE
+   (void)aColour;
+   twlog("implement setOutlineColour");
+#else
 	[self changeTextAttribute:NSStrokeColorAttributeName toValue:aColour];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSColor*)				outlineColour
+//- (NSColor*)				outlineColour
+- (DKColor*)				outlineColour
 {
+#if TARGET_OS_IPHONE
+   twlog("implement outlineColour");
+   return nil;
+#else
 	return [[self textAttributes] objectForKey:NSStrokeColorAttributeName];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -907,61 +1043,111 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 {
 	// width value is a percentage of font size, see docs for NSStrokeWidthAttributeName
 	
+#if TARGET_OS_IPHONE
+   (void)aWidth;
+   twlog("implement setOutlineWidth");
+#else
 	[self changeTextAttribute:NSStrokeWidthAttributeName toValue:[NSNumber numberWithDouble:aWidth]];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (CGFloat)					outlineWidth
 {
+#if TARGET_OS_IPHONE
+   twlog("implement outlineWidth");
+   return 0;
+#else
 	return [[[self textAttributes] objectForKey:NSStrokeWidthAttributeName] doubleValue];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (void)					setUnderlines:(NSInteger) under
 {
+#if TARGET_OS_IPHONE
+   (void)under;
+   twlog("implement setUnderlines");
+#else
 	[self changeTextAttribute:NSUnderlineStyleAttributeName toValue:[NSNumber numberWithInteger:under]];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (NSInteger)						underlines
 {
+#if TARGET_OS_IPHONE
+   twlog("implement underlines");
+   return 0;
+#else
 	return [[[self textAttributes] objectForKey:NSUnderlineStyleAttributeName] integerValue];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (void)					setKerning:(CGFloat) kernValue
 {
+#if TARGET_OS_IPHONE
+   (void)kernValue;
+   twlog("implement setKerning");
+#else
 	[self changeTextAttribute:NSKernAttributeName toValue:[NSNumber numberWithDouble:kernValue]];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (CGFloat)					kerning
 {
+#if TARGET_OS_IPHONE
+   twlog("implement kerning");
+   return 0;
+#else
 	return [[[self textAttributes] objectForKey:NSKernAttributeName] doubleValue];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (void)					setBaseline:(CGFloat) baseLine
 {
+#if TARGET_OS_IPHONE
+   (void)baseLine;
+   twlog("implement setBaseline");
+#else
 	[self changeTextAttribute:NSBaselineOffsetAttributeName toValue:[NSNumber numberWithDouble:baseLine]];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (CGFloat)					baseline
 {
+#if TARGET_OS_IPHONE
+   twlog("implement baseline");
+   return 0;
+#else
 	return [[[self textAttributes] objectForKey:NSBaselineOffsetAttributeName] doubleValue];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (void)					setSuperscriptAttribute:(NSInteger) amount
 {
+#if TARGET_OS_IPHONE
+   (void)amount;
+   twlog("implement setSuperscriptAttribute");
+#else
 	[self changeTextAttribute:NSSuperscriptAttributeName toValue:[NSNumber numberWithInteger:amount]];
+#endif TARGET_OS_IPHONE
 }
 
 
 - (NSInteger)						superscriptAttribute
 {
+#if TARGET_OS_IPHONE
+   twlog("implement superscriptAttribute");
+   return 0;
+#else
 	return [[[self textAttributes] objectForKey:NSSuperscriptAttributeName] integerValue];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -996,7 +1182,11 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 
 - (void)					useStandardKerning
 {
+#if TARGET_OS_IPHONE
+   twlog("implement useStandardKerning");
+#else
 	[self changeTextAttribute:NSKernAttributeName toValue:nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1080,6 +1270,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 
 #pragma mark -
 
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)			textToDraw:(id) object
 {
 	// text actually drawn consists of the master string with any substitutions from the object's metadata performed.
@@ -1136,9 +1327,11 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	
 	return [str autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
-- (NSAffineTransform*)		textTransformForObject:(id<DKRenderable>) obj
+//- (NSAffineTransform*)		textTransformForObject:(id<DKRenderable>) obj
+- (DKAffineTransform*)		textTransformForObject:(id<DKRenderable>) obj
 {
 	// returns a transform that will draw the text at the shape's location and rotation. This transform doesn't apply the shape's scale
 	// since the text is laid out based on the final shape size, not on the original path.
@@ -1158,7 +1351,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		loc.y = NSMidY( pb );
 	}
 
-	NSAffineTransform* xform = [NSAffineTransform transform];
+	//NSAffineTransform* xform = [NSAffineTransform transform];
+	DKAffineTransform* xform = [DKAffineTransform transform];
 	[xform translateXBy:loc.x yBy:loc.y];
 	
 	if ([self appliesObjectAngle])
@@ -1205,13 +1399,18 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
-- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path
+#ifndef TARGET_OS_IPHONE
+//- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path
+- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(DKBezierPath*) path
 {
 	[self drawText:contents withObject:obj withPath:path layoutManager:[self layoutManager]];
 }
+#endif TARGET_OS_IPHONE
 
 
-- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path layoutManager:(NSLayoutManager*) lm
+#ifndef TARGET_OS_IPHONE
+//- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(NSBezierPath*) path layoutManager:(NSLayoutManager*) lm
+- (void)					drawText:(NSTextStorage*) contents withObject:(id<DKRenderable>) obj withPath:(DKBezierPath*) path layoutManager:(NSLayoutManager*) lm
 {
 	NSAssert( lm != nil, @"there must be a valid layout manager when calling -drawText:withObject:withPath:layoutManager:");
 	
@@ -1227,7 +1426,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 			// so the the text is laid out unrotated, then transformed into place. So detect that case here
 			// and compensate the path for the angle.
 			
-			NSBezierPath* textLayoutPath = path;
+			//NSBezierPath* textLayoutPath = path;
+			DKBezierPath* textLayoutPath = path;
 
 			if([self flowedTextPathInset] != 0.0 )
 			{
@@ -1296,6 +1496,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		[contents removeLayoutManager:lm];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -1360,6 +1561,11 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		return NSZeroRect;
 	else
 	{
+#if TARGET_OS_IPHONE
+      (void)object;
+      twlog("implement textLayoutRectForObject");
+		return NSZeroRect;
+#else
 		NSTextStorage*	str = [self textToDraw:object];
 		
 		// if no text, nothing to do
@@ -1391,6 +1597,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		[str removeLayoutManager:lm];
 		
 		return tlr;
+#endif TARGET_OS_IPHONE
 	}
 }
 
@@ -1435,6 +1642,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 #define qDebugTextPoint		1
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)					drawText:(NSTextStorage*) contents centredAtPoint:(NSPoint) p
 {
 	NSSize	bboxSize = [contents size];
@@ -1447,8 +1655,10 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	
 #if qDebugTextPoint
 	
-	[[NSColor redColor] set];
-	NSBezierPath* path = [DKShapeFactory cross];
+	//[[NSColor redColor] set];
+	[[DKColor redColor] set];
+	//NSBezierPath* path = [DKShapeFactory cross];
+	DKBezierPath* path = [DKShapeFactory cross];
 	
 	NSAffineTransform* tfm = [NSAffineTransform transform];
 	[tfm translateXBy:p.x yBy:p.y];
@@ -1459,6 +1669,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	
 #endif
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)					drawKnockoutWithObject:(id<DKRenderable>) obj
@@ -1483,7 +1694,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 			[mTACache setObject:[NSNumber numberWithInteger:geoCheck] forKey:kDKTextAdornmentMaskObjectChecksumCacheKey];
 		}
 		
-		NSBezierPath* textPath;
+		//NSBezierPath* textPath;
+		DKBezierPath* textPath;
 		
 		// see if an earlier path was cached:
 		
@@ -1534,6 +1746,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSLayoutManager*)		layoutManager
 {
 	if([self greeking] == kDKGreekingNone )
@@ -1556,6 +1769,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		return [glm autorelease];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1573,6 +1787,9 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	
 	if(([self layoutMode] != kDKTextLayoutInBoundingRect) && [self enabled])
 	{
+#if TARGET_OS_IPHONE
+      twlog("implement extraSpaceNeeded");
+#else
 		// add in the current lineheight to both width and height. As we are only interested in the lineheight, we just use
 		// some dummy text in conjunction with our current attributes
 		
@@ -1591,6 +1808,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		// it could be making use of centroid layout.
 		
 		es = NSMakeSize( extra, extra );
+#endif TARGET_OS_IPHONE
 	}
 	
 	if([self textKnockoutDistance] > 0)
@@ -1627,6 +1845,9 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 			[mTACache setObject:[NSNumber numberWithInteger:ccs] forKey:kDKTextAdornmentMetadataChecksumCacheKey];
 		}
 
+#if TARGET_OS_IPHONE
+      twlog("implement render");
+#else
 		NSTextStorage*	str = [self textToDraw:object];
 		
 		// if no text, nothing to do
@@ -1650,7 +1871,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		else
 		{
 			SAVE_GRAPHICS_CONTEXT		//[NSGraphicsContext saveGraphicsState];
-			NSBezierPath*	path = [self renderingPathForObject:object];
+			//NSBezierPath*	path = [self renderingPathForObject:object];
+			DKBezierPath*	path = [self renderingPathForObject:object];
 					
 			if ( [self layoutMode] == kDKTextLayoutAlongReversedPath )
 				path = [path bezierPathByReversingPath];
@@ -1669,7 +1891,8 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 				
 				if([self verticalAlignment] == kDKTextPathVerticalAlignmentCentredOnPath)
 				{
-					NSFont*	font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+					//NSFont*	font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
+					DKFont*	font = [str attribute:NSFontAttributeName atIndex:0 effectiveRange:NULL];
 					baseOffset = [self baselineOffsetForTextHeight:[font xHeight]];
 				}
 				else
@@ -1703,6 +1926,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 			}
 			RESTORE_GRAPHICS_CONTEXT	//[NSGraphicsContext restoreGraphicsState];
 		}
+#endif TARGET_OS_IPHONE
 	}
 	@catch( NSException* exception )
 	{
@@ -1787,8 +2011,10 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 		[self setLabel:[[self class] defaultLabel]];
 		[self setVerticalAlignment:kDKTextShapeVerticalAlignmentCentre];
 		
-		[self setTextKnockoutColour:[[NSColor whiteColor] colorWithAlphaComponent:0.67]];
-		[self setTextKnockoutStrokeColour:[[NSColor blackColor] colorWithAlphaComponent:0.67]];
+		//[self setTextKnockoutColour:[[NSColor whiteColor] colorWithAlphaComponent:0.67]];
+		//[self setTextKnockoutStrokeColour:[[NSColor blackColor] colorWithAlphaComponent:0.67]];
+		[self setTextKnockoutColour:[[DKColor whiteColor] colorWithAlphaComponent:0.67]];
+		[self setTextKnockoutStrokeColour:[[DKColor blackColor] colorWithAlphaComponent:0.67]];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(masterStringChanged:) name:kDKTextSubstitutorNewStringNotification object:mSubstitutor];
 	}

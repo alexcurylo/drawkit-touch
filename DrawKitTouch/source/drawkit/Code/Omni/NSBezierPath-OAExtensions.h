@@ -76,11 +76,13 @@ typedef struct OABezierPathIntersectionList PathIntersectionList;
 // Utility functions used internally, may be of use to other callers as well
 void				splitBezierCurveTo(const NSPoint *c, CGFloat t, NSPoint *l, NSPoint *r);
 
-@interface NSBezierPath (OAExtensions)
+//@interface NSBezierPath (OAExtensions)
+@interface DKBezierPath (OAExtensions)
 
 - (NSPoint)			currentpointForSegment:(NSInteger)i;  // Raises an exception if no currentpoint
 
-- (BOOL)			strokesSimilarlyIgnoringEndcapsToPath:(NSBezierPath *)otherPath;
+//- (BOOL)			strokesSimilarlyIgnoringEndcapsToPath:(NSBezierPath *)otherPath;
+- (BOOL)			strokesSimilarlyIgnoringEndcapsToPath:(DKBezierPath *)otherPath;
 - (NSCountedSet *)	countedSetOfEncodedStrokeSegments;
 
 - (BOOL)			intersectsRect:(NSRect)rect;
@@ -90,7 +92,8 @@ void				splitBezierCurveTo(const NSPoint *c, CGFloat t, NSPoint *l, NSPoint *r);
 - (BOOL)			firstIntersectionWithLine:(OABezierPathIntersection*) result lineStart:(NSPoint) lineStart lineEnd:(NSPoint) lineEnd;
 
 // Returns a list of all the intersections between the receiver and the specified path. As a special case, if other==self, it does the useful thing and returns only the nontrivial self-intersections.
-- (struct OABezierPathIntersectionList)	allIntersectionsWithPath:(NSBezierPath*) other;
+//- (struct OABezierPathIntersectionList)	allIntersectionsWithPath:(NSBezierPath*) other;
+- (struct OABezierPathIntersectionList)	allIntersectionsWithPath:(DKBezierPath*) other;
 
 - (void)			getWinding:(NSInteger *)clockwiseWindingCount andHit:(NSUInteger *)strokeHitCount forPoint:(NSPoint)point;
 
@@ -125,7 +128,8 @@ void				splitBezierCurveTo(const NSPoint *c, CGFloat t, NSPoint *l, NSPoint *r);
 - (void)			loadPropertyListRepresentation:(NSDictionary *)dict;
 
 // NSObject overrides
-- (BOOL)			isEqual:(NSBezierPath *)otherBezierPath;
+//- (BOOL)			isEqual:(NSBezierPath *)otherBezierPath;
+- (BOOL)			isEqual:(DKBezierPath *)otherBezierPath;
 - (NSUInteger)	hash;
 
 @end
@@ -138,7 +142,8 @@ void				splitBezierCurveTo(const NSPoint *c, CGFloat t, NSPoint *l, NSPoint *r);
 
 typedef struct
 {
-    NSBezierPath *pathBeingWalked;      // The NSBezierPath we're iterating through
+    //NSBezierPath *pathBeingWalked;      // The NSBezierPath we're iterating through
+    DKBezierPath *pathBeingWalked;      // The NSBezierPath we're iterating through
     NSInteger elementCount;                   // [pathBeingWalked elementCount]
     NSPoint startPoint;                 // first point of this subpath, for closepath
     NSBezierPathElement what;           // the type of the current segment/element
@@ -150,7 +155,8 @@ typedef struct
 }
 subpathWalkingState;
 
-@interface NSBezierPath (PrivateOAExtensions)
+//@interface NSBezierPath (PrivateOAExtensions)
+@interface DKBezierPath (PrivateOAExtensions)
 
 /*
  Defined in NSBezierPath-OAInternal.h
@@ -179,7 +185,8 @@ void		_parameterizeCurve(NSPoint *coefficients, NSPoint startPoint, NSPoint endP
 
 // other functions:
 
-BOOL		initializeSubpathWalkingState( subpathWalkingState *s, NSBezierPath *p, NSInteger startIndex, BOOL implicitClosepath);
+//BOOL		initializeSubpathWalkingState( subpathWalkingState *s, NSBezierPath *p, NSInteger startIndex, BOOL implicitClosepath);
+BOOL		initializeSubpathWalkingState( subpathWalkingState *s, DKBezierPath *p, NSInteger startIndex, BOOL implicitClosepath);
 BOOL		nextSubpathElement( subpathWalkingState *s);
 BOOL		hasNextSubpathElement( subpathWalkingState *s);
 void		repositionSubpathWalkingState( subpathWalkingState *s, NSInteger toIndex);

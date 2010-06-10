@@ -76,9 +76,11 @@ enum
 - (void)				setDelegate:(id) delegate;
 - (id)					delegate;
 
+#ifndef TARGET_OS_IPHONE
 - (void)				startMouseTracking:(NSEvent*) event inView:(NSView*) view;
 - (void)				continueMouseTracking:(NSEvent*) event inView:(NSView*) view;
 - (void)				endMouseTracking:(NSEvent*) event inView:(NSView*) view;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -89,9 +91,11 @@ enum
 
 @interface NSObject (DKHotspotDelegate)
 
+#ifndef TARGET_OS_IPHONE
  - (void)				hotspot:(DKHotspot*) hs willBeginTrackingWithEvent:(NSEvent*) event inView:(NSView*) view;
  - (void)				hotspot:(DKHotspot*) hs isTrackingWithEvent:(NSEvent*) event inView:(NSView*) view;
  - (void)				hotspot:(DKHotspot*) hs didEndTrackingWithEvent:(NSEvent*) event inView:(NSView*) view;
+#endif TARGET_OS_IPHONE
 
 
 @end

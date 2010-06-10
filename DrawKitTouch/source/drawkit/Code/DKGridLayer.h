@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKGridLayer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 12/08/2006.
 ///
@@ -22,12 +22,18 @@ DKGridMeasurementSystem;
 @interface DKGridLayer : DKLayer <NSCoding>
 {
 @private
-	NSColor*				m_spanColour;					// the colour of the spans grid
-	NSColor*				m_divisionColour;				// the colour of the divisions grid
-	NSColor*				m_majorColour;					// the colour of the majors grid
-	NSBezierPath*			m_divsCache;					// the path for the divisions grid
-	NSBezierPath*			m_spanCache;					// the path for the spans grid
-	NSBezierPath*			m_majorsCache;					// the path for the majors grid
+	//NSColor*				m_spanColour;					// the colour of the spans grid
+	//NSColor*				m_divisionColour;				// the colour of the divisions grid
+	//NSColor*				m_majorColour;					// the colour of the majors grid
+	DKColor*				m_spanColour;					// the colour of the spans grid
+	DKColor*				m_divisionColour;				// the colour of the divisions grid
+	DKColor*				m_majorColour;					// the colour of the majors grid
+	//NSBezierPath*			m_divsCache;					// the path for the divisions grid
+	//NSBezierPath*			m_spanCache;					// the path for the spans grid
+	//NSBezierPath*			m_majorsCache;					// the path for the majors grid
+	DKBezierPath*			m_divsCache;					// the path for the divisions grid
+	DKBezierPath*			m_spanCache;					// the path for the spans grid
+	DKBezierPath*			m_majorsCache;					// the path for the majors grid
 	NSPoint					m_zeroDatum;					// where "zero" is supposed to be
 	BOOL					mDrawsDivisions;				// YES to draw divisions
 	BOOL					mDrawsSpans;					// YES to draw spans
@@ -51,13 +57,20 @@ DKGridMeasurementSystem;
 
 // setting class defaults:
 
-+ (void)					setDefaultSpanColour:(NSColor*) colour;
-+ (NSColor*)				defaultSpanColour;
-+ (void)					setDefaultDivisionColour:(NSColor*) colour;
-+ (NSColor*)				defaultDivisionColour;
-+ (void)					setDefaultMajorColour:(NSColor*) colour;
-+ (NSColor*)				defaultMajorColour;
-+ (void)					setDefaultGridThemeColour:(NSColor*) colour;
+//+ (void)					setDefaultSpanColour:(NSColor*) colour;
+//+ (NSColor*)				defaultSpanColour;
+//+ (void)					setDefaultDivisionColour:(NSColor*) colour;
+//+ (NSColor*)				defaultDivisionColour;
+//+ (void)					setDefaultMajorColour:(NSColor*) colour;
+//+ (NSColor*)				defaultMajorColour;
+//+ (void)					setDefaultGridThemeColour:(NSColor*) colour;
++ (void)					setDefaultSpanColour:(DKColor*) colour;
++ (DKColor*)				defaultSpanColour;
++ (void)					setDefaultDivisionColour:(DKColor*) colour;
++ (DKColor*)				defaultDivisionColour;
++ (void)					setDefaultMajorColour:(DKColor*) colour;
++ (DKColor*)				defaultMajorColour;
++ (void)					setDefaultGridThemeColour:(DKColor*) colour;
 
 + (DKGridLayer*)			standardMetricGridLayer;
 + (DKGridLayer*)			standardImperialGridLayer;
@@ -109,14 +122,22 @@ DKGridMeasurementSystem;
 
 // colours for grid display
 
-- (void)					setSpanColour:(NSColor*) colour;
-- (NSColor*)				spanColour;
-- (void)					setDivisionColour:(NSColor*) colour;
-- (NSColor*)				divisionColour;
-- (void)					setMajorColour:(NSColor*) colour;
-- (NSColor*)				majorColour;
-- (void)					setGridThemeColour:(NSColor*) colour;
-- (NSColor*)				themeColour;
+//- (void)					setSpanColour:(NSColor*) colour;
+//- (NSColor*)				spanColour;
+//- (void)					setDivisionColour:(NSColor*) colour;
+//- (NSColor*)				divisionColour;
+//- (void)					setMajorColour:(NSColor*) colour;
+//- (NSColor*)				majorColour;
+//- (void)					setGridThemeColour:(NSColor*) colour;
+//- (NSColor*)				themeColour;
+- (void)					setSpanColour:(DKColor*) colour;
+- (DKColor*)				spanColour;
+- (void)					setDivisionColour:(DKColor*) colour;
+- (DKColor*)				divisionColour;
+- (void)					setMajorColour:(DKColor*) colour;
+- (DKColor*)				majorColour;
+- (void)					setGridThemeColour:(DKColor*) colour;
+- (DKColor*)				themeColour;
 
 // converting between the base (Quartz) coordinate system and the grid
 

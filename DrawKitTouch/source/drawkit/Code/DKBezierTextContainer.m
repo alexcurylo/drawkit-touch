@@ -7,6 +7,10 @@
 ///	 This software is released subject to licensing conditions as detailed in DRAWKIT-LICENSING.TXT, which must accompany this source file. 
 //
 
+#if TARGET_OS_IPHONE
+#error NSTextContainer not available in iPhone SDK
+#endif TARGET_OS_IPHONE
+
 #import "DKBezierTextContainer.h"
 #import "NSBezierPath+Text.h"
 

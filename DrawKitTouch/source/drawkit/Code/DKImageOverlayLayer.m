@@ -1,6 +1,6 @@
 //
 //  DKImageOverlayLayer.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by graham on 28/08/2006.
 ///
@@ -15,7 +15,8 @@
 
 @implementation DKImageOverlayLayer
 #pragma mark As a DKImageOverlayLayer
-- (id)			initWithImage:(NSImage*) image
+//- (id)			initWithImage:(NSImage*) image
+- (id)			initWithImage:(DKImage*) image
 {
 	self = [self init];
 	if (self != nil)
@@ -37,22 +38,27 @@
 
 - (id)			initWithContentsOfFile:(NSString*) imagefile
 {
-	NSImage* img = [[[NSImage alloc] initWithContentsOfFile:imagefile] autorelease];
+	//NSImage* img = [[[NSImage alloc] initWithContentsOfFile:imagefile] autorelease];
+	DKImage* img = [[[DKImage alloc] initWithContentsOfFile:imagefile] autorelease];
 	return [self initWithImage:img];
 }
 
 
 #pragma mark -
-- (void)		setImage:(NSImage*) image
+//- (void)		setImage:(NSImage*) image
+- (void)		setImage:(DKImage*) image
 {
 	[image retain];
 	[m_image release];
 	m_image = image;
+#ifndef TARGET_OS_IPHONE
 	[m_image setFlipped:YES];
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSImage*)	image
+//- (NSImage*)	image
+- (DKImage*)	image
 {
 	return m_image;
 }
@@ -165,7 +171,11 @@
 			{
 				for( x = 0; x < h; ++x )
 				{
+#if TARGET_OS_IPHONE
+					[[self image] drawInRect:ri blendMode:kCGBlendModeSourceAtop alpha:[self opacity]];
+#else
 					[[self image] drawInRect:ri fromRect:NSZeroRect operation:NSCompositeSourceAtop fraction:[self opacity]];
+#endif TARGET_OS_IPHONE
 					ri.origin.x += ri.size.width;
 				}
 				ri.origin.x = dr.origin.x;
@@ -176,7 +186,11 @@
 		{
 			// straightforward composition of the image
 			
+#if TARGET_OS_IPHONE
+         [[self image] drawInRect:dr blendMode:kCGBlendModeSourceAtop alpha:[self opacity]];
+#else
 			[[self image] drawInRect:dr fromRect:NSZeroRect operation:NSCompositeSourceAtop fraction:[self opacity]];
+#endif TARGET_OS_IPHONE
 		}
 	}
 }

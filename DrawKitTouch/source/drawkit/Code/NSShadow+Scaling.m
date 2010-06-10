@@ -9,10 +9,15 @@
 ///**********************************************************************************************************************************
 
 #import "NSShadow+Scaling.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#else
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 #import "DKDrawKitMacros.h"
 
-@implementation NSShadow (DKAdditions)
+//@implementation NSShadow (DKAdditions)
+@implementation DKShadow (DKAdditions)
 #pragma mark As a NSShadow
 
 - (void)		setAbsolute
@@ -25,7 +30,11 @@
 
 - (void)		setAbsoluteFlipped:(BOOL) flipped
 {
+#if TARGET_OS_IPHONE
+	CGContextRef cc = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef		cc = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	CGAffineTransform	ctm = CGContextGetCTM( cc );
 	CGSize				unit = CGSizeApplyAffineTransform( CGSizeMake( 1, 1 ), ctm );
 	
@@ -156,7 +165,8 @@
 }
 
 
-- (void)		drawApproximateShadowWithPath:(NSBezierPath*) path operation:(DKShadowDrawingOperation) op strokeWidth:(NSInteger) sw
+//- (void)		drawApproximateShadowWithPath:(NSBezierPath*) path operation:(DKShadowDrawingOperation) op strokeWidth:(NSInteger) sw
+- (void)		drawApproximateShadowWithPath:(DKBezierPath*) path operation:(DKShadowDrawingOperation) op strokeWidth:(NSInteger) sw
 {
 	// one problem with shadows is that they are expensive in rendering time terms. This may help - it draws a fake shadow for the path
 	// using the current shadow parameters, but just block filling/stroking it. Call this *instead* of drawing the shadow (not as well as)
@@ -165,12 +175,18 @@
 	NSAssert( path != nil, @"path was nil when drawing fake shadow");
 	NSAssert(![path isEmpty], @"path was empty when drawing fake shadow");
 	
+#if TARGET_OS_IPHONE
+   CGContextSetBlendMode(UIGraphicsGetCurrentContext(), kCGBlendModeNormal);
+#else
 	[[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeSourceOver];
+#endif TARGET_OS_IPHONE
 	[[[self shadowColor] colorWithAlphaComponent:0.3] set];
 	NSSize offset = [self shadowOffset];
 	
-	NSBezierPath* temp;
-	NSAffineTransform* offsetTfm = [NSAffineTransform transform];
+	//NSBezierPath* temp;
+	//NSAffineTransform* offsetTfm = [NSAffineTransform transform];
+	DKBezierPath* temp;
+	DKAffineTransform* offsetTfm = [DKAffineTransform transform];
 	[offsetTfm translateXBy:offset.width yBy:offset.height];
 	temp = [offsetTfm transformBezierPath:path];
 	

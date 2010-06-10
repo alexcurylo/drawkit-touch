@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKHatching.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 06/10/2006.
 ///
@@ -100,7 +100,8 @@
 
 + (DKHatching*)		hatchingWithDotPitch:(CGFloat) pitch diameter:(CGFloat) diameter
 {
-	DKHatching* hatch = [self hatchingWithLineWidth:diameter spacing:pitch angle:pi * 0.25];
+	//DKHatching* hatch = [self hatchingWithLineWidth:diameter spacing:pitch angle:pi * 0.25];
+	DKHatching* hatch = [self hatchingWithLineWidth:diameter spacing:pitch angle:M_PI_4];
 	
 	CGFloat		dashPattern[2];
 	
@@ -158,7 +159,8 @@
 ///
 ///********************************************************************************************************************
 
-- (void)			hatchPath:(NSBezierPath*)	path
+//- (void)			hatchPath:(NSBezierPath*)	path
+- (void)			hatchPath:(DKBezierPath*)	path
 {
 	[self hatchPath:path objectAngle:0.0];
 }
@@ -179,7 +181,8 @@
 ///
 ///********************************************************************************************************************
 
-- (void)			hatchPath:(NSBezierPath*) path objectAngle:(CGFloat) oa
+//- (void)			hatchPath:(NSBezierPath*) path objectAngle:(CGFloat) oa
+- (void)			hatchPath:(DKBezierPath*) path objectAngle:(CGFloat) oa
 {
 	// if the bounds size of <path> is larger than the cached hatch, then we'll need to enlarge the cache, so invalidate
 	// it.
@@ -214,11 +217,13 @@
 		
 		CGFloat actualLineWidth = [self width];
 		
+#ifndef TARGET_OS_IPHONE
 		if(![NSGraphicsContext currentContextDrawingToScreen])
 		{
 			if( actualLineWidth <= 0.0 )
 				actualLineWidth = 0.05;		// hairline
 		}
+#endif TARGET_OS_IPHONE
 		
 		[m_cache setLineWidth:actualLineWidth];
 
@@ -232,19 +237,23 @@
 		
 		[[self colour] set];
 		
-		NSAffineTransform* xform;
+		//NSAffineTransform* xform;
+		DKAffineTransform* xform;
 		
-		xform = [NSAffineTransform transform];
+		//xform = [NSAffineTransform transform];
+		xform = [DKAffineTransform transform];
 		[xform translateXBy:NSMidX( br ) yBy:NSMidY( br )];
 		[xform concat];
 		
-		NSBezierPath* hatch;
-		
+		//NSBezierPath* hatch;
+      DKBezierPath* hatch;
+	
 		// compensate for the object's angle by applying that rotation to the hatch path
 		
 		if ( oa != 0.0 )
 		{
-			xform = [NSAffineTransform transform];
+			//xform = [NSAffineTransform transform];
+			xform = [DKAffineTransform transform];
 			[xform rotateByRadians:oa];
 			hatch = [xform transformBezierPath:m_cache];
 		}
@@ -253,7 +262,8 @@
 		
 		if( mRoughenStrokes )
 		{
-			NSBezierPath* roughHatch;
+			//NSBezierPath* roughHatch;
+			DKBezierPath* roughHatch;
 			
 			if( mRoughenedCache == nil )
 				mRoughenedCache = [[m_cache bezierPathWithRoughenedStrokeOutline:[self roughness] * [self width]] retain];
@@ -296,7 +306,8 @@
 		
 		if ( m_cache )
 		{
-			NSAffineTransform* xform = [NSAffineTransform transform];
+			//NSAffineTransform* xform = [NSAffineTransform transform];
+			DKAffineTransform* xform = [DKAffineTransform transform];
 			[xform rotateByRadians:radians - m_angle];
 			[m_cache transformUsingAffineTransform:xform];
 			[mRoughenedCache transformUsingAffineTransform:xform];
@@ -460,7 +471,8 @@
 
 
 #pragma mark -
-- (void)			setColour:(NSColor*) colour
+//- (void)			setColour:(NSColor*) colour
+- (void)			setColour:(DKColor*) colour
 {
 	[colour retain];
 	[m_hatchColour release];
@@ -468,7 +480,8 @@
 }
 
 
-- (NSColor*)		colour
+//- (NSColor*)		colour
+- (DKColor*)		colour
 {
 	return m_hatchColour;
 }
@@ -549,7 +562,8 @@
 	
 	if ( m_cache == nil )
 	{
-		m_cache = [[NSBezierPath bezierPath] retain];
+		//m_cache = [[NSBezierPath bezierPath] retain];
+		m_cache = [[DKBezierPath bezierPath] retain];
 		
 		NSRect cr;
 		
@@ -582,7 +596,8 @@
 		
 		// now rotate the cache to the current angle
 		
-		NSAffineTransform* rot = [NSAffineTransform transform];
+		//NSAffineTransform* rot = [NSAffineTransform transform];
+		DKAffineTransform* rot = [DKAffineTransform transform];
 		[rot rotateByRadians:[self angle]];
 		[m_cache transformUsingAffineTransform:rot];
 	}
@@ -648,11 +663,13 @@
 	self = [super init];
 	if (self != nil)
 	{
-		[self setColour:[NSColor blackColor]];
+		//[self setColour:[NSColor blackColor]];
+		[self setColour:[DKColor blackColor]];
 		
 		[self setLeadIn:0.0];
 		[self setSpacing:8.0];
-		[self setAngle:pi/4.0]; //45 degrees
+		//[self setAngle:pi/4.0]; //45 degrees
+		[self setAngle:M_PI_4]; //45 degrees
 		[self setWidth:0.25];
 		
 		[self setLineCapStyle:NSButtLineCapStyle];
@@ -669,7 +686,8 @@
 	if( ![obj conformsToProtocol:@protocol(DKRenderable)] || ![self enabled])
 		return;
 
-	NSBezierPath* path = [obj renderingPath];
+	//NSBezierPath* path = [obj renderingPath];
+	DKBezierPath* path = [obj renderingPath];
 	
 	if ( m_angleRelativeToObject )
 		[self hatchPath:path objectAngle:[obj angle]];

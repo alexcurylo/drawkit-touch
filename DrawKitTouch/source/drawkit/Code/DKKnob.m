@@ -10,7 +10,12 @@
 #import "DKKnob.h"
 #import "DKGeometryUtilities.h"
 #import "NSBezierPath+Geometry.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#import "UIColor+DKTAdditions.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKHandle.h"
 
 #define USE_DK_HANDLES			1
@@ -19,11 +24,16 @@
 NSString*	kDKKnobPreferredHighlightColour = @"kDKKnobPreferredHighlightColour";
 
 
-static NSColor*			sKnobColour = nil;
-static NSColor*			sRotationColour = nil;
-static NSColor*			sPointColour = nil;
-static NSColor*			sOffPointColour = nil;
-static NSColor*			sBarColour = nil;
+//static NSColor*			sKnobColour = nil;
+//static NSColor*			sRotationColour = nil;
+//static NSColor*			sPointColour = nil;
+//static NSColor*			sOffPointColour = nil;
+//static NSColor*			sBarColour = nil;
+static DKColor*			sKnobColour = nil;
+static DKColor*			sRotationColour = nil;
+static DKColor*			sPointColour = nil;
+static DKColor*			sOffPointColour = nil;
+static DKColor*			sBarColour = nil;
 static CGFloat			sBarWidth = 0.0;
 static NSSize			sKnobSize = { 6.0, 6.0 };
 
@@ -71,7 +81,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (void)			drawKnobAtPoint:(NSPoint) p ofType:(DKKnobType) knobType angle:(CGFloat) radians highlightColour:(NSColor*) aColour
+//- (void)			drawKnobAtPoint:(NSPoint) p ofType:(DKKnobType) knobType angle:(CGFloat) radians highlightColour:(NSColor*) aColour
+- (void)			drawKnobAtPoint:(NSPoint) p ofType:(DKKnobType) knobType angle:(CGFloat) radians highlightColour:(DKColor*) aColour
 {
 	NSAssert( knobType != 0, @"knob type can't be zero");
 	
@@ -136,9 +147,14 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 			
 			if( radians != 0.0)
 			{
-				NSAffineTransform* transform = RotationTransform( radians, p );
+				//NSAffineTransform* transform = RotationTransform( radians, p );
+				DKAffineTransform* transform = RotationTransform( radians, p );
 				
+#if TARGET_OS_IPHONE
+            CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
 				[NSGraphicsContext saveGraphicsState];
+#endif TARGET_OS_IPHONE
 				[transform concat];
 			}
 			
@@ -147,15 +163,19 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 			else
 				[[self fillColourForKnobType:knobType] set];
 			
-			NSRectFill( fkr );
+			DKRectFill( fkr );
 			
 			if(( knobType & kDKKnobTypeMask ) == kDKBoundingRectKnobType )
 			{
 				[[self strokeColourForKnobType:knobType] set];
-				NSFrameRectWithWidth( fkr, strokeWidth );
+				DKFrameRectWithWidth( fkr, strokeWidth );
 				
 				if( radians != 0.0 )
-					[NSGraphicsContext restoreGraphicsState];
+#if TARGET_OS_IPHONE
+               CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
+               [NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 			}
 		}
 		else
@@ -164,7 +184,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 			//NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
 			//[userInfo setObject:aColour forKey:kDKKnobPreferredHighlightColour];
 			
-			NSBezierPath* path = [self knobPathAtPoint:p ofType:knobType angle:radians userInfo:nil];
+			//NSBezierPath* path = [self knobPathAtPoint:p ofType:knobType angle:radians userInfo:nil];
+			DKBezierPath* path = [self knobPathAtPoint:p ofType:knobType angle:radians userInfo:nil];
 			[self drawKnobPath:path ofType:knobType userInfo:nil];
 			//[userInfo release];
 		}
@@ -238,28 +259,38 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 			
 			if( radians != 0.0)
 			{
-				NSAffineTransform* transform = RotationTransform( radians, p );
+				//NSAffineTransform* transform = RotationTransform( radians, p );
+				DKAffineTransform* transform = RotationTransform( radians, p );
 			
+#if TARGET_OS_IPHONE
+            CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
 				[NSGraphicsContext saveGraphicsState];
+#endif TARGET_OS_IPHONE
 				[transform concat];
 			}
 			
 			[[self fillColourForKnobType:knobType] set];
-			NSRectFill( fkr );
+			DKRectFill( fkr );
 			
 			if(( knobType & kDKKnobTypeMask ) == kDKBoundingRectKnobType )
 			{
 				[[self strokeColourForKnobType:knobType] set];
-				NSFrameRectWithWidth( fkr, strokeWidth );
+				DKFrameRectWithWidth( fkr, strokeWidth );
 				
 				if( radians != 0.0 )
-					[NSGraphicsContext restoreGraphicsState];
+#if TARGET_OS_IPHONE
+               CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
+               [NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 			}
 		}
 		else
 #endif
 		{
-			NSBezierPath* path = [self knobPathAtPoint:p ofType:knobType angle:radians userInfo:userInfo];
+			//NSBezierPath* path = [self knobPathAtPoint:p ofType:knobType angle:radians userInfo:userInfo];
+			DKBezierPath* path = [self knobPathAtPoint:p ofType:knobType angle:radians userInfo:userInfo];
 			[self drawKnobPath:path ofType:knobType userInfo:userInfo];
 		}
 	}
@@ -276,16 +307,24 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	if( active )
 		[[self controlBarColour] set];
 	else
-		[[NSColor lightGrayColor] set];
+		//[[NSColor lightGrayColor] set];
+		[[DKColor lightGrayColor] set];
 	
+#if TARGET_OS_IPHONE
+   [DKBezierPath setDefaultLineWidth:[[self class] controlBarWidth]];
+#else
 	// normally knobs would never be drawn to a print of PDF context, but there is a special hidden feature that
 	// creates PDFs with the knobs drawn, so make sure that the control bar does come up visible.
 	
 	if([NSGraphicsContext currentContextDrawingToScreen])
-		[NSBezierPath setDefaultLineWidth:[[self class] controlBarWidth]];
+		//[NSBezierPath setDefaultLineWidth:[[self class] controlBarWidth]];
+		[DKBezierPath setDefaultLineWidth:[[self class] controlBarWidth]];
 	else
-		[NSBezierPath setDefaultLineWidth:1.0];
-	[NSBezierPath strokeLineFromPoint:a toPoint:b];
+		//[NSBezierPath setDefaultLineWidth:1.0];
+		[DKBezierPath setDefaultLineWidth:1.0];
+#endif TARGET_OS_IPHONE
+	//[NSBezierPath strokeLineFromPoint:a toPoint:b];
+	[DKBezierPath strokeLineFromPoint:a toPoint:b];
 }
 
 
@@ -336,7 +375,13 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	if ( fontSize < 2.0 )
 		fontSize = 2.0;
 		
-	NSFont*		font = [NSFont fontWithName:@"Monaco" size:fontSize];
+#if TARGET_OS_IPHONE
+   (void)code;
+   (void)p;
+   twlog("implement drawPartcode");
+#else
+	//NSFont*		font = [NSFont fontWithName:@"Monaco" size:fontSize];
+	DKFont*		font = [DKFont fontWithName:@"Monaco" size:fontSize];
 	[attrs setObject:font forKey:NSFontAttributeName];
 
 	NSString*	s = [NSString stringWithFormat:@"%ld", (long)code];
@@ -346,13 +391,18 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	box.origin = p;
 
 	NSRect b = ScaleRect( box, 1.5 ); //NSInsetRect( box, -1.5, -1 );
-	[[NSColor whiteColor] set];
-	NSRectFill( b );
-	[[NSColor blackColor] set];
+	//[[NSColor whiteColor] set];
+	[[DKColor whiteColor] set];
+	DKRectFill( b );
+	//[[NSColor blackColor] set];
+	[[DKColor blackColor] set];
 	[s drawInRect:box withAttributes:attrs];
-	//NSFrameRectWithWidth( b, 0.0 );
-	[NSBezierPath setDefaultLineWidth:0.0];
-	[NSBezierPath strokeRect:b];
+	//DKFrameRectWithWidth( b, 0.0 );
+	//[NSBezierPath setDefaultLineWidth:0.0];
+	//[NSBezierPath strokeRect:b];
+	[DKBezierPath setDefaultLineWidth:0.0];
+	[DKBezierPath strokeRect:b];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -365,7 +415,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	
 	if ( NSPointInRect( p, br ))
 	{
-		NSBezierPath* path = [self knobPathAtPoint:kp ofType:knobType angle:0.0 userInfo:userInfo];
+		//NSBezierPath* path = [self knobPathAtPoint:kp ofType:knobType angle:0.0 userInfo:userInfo];
+		DKBezierPath* path = [self knobPathAtPoint:kp ofType:knobType angle:0.0 userInfo:userInfo];
 		return [path containsPoint:p];
 	}
 	else
@@ -375,7 +426,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (void)			setControlBarColour:(NSColor*) clr
+//- (void)			setControlBarColour:(NSColor*) clr
+- (void)			setControlBarColour:(DKColor*) clr
 {
 	[clr retain];
 	[mControlBarColour release];
@@ -383,7 +435,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-- (NSColor*)		controlBarColour
+//- (NSColor*)		controlBarColour
+- (DKColor*)		controlBarColour
 {
 	return mControlBarColour;
 }
@@ -452,7 +505,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-- (DKHandle*)		handleForType:(DKKnobType) knobType colour:(NSColor*) colour
+//- (DKHandle*)		handleForType:(DKKnobType) knobType colour:(NSColor*) colour
+- (DKHandle*)		handleForType:(DKKnobType) knobType colour:(DKColor*) colour
 {
 	return [DKHandle handleForType:knobType size:[self actualHandleSize] colour:colour];
 }
@@ -576,7 +630,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 @implementation DKKnob (Deprecated)
 
-+ (void)			setControlKnobColour:(NSColor*) clr
+//+ (void)			setControlKnobColour:(NSColor*) clr
++ (void)			setControlKnobColour:(DKColor*) clr
 {
 	[clr retain];
 	[sKnobColour release];
@@ -584,32 +639,38 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-+ (NSColor*)		controlKnobColour
+//+ (NSColor*)		controlKnobColour
++ (DKColor*)		controlKnobColour
 {
 	if ( sKnobColour == nil )
-		[DKKnob setControlKnobColour:[NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0]];
+		//[DKKnob setControlKnobColour:[NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0]];
+		[DKKnob setControlKnobColour:[DKColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0]];
 	
 	return sKnobColour;
 }
 
 
-+ (void)			setRotationKnobColour:(NSColor*) clr
+//+ (void)			setRotationKnobColour:(NSColor*) clr
++ (void)			setRotationKnobColour:(DKColor*) clr
 {
 	[clr retain];
 	[sRotationColour release];
 	sRotationColour = clr;
 }
 
-+ (NSColor*)		rotationKnobColour
+//+ (NSColor*)		rotationKnobColour
++ (DKColor*)		rotationKnobColour
 {
 	if ( sRotationColour == nil )
-		[DKKnob setRotationKnobColour:[NSColor purpleColor]];
+		//[DKKnob setRotationKnobColour:[NSColor purpleColor]];
+		[DKKnob setRotationKnobColour:[DKColor purpleColor]];
 	
 	return sRotationColour;
 }
 
 
-+ (void)			setControlOnPathPointColour:(NSColor*) clr
+//+ (void)			setControlOnPathPointColour:(NSColor*) clr
++ (void)			setControlOnPathPointColour:(DKColor*) clr
 {
 	[clr retain];
 	[sPointColour release];
@@ -617,16 +678,19 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-+ (NSColor*)		controlOnPathPointColour
+//+ (NSColor*)		controlOnPathPointColour
++ (DKColor*)		controlOnPathPointColour
 {
 	if ( sPointColour == nil )
-		[DKKnob setControlOnPathPointColour:[NSColor orangeColor]];
+		//[DKKnob setControlOnPathPointColour:[NSColor orangeColor]];
+		[DKKnob setControlOnPathPointColour:[DKColor orangeColor]];
 	
 	return sPointColour;
 }
 
 
-+ (void)			setControlOffPathPointColour:(NSColor*) clr
+//+ (void)			setControlOffPathPointColour:(NSColor*) clr
++ (void)			setControlOffPathPointColour:(DKColor*) clr
 {
 	[clr retain];
 	[sOffPointColour release];
@@ -634,15 +698,18 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-+ (NSColor*)		controlOffPathPointColour
+//+ (NSColor*)		controlOffPathPointColour
++ (DKColor*)		controlOffPathPointColour
 {
 	if ( sOffPointColour == nil )
-		[DKKnob setControlOffPathPointColour:[NSColor cyanColor]];
+		//[DKKnob setControlOffPathPointColour:[NSColor cyanColor]];
+		[DKKnob setControlOffPathPointColour:[DKColor cyanColor]];
 	
 	return sOffPointColour;
 }
 
-+ (void)			setControlBarColour:(NSColor*) clr
+//+ (void)			setControlBarColour:(NSColor*) clr
++ (void)			setControlBarColour:(DKColor*) clr
 {
 	[clr retain];
 	[sBarColour release];
@@ -650,10 +717,12 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-+ (NSColor*)		controlBarColour
+//+ (NSColor*)		controlBarColour
++ (DKColor*)		controlBarColour
 {
 	if ( sBarColour == nil )
-		[DKKnob setControlBarColour:[NSColor cyanColor]];
+		//[DKKnob setControlBarColour:[NSColor cyanColor]];
+		[DKKnob setControlBarColour:[DKColor cyanColor]];
 	
 	return sBarColour;
 }
@@ -697,19 +766,23 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 #pragma mark -
 
-- (NSColor*)		fillColourForKnobType:(DKKnobType) knobType
+//- (NSColor*)		fillColourForKnobType:(DKKnobType) knobType
+- (DKColor*)		fillColourForKnobType:(DKKnobType) knobType
 {
 	BOOL locked = ((knobType & kDKKnobIsDisabledFlag) != 0);
 	BOOL inactive = ((knobType & kDKKnobIsInactiveFlag) != 0);
 	
-	NSColor* result = nil;
+	//NSColor* result = nil;
+	DKColor* result = nil;
 	
 	if ( inactive )
-		result = [NSColor lightGrayColor];
+		//result = [NSColor lightGrayColor];
+		result = [DKColor lightGrayColor];
 	else
 	{
 		if ( locked )
-			result = [NSColor whiteColor];
+			//result = [NSColor whiteColor];
+			result = [DKColor whiteColor];
 		else
 		{
 			switch( knobType & kDKKnobTypeMask )
@@ -728,7 +801,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 					break;
 					
 				case kDKHotspotKnobType:
-					result = [NSColor yellowColor];
+					//result = [NSColor yellowColor];
+					result = [DKColor yellowColor];
 					break;
 					
 				case kDKCentreTargetKnobType:
@@ -741,25 +815,30 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 }
 
 
-- (NSColor*)		strokeColourForKnobType:(DKKnobType) knobType
+//- (NSColor*)		strokeColourForKnobType:(DKKnobType) knobType
+- (DKColor*)		strokeColourForKnobType:(DKKnobType) knobType
 {
 	BOOL locked = ((knobType & kDKKnobIsDisabledFlag) != 0);
 	BOOL inactive = ((knobType & kDKKnobIsInactiveFlag) != 0);
 	
-	NSColor* result = nil;
+	//NSColor* result = nil;
+	DKColor* result = nil;
 	
 	if ( locked || inactive )
-		result = [NSColor grayColor];
+		//result = [NSColor grayColor];
+		result = [DKColor grayColor];
 	else
 	{
 		switch( knobType & kDKKnobTypeMask )
 		{
 			case kDKBoundingRectKnobType:
-				result = [NSColor darkGrayColor];
+				//result = [NSColor darkGrayColor];
+				result = [DKColor darkGrayColor];
 				break;
 				
 			case kDKRotationKnobType:
-				result = [NSColor whiteColor];
+				//result = [NSColor whiteColor];
+				result = [DKColor whiteColor];
 				break;
 				
 			case kDKCentreTargetKnobType:
@@ -767,7 +846,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 				break;
 				
 			case kDKHotspotKnobType:
-				result = [NSColor blackColor];
+				//result = [NSColor blackColor];
+				result = [DKColor blackColor];
 				break;
 				
 			case kDKOnPathKnobType:
@@ -805,7 +885,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (void)			setControlKnobColour:(NSColor*) clr
+//- (void)			setControlKnobColour:(NSColor*) clr
+- (void)			setControlKnobColour:(DKColor*) clr
 {
 	[clr retain];
 	[mControlKnobColour release];
@@ -814,14 +895,16 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (NSColor*)		controlKnobColour
+//- (NSColor*)		controlKnobColour
+- (DKColor*)		controlKnobColour
 {
 	return mControlKnobColour;
 }
 
 
 
-- (void)			setRotationKnobColour:(NSColor*) clr
+//- (void)			setRotationKnobColour:(NSColor*) clr
+- (void)			setRotationKnobColour:(DKColor*) clr
 {
 	[clr retain];
 	[mRotationKnobColour release];
@@ -830,14 +913,16 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (NSColor*)		rotationKnobColour
+//- (NSColor*)		rotationKnobColour
+- (DKColor*)		rotationKnobColour
 {
 	return mRotationKnobColour;
 }
 
 
 
-- (void)			setControlOnPathPointColour:(NSColor*) clr
+//- (void)			setControlOnPathPointColour:(NSColor*) clr
+- (void)			setControlOnPathPointColour:(DKColor*) clr
 {
 	[clr retain];
 	[mControlOnPathPointColour release];
@@ -846,14 +931,16 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (NSColor*)		controlOnPathPointColour
+//- (NSColor*)		controlOnPathPointColour
+- (DKColor*)		controlOnPathPointColour
 {
 	return mControlOnPathPointColour;
 }
 
 
 
-- (void)			setControlOffPathPointColour:(NSColor*) clr
+//- (void)			setControlOffPathPointColour:(NSColor*) clr
+- (void)			setControlOffPathPointColour:(DKColor*) clr
 {
 	[clr retain];
 	[mControlOffPathPointColour release];
@@ -862,13 +949,15 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 
 
 
-- (NSColor*)		controlOffPathPointColour
+//- (NSColor*)		controlOffPathPointColour
+- (DKColor*)		controlOffPathPointColour
 {
 	return mControlOffPathPointColour;
 }
 
 #pragma mark -
-- (NSBezierPath*)	knobPathAtPoint:(NSPoint) p ofType:(DKKnobType) knobType angle:(CGFloat) radians userInfo:(id) userInfo
+//- (NSBezierPath*)	knobPathAtPoint:(NSPoint) p ofType:(DKKnobType) knobType angle:(CGFloat) radians userInfo:(id) userInfo
+- (DKBezierPath*)	knobPathAtPoint:(NSPoint) p ofType:(DKKnobType) knobType angle:(CGFloat) radians userInfo:(id) userInfo
 {
 #pragma unused(userInfo)
 	
@@ -877,7 +966,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	BOOL			isRect = ( knobType == kDKBoundingRectKnobType ||
 							  knobType == kDKHotspotKnobType ||
 							  knobType == kDKMoreTextIndicatorKnobType );
-	NSBezierPath*	path;
+	//NSBezierPath*	path;
+	DKBezierPath*	path;
 	NSRect			boundsRect = [self controlKnobRectAtPoint:p ofType:knobType];
 	
 	// inset the bounds to allow for half the stroke width to take up that space
@@ -887,7 +977,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	
 	if ( isRect )
 	{
-		path = [NSBezierPath bezierPathWithRect:boundsRect];
+		//path = [NSBezierPath bezierPathWithRect:boundsRect];
+		path = [DKBezierPath bezierPathWithRect:boundsRect];
 		
 		// if angle non-zero, apply rotation to the path about the point p
 		
@@ -896,7 +987,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	}
 	else if ( knobType == kDKCentreTargetKnobType )
 	{
-		path = [NSBezierPath bezierPath];
+		//path = [NSBezierPath bezierPath];
+		path = [DKBezierPath bezierPath];
 		NSSize		half;
 		
 		half.width = boundsRect.size.width * 0.5f;
@@ -917,19 +1009,22 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 		[path appendBezierPathWithOvalInRect:tr];
 	}
 	else
-	    path = [NSBezierPath bezierPathWithOvalInRect:boundsRect];
+	    //path = [NSBezierPath bezierPathWithOvalInRect:boundsRect];
+	    path = [DKBezierPath bezierPathWithOvalInRect:boundsRect];
 	
 	return path;
 }
 
 
-- (void)			drawKnobPath:(NSBezierPath*) path ofType:(DKKnobType) knobType userInfo:(id) userInfo
+//- (void)			drawKnobPath:(NSBezierPath*) path ofType:(DKKnobType) knobType userInfo:(id) userInfo
+- (void)			drawKnobPath:(DKBezierPath*) path ofType:(DKKnobType) knobType userInfo:(id) userInfo
 {
 #pragma unused(userInfo)
 	NSAssert( path != nil, @"can't draw knob path - nil");
 	
 	DKKnobDrawingFlags	flags = [self drawingFlagsForKnobType:knobType];
-	NSColor*			colour;
+	//NSColor*			colour;
+	DKColor*			colour;
 	
 	// fill first, stroke on top if requested
 	
@@ -941,7 +1036,8 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 		
 		if( userInfo != nil && [userInfo isKindOfClass:[NSDictionary class]])
 		{
-			NSColor* preferred = [(NSDictionary*)userInfo objectForKey:kDKKnobPreferredHighlightColour];
+			//NSColor* preferred = [(NSDictionary*)userInfo objectForKey:kDKKnobPreferredHighlightColour];
+			DKColor* preferred = [(NSDictionary*)userInfo objectForKey:kDKKnobPreferredHighlightColour];
 			
 			if( preferred != nil )
 				colour = preferred;

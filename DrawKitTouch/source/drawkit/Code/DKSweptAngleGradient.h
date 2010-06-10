@@ -40,7 +40,8 @@ pix_int;
 }
 
 + (DKGradient*)		sweptAngleGradient;
-+ (DKGradient*)		sweptAngleGradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2;
+//+ (DKGradient*)		sweptAngleGradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2;
++ (DKGradient*)		sweptAngleGradientWithStartingColor:(DKColor*) c1 endingColor:(DKColor*) c2;
 
 - (void)			setNumberOfAngularSegments:(NSInteger) ns;
 - (NSInteger)				numberOfAngularSegments;

@@ -15,7 +15,12 @@
 #import "DKStyle.h"
 #import "DKDrawing.h"
 #import "DKDrawableObject.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#import "UIColor+DKTAdditions.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "LogEvent.h"
 #import "NSAffineTransform+DKAdditions.h"
 #import "DKUndoManager.h"
@@ -24,8 +29,10 @@
 
 - (void)		setDraggedObjects:(NSArray*) objects;
 - (NSArray*)	draggedObjects;
+#ifndef TARGET_OS_IPHONE
 - (void)		proxyDragObjectsAsGroup:(NSArray*) objects inLayer:(DKObjectDrawingLayer*) layer toPoint:(NSPoint) p event:(NSEvent*) event dragPhase:(DKEditToolDragPhase) ph;
 - (BOOL)		finishUsingToolInLayer:(DKObjectDrawingLayer*) odl delegate:(id) aDel event:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -67,8 +74,10 @@ NSString*		kDKSelectionToolTargetObject = @"kDKSelectionToolTargetObject";
 
 + (DKStyle*)				defaultMarqueeStyle
 {
-	NSColor* fc = [[NSColor selectedTextBackgroundColor] colorWithAlphaComponent:0.25];
-	NSColor* sc = [[NSColor whiteColor] colorWithAlphaComponent:0.75];
+	//NSColor* fc = [[NSColor selectedTextBackgroundColor] colorWithAlphaComponent:0.25];
+	//NSColor* sc = [[NSColor whiteColor] colorWithAlphaComponent:0.75];
+	DKColor* fc = [[DKColor selectedTextBackgroundColor] colorWithAlphaComponent:0.25];
+	DKColor* sc = [[DKColor whiteColor] colorWithAlphaComponent:0.75];
 	
 	DKStyle*	dms = [DKStyle styleWithFillColour:fc strokeColour:sc strokeWidth:0.0];
 	
@@ -480,6 +489,7 @@ NSString*		kDKSelectionToolTargetObject = @"kDKSelectionToolTargetObject";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)					changeSelectionWithTarget:(DKDrawableObject*) targ inLayer:(DKObjectDrawingLayer*) layer event:(NSEvent*) event
 {
 	// given an object that we know was generally hit, this changes the selection. What happens can also depend on modifier keys, but the
@@ -526,6 +536,7 @@ NSString*		kDKSelectionToolTargetObject = @"kDKSelectionToolTargetObject";
 		mPerformedUndoableTask = YES;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -559,6 +570,7 @@ NSString*		kDKSelectionToolTargetObject = @"kDKSelectionToolTargetObject";
 
 #define USE_CF_APPLIER_FOR_DRAGGING		1
 
+#ifndef TARGET_OS_IPHONE
 typedef struct
 {
 	NSPoint		p;
@@ -566,7 +578,9 @@ typedef struct
 	BOOL		multiDrag;
 }
 _dragInfo;
+#endif TARGET_OS_IPHONE
 
+#ifndef TARGET_OS_IPHONE
 static void		dragFunction_mouseDown( const void* obj, void* context )
 {
 	_dragInfo* dragInfo = (_dragInfo*)context;
@@ -589,8 +603,10 @@ static void		dragFunction_mouseDown( const void* obj, void* context )
 		[[(DKDrawableObject*)obj class] setDisplaysSizeInfoWhenDragging:saveShowsInfo];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 static void		dragFunction_mouseDrag( const void* obj, void* context )
 {
 	_dragInfo* dragInfo = (_dragInfo*)context;
@@ -612,8 +628,10 @@ static void		dragFunction_mouseDrag( const void* obj, void* context )
 		[[(DKDrawableObject*)obj class] setDisplaysSizeInfoWhenDragging:saveShowsInfo];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 static void		dragFunction_mouseUp( const void* obj, void* context )
 {
 	_dragInfo* dragInfo = (_dragInfo*)context;
@@ -638,8 +656,10 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 		[[(DKDrawableObject*)obj class] setDisplaysSizeInfoWhenDragging:saveShowsInfo];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				dragObjectsAsGroup:(NSArray*) objects inLayer:(DKObjectDrawingLayer*) layer toPoint:(NSPoint) p event:(NSEvent*) event dragPhase:(DKEditToolDragPhase) ph
 {
 	NSAssert( objects != nil, @"attempt to drag with nil array");
@@ -656,6 +676,9 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	// if the mouse has left the layer's drag exclusion rect, this starts a drag of the objects as a "real" drag. Test for that here
 	// and initiate the drag if needed. The drag will keep control until the items are dropped.
 	
+#if TARGET_OS_IPHONE
+   twlog("implement dragObjectsAsGroup");
+#else
 	if( ph == kDKDragMouseDragged )
 	{
 		NSRect der = [layer dragExclusionRect];
@@ -686,6 +709,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 			return;
 		}
 	}
+#endif TARGET_OS_IPHONE
 	
 	BOOL multipleObjects = [objects count] > 1;
 	BOOL controlKey = ([event modifierFlags] & NSControlKeyMask) != 0;
@@ -837,6 +861,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	[layer setRulerMarkerUpdatesEnabled:YES];
 	[layer updateRulerMarkersForRect:[layer selectionLogicalBounds]];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -884,11 +909,13 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 #define SHOW_DRAG_PROXY_BOUNDARY		0
 
 
-- (NSImage*)				prepareDragImage:(NSArray*) objectsToDrag inLayer:(DKObjectDrawingLayer*) layer
+//- (NSImage*)				prepareDragImage:(NSArray*) objectsToDrag inLayer:(DKObjectDrawingLayer*) layer
+- (DKImage*)				prepareDragImage:(NSArray*) objectsToDrag inLayer:(DKObjectDrawingLayer*) layer
 {
 #pragma unused(objectsToDrag)
 	
-	NSImage* img = [layer imageOfSelectedObjects];
+	//NSImage* img = [layer imageOfSelectedObjects];
+	DKImage* img = [layer imageOfSelectedObjects];
 	
 	// draw a dotted line around the boundary.
 	
@@ -896,7 +923,8 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	NSRect br = NSZeroRect;
 	br.size = [img size];
 	br = NSInsetRect( br, 1, 1 );
-	NSBezierPath* bp = [NSBezierPath bezierPathWithRect:br];
+	//NSBezierPath* bp = [NSBezierPath bezierPathWithRect:br];
+	DKBezierPath* bp = [DKBezierPath bezierPathWithRect:br];
 	CGFloat pattern[] = { 4, 4 };
 	
 	[bp setLineWidth:1.0];
@@ -929,6 +957,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)					proxyDragObjectsAsGroup:(NSArray*) objects inLayer:(DKObjectDrawingLayer*) layer toPoint:(NSPoint) p event:(NSEvent*) event dragPhase:(DKEditToolDragPhase) ph;
 {
 #pragma unused(event)
@@ -1017,6 +1046,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 			break;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)		setDraggedObjects:(NSArray*) objects
@@ -1033,6 +1063,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)		finishUsingToolInLayer:(DKObjectDrawingLayer*) odl delegate:(id) aDel event:(NSEvent*) event
 {
 	NSArray*				sel = nil;
@@ -1113,6 +1144,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	[self setDraggedObjects:nil];
 	return mPerformedUndoableTask;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1172,12 +1204,12 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor
 {
 	return [NSCursor arrowCursor];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -1199,6 +1231,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(aDel)
@@ -1333,6 +1366,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	
 	return mPartcode;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1353,6 +1387,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	BOOL					extended = (([event modifierFlags] & NSShiftKeyMask) != 0 );
@@ -1418,6 +1453,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	
 	[pool drain];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1438,6 +1474,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(pc)
@@ -1447,6 +1484,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	
 	return [self finishUsingToolInLayer:odl delegate:aDel event:event];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1467,7 +1505,8 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 #define		PROXY_DRAG_IMAGE_OPACITY		0.8
 
 
-- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+//- (void)			drawRect:(NSRect) aRect inView:(NSView*) aView
+- (void)			drawRect:(NSRect) aRect inView:(DKDrawingView*) aView
 {
 	#pragma unused(aRect)
 	
@@ -1478,10 +1517,12 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 		// need to flip the image if needed
 		
 		SAVE_GRAPHICS_CONTEXT		//[NSGraphicsContext saveGraphicsState];
-		
+#ifndef TARGET_OS_IPHONE
 		if([aView isFlipped])
+#endif TARGET_OS_IPHONE
 		{
-			NSAffineTransform* unflipper = [NSAffineTransform transform];
+			//NSAffineTransform* unflipper = [NSAffineTransform transform];
+			DKAffineTransform* unflipper = [DKAffineTransform transform];
 			[unflipper translateXBy:mProxyDragDestRect.origin.x yBy:mProxyDragDestRect.origin.y + mProxyDragDestRect.size.height];
 			[unflipper scaleXBy:1.0 yBy:-1.0];
 			[unflipper concat];
@@ -1489,11 +1530,19 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 		
 		// for slightly higher performance but less visual fidelity, comment this out:
 		
+#if TARGET_OS_IPHONE
+      CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+#else
 		[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+#endif TARGET_OS_IPHONE
 		
 		// the drag image is drawn at 80% opacity to help with the "interleaving" issue. In practice this works pretty well.
 		
+#if TARGET_OS_IPHONE
+		[mProxyDragImage drawAtPoint:NSZeroPoint blendMode:kCGBlendModeSourceAtop alpha:PROXY_DRAG_IMAGE_OPACITY];
+#else
 		[mProxyDragImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositeSourceAtop fraction:PROXY_DRAG_IMAGE_OPACITY];
+#endif TARGET_OS_IPHONE
 		
 		RESTORE_GRAPHICS_CONTEXT	//[NSGraphicsContext restoreGraphicsState];
 	}
@@ -1515,11 +1564,13 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			flagsChanged:(NSEvent*) event inLayer:(DKLayer*) layer
 {
 	#pragma unused(event)
 	#pragma unused(layer)
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1585,6 +1636,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			setCursorForPoint:(NSPoint) mp targetObject:(DKDrawableObject*) obj inLayer:(DKLayer*) aLayer event:(NSEvent*) event
 {
 	#pragma unused(aLayer)
@@ -1600,7 +1652,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	
 	[curs set];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -1620,7 +1672,11 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 - (void)				toolControllerWillUnsetTool:(DKToolController*) aController
 {
 	if([self isValidTargetLayer:[aController activeLayer]])
-		[self finishUsingToolInLayer:(DKObjectDrawingLayer*)[aController activeLayer] delegate:aController event:[NSApp currentEvent]];
+#if TARGET_OS_IPHONE
+      twlog("implement saving event info for finishUsingToolInLayer");
+#else
+      [self finishUsingToolInLayer:(DKObjectDrawingLayer*)[aController activeLayer] delegate:aController event:[NSApp currentEvent]];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1643,9 +1699,11 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)	renderingPath
+//- (NSBezierPath*)	renderingPath
+- (DKBezierPath*)	renderingPath
 {
-	return [NSBezierPath bezierPathWithRect:[self marqueeRect]];
+	//return [NSBezierPath bezierPathWithRect:[self marqueeRect]];
+	return [DKBezierPath bezierPathWithRect:[self marqueeRect]];
 }
 
 
@@ -1703,9 +1761,11 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 }
 
 
-- (NSAffineTransform*)	containerTransform
+//- (NSAffineTransform*)	containerTransform
+- (DKAffineTransform*)	containerTransform
 {
-	return [NSAffineTransform transform];
+	//return [NSAffineTransform transform];
+	return [DKAffineTransform transform];
 }
 
 

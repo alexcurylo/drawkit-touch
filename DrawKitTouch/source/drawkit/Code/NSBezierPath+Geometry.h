@@ -11,56 +11,81 @@
 // not in iPhone SDK, should be left to .pch ...alex
 //#import <Cocoa/Cocoa.h>
 
-@interface NSBezierPath (Geometry)
+//@interface NSBezierPath (Geometry)
+@interface DKBezierPath (Geometry)
 
 // simple transformations
 
-- (NSBezierPath*)		scaledPath:(CGFloat) scale;
-- (NSBezierPath*)		scaledPath:(CGFloat) scale aboutPoint:(NSPoint) cp;
-- (NSBezierPath*)		rotatedPath:(CGFloat) angle;
-- (NSBezierPath*)		rotatedPath:(CGFloat) angle aboutPoint:(NSPoint) cp;
-- (NSBezierPath*)		insetPathBy:(CGFloat) amount;
-- (NSBezierPath*)		horizontallyFlippedPathAboutPoint:(NSPoint) cp;
-- (NSBezierPath*)		verticallyFlippedPathAboutPoint:(NSPoint) cp;
-- (NSBezierPath*)		horizontallyFlippedPath;
-- (NSBezierPath*)		verticallyFlippedPath;
+//- (NSBezierPath*)		scaledPath:(CGFloat) scale;
+//- (NSBezierPath*)		scaledPath:(CGFloat) scale aboutPoint:(NSPoint) cp;
+//- (NSBezierPath*)		rotatedPath:(CGFloat) angle;
+//- (NSBezierPath*)		rotatedPath:(CGFloat) angle aboutPoint:(NSPoint) cp;
+//- (NSBezierPath*)		insetPathBy:(CGFloat) amount;
+//- (NSBezierPath*)		horizontallyFlippedPathAboutPoint:(NSPoint) cp;
+//- (NSBezierPath*)		verticallyFlippedPathAboutPoint:(NSPoint) cp;
+//- (NSBezierPath*)		horizontallyFlippedPath;
+//- (NSBezierPath*)		verticallyFlippedPath;
+- (DKBezierPath*)		scaledPath:(CGFloat) scale;
+- (DKBezierPath*)		scaledPath:(CGFloat) scale aboutPoint:(NSPoint) cp;
+- (DKBezierPath*)		rotatedPath:(CGFloat) angle;
+- (DKBezierPath*)		rotatedPath:(CGFloat) angle aboutPoint:(NSPoint) cp;
+- (DKBezierPath*)		insetPathBy:(CGFloat) amount;
+- (DKBezierPath*)		horizontallyFlippedPathAboutPoint:(NSPoint) cp;
+- (DKBezierPath*)		verticallyFlippedPathAboutPoint:(NSPoint) cp;
+- (DKBezierPath*)		horizontallyFlippedPath;
+- (DKBezierPath*)		verticallyFlippedPath;
 
 - (NSPoint)				centreOfBounds;
 - (CGFloat)				minimumCornerAngle;
 
 // iterating over a path using a iteration delegate:
 
-- (NSBezierPath*)		bezierPathByIteratingWithDelegate:(id) delegate contextInfo:(void*) contextInfo;
+//- (NSBezierPath*)		bezierPathByIteratingWithDelegate:(id) delegate contextInfo:(void*) contextInfo;
+- (DKBezierPath*)		bezierPathByIteratingWithDelegate:(id) delegate contextInfo:(void*) contextInfo;
 
-- (NSBezierPath*)		paralleloidPathWithOffset:(CGFloat) delta;
-- (NSBezierPath*)		paralleloidPathWithOffset2:(CGFloat) delta;
-- (NSBezierPath*)		paralleloidPathWithOffset22:(CGFloat) delta;
-- (NSBezierPath*)		offsetPathWithStartingOffset:(CGFloat) delta1 endingOffset:(CGFloat) delta2;
-- (NSBezierPath*)		offsetPathWithStartingOffset2:(CGFloat) delta1 endingOffset:(CGFloat) delta2;
+//- (NSBezierPath*)		paralleloidPathWithOffset:(CGFloat) delta;
+//- (NSBezierPath*)		paralleloidPathWithOffset2:(CGFloat) delta;
+//- (NSBezierPath*)		paralleloidPathWithOffset22:(CGFloat) delta;
+//- (NSBezierPath*)		offsetPathWithStartingOffset:(CGFloat) delta1 endingOffset:(CGFloat) delta2;
+//- (NSBezierPath*)		offsetPathWithStartingOffset2:(CGFloat) delta1 endingOffset:(CGFloat) delta2;
+- (DKBezierPath*)		paralleloidPathWithOffset:(CGFloat) delta;
+- (DKBezierPath*)		paralleloidPathWithOffset2:(CGFloat) delta;
+- (DKBezierPath*)		paralleloidPathWithOffset22:(CGFloat) delta;
+- (DKBezierPath*)		offsetPathWithStartingOffset:(CGFloat) delta1 endingOffset:(CGFloat) delta2;
+- (DKBezierPath*)		offsetPathWithStartingOffset2:(CGFloat) delta1 endingOffset:(CGFloat) delta2;
 
 // interpolating flattened paths:
 
-- (NSBezierPath*)		bezierPathByInterpolatingPath:(CGFloat) amount;
+//- (NSBezierPath*)		bezierPathByInterpolatingPath:(CGFloat) amount;
+- (DKBezierPath*)		bezierPathByInterpolatingPath:(CGFloat) amount;
 
 // calculating a fillet
 
-- (NSBezierPath*)		filletPathForVertex:(NSPoint[]) vp filletSize:(CGFloat) fs;
+//- (NSBezierPath*)		filletPathForVertex:(NSPoint[]) vp filletSize:(CGFloat) fs;
+- (DKBezierPath*)		filletPathForVertex:(NSPoint[]) vp filletSize:(CGFloat) fs;
 
 // roughening and randomising paths
 
-- (NSBezierPath*)		bezierPathByRandomisingPoints:(CGFloat) maxAmount;
-- (NSBezierPath*)		bezierPathWithRoughenedStrokeOutline:(CGFloat) amount;
-- (NSBezierPath*)		bezierPathWithFragmentedLineSegments:(CGFloat) flatness;
+//- (NSBezierPath*)		bezierPathByRandomisingPoints:(CGFloat) maxAmount;
+//- (NSBezierPath*)		bezierPathWithRoughenedStrokeOutline:(CGFloat) amount;
+//- (NSBezierPath*)		bezierPathWithFragmentedLineSegments:(CGFloat) flatness;
+- (DKBezierPath*)		bezierPathByRandomisingPoints:(CGFloat) maxAmount;
+- (DKBezierPath*)		bezierPathWithRoughenedStrokeOutline:(CGFloat) amount;
+- (DKBezierPath*)		bezierPathWithFragmentedLineSegments:(CGFloat) flatness;
 
 // zig-zags and waves
 
-- (NSBezierPath*)		bezierPathWithZig:(CGFloat) zig zag:(CGFloat) zag;
-- (NSBezierPath*)		bezierPathWithWavelength:(CGFloat) lambda amplitude:(CGFloat) amp spread:(CGFloat) spread;
+//- (NSBezierPath*)		bezierPathWithZig:(CGFloat) zig zag:(CGFloat) zag;
+//- (NSBezierPath*)		bezierPathWithWavelength:(CGFloat) lambda amplitude:(CGFloat) amp spread:(CGFloat) spread;
+- (DKBezierPath*)		bezierPathWithZig:(CGFloat) zig zag:(CGFloat) zag;
+- (DKBezierPath*)		bezierPathWithWavelength:(CGFloat) lambda amplitude:(CGFloat) amp spread:(CGFloat) spread;
 
 // getting the outline of a stroked path:
 
-- (NSBezierPath*)		strokedPath;
-- (NSBezierPath*)		strokedPathWithStrokeWidth:(CGFloat) width;
+//- (NSBezierPath*)		strokedPath;
+//- (NSBezierPath*)		strokedPathWithStrokeWidth:(CGFloat) width;
+- (DKBezierPath*)		strokedPath;
+- (DKBezierPath*)		strokedPathWithStrokeWidth:(CGFloat) width;
 
 // breaking a path apart:
 
@@ -74,8 +99,10 @@
 - (CGContextRef)		setQuartzPath;
 - (void)				setQuartzPathInContext:(CGContextRef) context isNewPath:(BOOL) np;
 
-+ (NSBezierPath*)		bezierPathWithCGPath:(CGPathRef) path;
-+ (NSBezierPath*)		bezierPathWithPathFromContext:(CGContextRef) context;
+//+ (NSBezierPath*)		bezierPathWithCGPath:(CGPathRef) path;
+//+ (NSBezierPath*)		bezierPathWithPathFromContext:(CGContextRef) context;
++ (DKBezierPath*)		bezierPathWithCGPath:(CGPathRef) path;
++ (DKBezierPath*)		bezierPathWithPathFromContext:(CGContextRef) context;
 
 // finding path lengths for points and points for lengths
 
@@ -101,25 +128,38 @@
 
 // trimming utilities - modified source originally from A J Houghton, see copyright notice below
 
-- (NSBezierPath*)		bezierPathByTrimmingToLength:(CGFloat) trimLength;
-- (NSBezierPath*)		bezierPathByTrimmingToLength:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+//- (NSBezierPath*)		bezierPathByTrimmingToLength:(CGFloat) trimLength;
+//- (NSBezierPath*)		bezierPathByTrimmingToLength:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+- (DKBezierPath*)		bezierPathByTrimmingToLength:(CGFloat) trimLength;
+- (DKBezierPath*)		bezierPathByTrimmingToLength:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
 
-- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) trimLength;
-- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+//- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) trimLength;
+//- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+- (DKBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) trimLength;
+- (DKBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
 
-- (NSBezierPath*)		bezierPathByTrimmingFromBothEnds:(CGFloat) trimLength;
-- (NSBezierPath*)		bezierPathByTrimmingFromBothEnds:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+//- (NSBezierPath*)		bezierPathByTrimmingFromBothEnds:(CGFloat) trimLength;
+//- (NSBezierPath*)		bezierPathByTrimmingFromBothEnds:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+- (DKBezierPath*)		bezierPathByTrimmingFromBothEnds:(CGFloat) trimLength;
+- (DKBezierPath*)		bezierPathByTrimmingFromBothEnds:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
 
-- (NSBezierPath*)		bezierPathByTrimmingFromCentre:(CGFloat) trimLength;
-- (NSBezierPath*)		bezierPathByTrimmingFromCentre:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+//- (NSBezierPath*)		bezierPathByTrimmingFromCentre:(CGFloat) trimLength;
+//- (NSBezierPath*)		bezierPathByTrimmingFromCentre:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
+- (DKBezierPath*)		bezierPathByTrimmingFromCentre:(CGFloat) trimLength;
+- (DKBezierPath*)		bezierPathByTrimmingFromCentre:(CGFloat) trimLength withMaximumError:(CGFloat) maxError;
 
-- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) startLength toLength:(CGFloat) newLength;
-- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) startLength toLength:(CGFloat) newLength withMaximumError:(CGFloat) maxError;
+//- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) startLength toLength:(CGFloat) newLength;
+//- (NSBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) startLength toLength:(CGFloat) newLength withMaximumError:(CGFloat) maxError;
+- (DKBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) startLength toLength:(CGFloat) newLength;
+- (DKBezierPath*)		bezierPathByTrimmingFromLength:(CGFloat) startLength toLength:(CGFloat) newLength withMaximumError:(CGFloat) maxError;
 
-- (NSBezierPath*)		bezierPathWithArrowHeadForStartOfLength:(CGFloat) length angle:(CGFloat) angle closingPath:(BOOL) closeit;
-- (NSBezierPath*)		bezierPathWithArrowHeadForEndOfLength:(CGFloat)length angle:(CGFloat) angle closingPath:(BOOL) closeit;
+//- (NSBezierPath*)		bezierPathWithArrowHeadForStartOfLength:(CGFloat) length angle:(CGFloat) angle closingPath:(BOOL) closeit;
+//- (NSBezierPath*)		bezierPathWithArrowHeadForEndOfLength:(CGFloat)length angle:(CGFloat) angle closingPath:(BOOL) closeit;
+- (DKBezierPath*)		bezierPathWithArrowHeadForStartOfLength:(CGFloat) length angle:(CGFloat) angle closingPath:(BOOL) closeit;
+- (DKBezierPath*)		bezierPathWithArrowHeadForEndOfLength:(CGFloat)length angle:(CGFloat) angle closingPath:(BOOL) closeit;
 
-- (void)				appendBezierPathRemovingInitialMoveToPoint:(NSBezierPath*) path;
+//- (void)				appendBezierPathRemovingInitialMoveToPoint:(NSBezierPath*) path;
+- (void)				appendBezierPathRemovingInitialMoveToPoint:(DKBezierPath*) path;
 
 
 @end
@@ -130,7 +170,8 @@
 
 @interface NSObject (BezierElementIterationDelegate)
 
-- (void)				path:(NSBezierPath*) path			// the new path that the delegate can build or modify from the information given
+//- (void)				path:(NSBezierPath*) path			// the new path that the delegate can build or modify from the information given
+- (void)				path:(DKBezierPath*) path			// the new path that the delegate can build or modify from the information given
 						elementIndex:(NSInteger) element			// the element index 
 						type:(NSBezierPathElement) type		// the element type
 						points:(NSPoint*) p					// list of associated points 0 = next point, 1 = cp1, 2 = cp2 (for curves), 3 = last point on subpath

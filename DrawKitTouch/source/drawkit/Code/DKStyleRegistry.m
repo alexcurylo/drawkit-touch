@@ -86,7 +86,11 @@ static BOOL				s_NoDKDefaults = NO;
 		 // first ask the application's delegate if it will return a specific class here. This allows the app's delegate
 		 // to substitute a subclass (esoteric)
 		 
+#if TARGET_OS_IPHONE
+		 id appDelegate = [[UIApplication sharedApplication] delegate];
+#else
 		 id appDelegate = [NSApp delegate];
+#endif TARGET_OS_IPHONE
 		 
 		 if( appDelegate && [appDelegate respondsToSelector:@selector(applicationWillReturnStyleRegistry)])
 			 s_styleRegistry = [[appDelegate applicationWillReturnStyleRegistry] retain];
@@ -357,12 +361,12 @@ static BOOL				s_NoDKDefaults = NO;
 	[[self sharedStyleRegistry] setNeedsUIUpdate];
 }
 
-
+#ifndef TARGET_OS_IPHONE
 + (NSMenu*)					managedStylesMenuWithItemTarget:(id) target itemAction:(SEL) selector
 {
 	return [[self sharedStyleRegistry] managedStylesMenuWithItemTarget:target itemAction:selector];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -695,6 +699,7 @@ static BOOL				s_NoDKDefaults = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 + (void)					registerSolidColourFillsFromListNamed:(NSString*) name asCategory:(NSString*) catName
 {
 	NSAssert( name != nil, @"colour list name was nil" );
@@ -709,7 +714,8 @@ static BOOL				s_NoDKDefaults = NO;
 	if ( list != nil )
 	{
 		NSEnumerator*	iter = [[list allKeys] objectEnumerator];
-		NSColor*		colour;
+		//NSColor*		colour;
+		DKColor*		colour;
 		NSString*		key;
 		DKStyle*		style;
 		NSArray*		cats;
@@ -733,6 +739,7 @@ static BOOL				s_NoDKDefaults = NO;
 		[self registerStylesFromArray:styles inCategories:cats ignoringDuplicateNames:YES];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -751,6 +758,7 @@ static BOOL				s_NoDKDefaults = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 + (void)					registerSolidColourStrokesFromListNamed:(NSString*) name asCategory:(NSString*) catName
 {
 	NSAssert( name != nil, @"colour list name was nil" );
@@ -763,7 +771,8 @@ static BOOL				s_NoDKDefaults = NO;
 	if ( list != nil )
 	{
 		NSEnumerator*	iter = [[list allKeys] objectEnumerator];
-		NSColor*		colour;
+		//NSColor*		colour;
+		DKColor*		colour;
 		NSString*		key;
 		DKStyle*		style;
 		NSArray*		cats;
@@ -787,6 +796,7 @@ static BOOL				s_NoDKDefaults = NO;
 
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1207,7 +1217,9 @@ static BOOL				s_NoDKDefaults = NO;
 	
 	if([self styleForKey:key] == style)
 	{
+#ifndef TARGET_OS_IPHONE
 		[self updateMenusForKey:key];
+#endif TARGET_OS_IPHONE
 		
 		NSDictionary* userInfo = [NSDictionary dictionaryWithObject:style forKey:@"style"];
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDKStyleWasEditedWhileRegisteredNotification object:self userInfo:userInfo];
@@ -1239,13 +1251,14 @@ static BOOL				s_NoDKDefaults = NO;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)					managedStylesMenuWithItemTarget:(id) target itemAction:(SEL) selector
 {
 	DKCategoryMenuOptions options = kDKIncludeRecentlyAddedItems | kDKIncludeRecentlyUsedItems | kDKMenuIsPopUpMenu;
 	
 	return [self createMenuWithItemDelegate:self itemTarget:target itemAction:selector options:options];
 }
-
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark As a DKCategoryManager
@@ -1337,6 +1350,7 @@ static BOOL				s_NoDKDefaults = NO;
 #pragma mark -
 #pragma mark - as a CategoryManagerMenuItemDelegate
 
+#ifndef TARGET_OS_IPHONE
 - (void)			menuItem:(NSMenuItem*) item wasAddedForObject:(id) object inCategory:(NSString*) category
 {
 	#pragma unused(category)
@@ -1356,7 +1370,9 @@ static BOOL				s_NoDKDefaults = NO;
 			
 			if( swatch != nil )
 			{
+#ifndef TARGET_OS_IPHONE
 				[swatch setScalesWhenResized:YES];
+#endif TARGET_OS_IPHONE
 				[swatch setSize:NSMakeSize( 28, 28 )];
 				[swatch lockFocus];
 				[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationLow];
@@ -1372,7 +1388,7 @@ static BOOL				s_NoDKDefaults = NO;
 		}
 	}
 }
-
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -

@@ -55,8 +55,10 @@ DKDrawablePathInsertType;
 @interface DKDrawablePath : DKDrawableObject <NSCoding, NSCopying>
 {
 @private
-	NSBezierPath*			m_path;
-	NSBezierPath*			m_undoPath;
+	//NSBezierPath*			m_path;
+	//NSBezierPath*			m_undoPath;
+	DKBezierPath*			m_path;
+	DKBezierPath*			m_undoPath;
 	NSInteger				m_editPathMode;
 	CGFloat					m_freehandEpsilon;
 	BOOL					m_extending;
@@ -64,32 +66,42 @@ DKDrawablePathInsertType;
 
 // convenience constructors:
 
-+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path;
-+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle;
+//+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path;
+//+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle;
++ (DKDrawablePath*)		drawablePathWithBezierPath:(DKBezierPath*) path;
++ (DKDrawablePath*)		drawablePathWithBezierPath:(DKBezierPath*) path withStyle:(DKStyle*) aStyle;
 
 // colour for feedback window:
 
-+ (void)				setInfoWindowBackgroundColour:(NSColor*) colour;
-+ (NSColor*)			infoWindowBackgroundColour;
+//+ (void)				setInfoWindowBackgroundColour:(NSColor*) colour;
+//+ (NSColor*)			infoWindowBackgroundColour;
++ (void)				setInfoWindowBackgroundColour:(DKColor*) colour;
++ (DKColor*)			infoWindowBackgroundColour;
 
 + (void)				setDefaultOnPathHitDetectionPriority:(BOOL) priority;
 + (BOOL)				defaultOnPathHitDetectionPriority;
 
-- (id)					initWithBezierPath:(NSBezierPath*) aPath;
-- (id)					initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle;
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath;
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle;
+- (id)					initWithBezierPath:(DKBezierPath*) aPath;
+- (id)					initWithBezierPath:(DKBezierPath*) aPath style:(DKStyle*) aStyle;
 
 // setting the path & path info
 
-- (void)				setPath:(NSBezierPath*) path;
-- (NSBezierPath*)		path;
-- (void)				drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs;
+//- (void)				setPath:(NSBezierPath*) path;
+//- (NSBezierPath*)		path;
+//- (void)				drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs;
+- (void)				setPath:(DKBezierPath*) path;
+- (DKBezierPath*)		path;
+- (void)				drawControlPointsOfPath:(DKBezierPath*) path usingKnobs:(DKKnob*) knobs;
 - (CGFloat)				length;
 - (CGFloat)				lengthForPoint:(NSPoint) mp;
 - (CGFloat)				lengthForPoint:(NSPoint) mp tolerance:(CGFloat) tol;
 - (BOOL)				isPathClosed;
 
 - (void)				recordPathForUndo;
-- (NSBezierPath*)		undoPath;
+//- (NSBezierPath*)		undoPath;
+- (DKBezierPath*)		undoPath;
 - (void)				clearUndoPath;
 
 // modifying paths
@@ -101,7 +113,9 @@ DKDrawablePathInsertType;
 - (BOOL)				pathDeleteElementAtPoint:(NSPoint) loc;
 
 - (NSInteger)			pathInsertPointAt:(NSPoint) loc ofType:(DKDrawablePathInsertType) pathPointType;
+#ifndef TARGET_OS_IPHONE
 - (void)				movePathPartcode:(NSInteger) pc toPoint:(NSPoint) mp event:(NSEvent*) evt;
+#endif TARGET_OS_IPHONE
 
 - (DKDrawablePathJoinResult)	wouldJoin:(DKDrawablePath*) anotherPath tolerance:(CGFloat) tol;
 - (DKDrawablePathJoinResult)	join:(DKDrawablePath*) anotherPath tolerance:(CGFloat) tol makeColinear:(BOOL) colin;
@@ -111,8 +125,10 @@ DKDrawablePathInsertType;
 // creating paths
 
 - (void)				setPathCreationMode:(DKDrawablePathCreationMode) editPathMode;
+#ifndef TARGET_OS_IPHONE
 - (DKDrawablePathCreationMode)	pathCreationMode;
 - (BOOL)				shouldEndPathCreationWithEvent:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
 - (BOOL)				isOpenEndPoint:(NSInteger) partcode;
 - (void)				setShouldExtendExistingPath:(BOOL) xtend;
@@ -124,7 +140,9 @@ DKDrawablePathInsertType;
 - (void)				arcCreateLoop:(NSPoint) initialPoint;
 
 - (void)				pathCreationLoopDidEnd;
+#ifndef TARGET_OS_IPHONE
 - (NSEvent*)			postMouseUpAtPoint:(NSPoint) p;
+#endif TARGET_OS_IPHONE
 
 - (void)				setFreehandSmoothing:(CGFloat) fs;
 - (CGFloat)				freehandSmoothing;

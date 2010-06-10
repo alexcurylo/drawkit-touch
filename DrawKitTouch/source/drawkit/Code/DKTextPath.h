@@ -18,13 +18,16 @@
 {
 @private
 	DKTextAdornment*		mTextAdornment;
+#ifndef TARGET_OS_IPHONE
 	NSTextView*				mEditorRef;
+#endif TARGET_OS_IPHONE
 	BOOL					mIsSettingStyle;
 }
 
 // convenience constructors:
 
-+ (DKTextPath*)				textPathWithString:(NSString*) str onPath:(NSBezierPath*) aPath;
+//+ (DKTextPath*)				textPathWithString:(NSString*) str onPath:(NSBezierPath*) aPath;
++ (DKTextPath*)				textPathWithString:(NSString*) str onPath:(DKBezierPath*) aPath;
 
 // class defaults:
 
@@ -37,15 +40,20 @@
 // the text:
 
 - (void)					setText:(id) contents;
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)			text;
+#endif TARGET_OS_IPHONE
 - (NSString*)				string;
 
-- (void)					pasteTextFromPasteboard:(NSPasteboard*) pb ignoreFormatting:(BOOL) fmt;
-- (BOOL)					canPasteText:(NSPasteboard*) pb;
+//- (void)					pasteTextFromPasteboard:(NSPasteboard*) pb ignoreFormatting:(BOOL) fmt;
+//- (BOOL)					canPasteText:(NSPasteboard*) pb;
+- (void)					pasteTextFromPasteboard:(DKPasteboard*) pb ignoreFormatting:(BOOL) fmt;
+- (BOOL)					canPasteText:(DKPasteboard*) pb;
 
 // conversion to path/shape with text path:
 
-- (NSBezierPath*)			textPath;
+//- (NSBezierPath*)			textPath;
+- (DKBezierPath*)			textPath;
 - (NSArray*)				textPathGlyphs;
 - (NSArray*)				textPathGlyphsUsedSize:(NSSize*) textSize;
 - (DKDrawablePath*)			makePathWithText;
@@ -58,12 +66,16 @@
 
 - (NSDictionary*)			textAttributes;
 
-- (void)					setFont:(NSFont*) font;
-- (NSFont*)					font;
+//- (void)					setFont:(NSFont*) font;
+//- (NSFont*)					font;
+- (void)					setFont:(DKFont*) font;
+- (DKFont*)					font;
 - (void)					setFontSize:(CGFloat) size;
 - (CGFloat)					fontSize;
-- (void)					setTextColour:(NSColor*) colour;
-- (NSColor*)				textColour;
+//- (void)					setTextColour:(NSColor*) colour;
+//- (NSColor*)				textColour;
+- (void)					setTextColour:(DKColor*) colour;
+- (DKColor*)				textColour;
 
 - (void)					scaleTextBy:(CGFloat) factor;
 
@@ -73,9 +85,12 @@
 - (DKVerticalTextAlignment)	verticalAlignment;
 - (void)					setVerticalAlignmentProportion:(CGFloat) prop;
 - (CGFloat)					verticalAlignmentProportion;
+#ifndef TARGET_OS_IPHONE
 - (void)					setParagraphStyle:(NSParagraphStyle*) ps;
 - (NSParagraphStyle*)		paragraphStyle;
-- (NSTextAlignment)			alignment;
+#endif TARGET_OS_IPHONE
+//- (NSTextAlignment)			alignment;
+- (DKTextAlignment)			alignment;
 
 - (void)					setLayoutMode:(DKTextLayoutMode) mode;
 - (DKTextLayoutMode)		layoutMode;
@@ -93,9 +108,13 @@
 
 // user actions:
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				changeFont:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)				changeFontSize:(id) sender;
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				changeAttributes:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)				editText:(id) sender;
 
 - (IBAction)				changeLayoutMode:(id) sender;
@@ -103,7 +122,9 @@
 - (IBAction)				alignLeft:(id) sender;
 - (IBAction)				alignRight:(id) sender;
 - (IBAction)				alignCenter:(id) sender;
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				alignJustified:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)				underline:(id) sender;
 
 - (IBAction)				loosenKerning:(id) sender;

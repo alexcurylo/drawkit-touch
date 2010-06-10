@@ -15,6 +15,9 @@
 #import "bitmap.h"
 #import "DKColourQuantizer.h"
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark Contants (Non-localized)
@@ -29,8 +32,10 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 
 
 #pragma mark -
-@implementation NSImage (Tracing)
-#pragma mark As a NSImage
+//@implementation NSImage (Tracing)
+@implementation DKImage (Tracing)
+
+#pragma mark As a DKImage
 - (NSArray*)			vectorizeToGrayscale:(NSInteger) levels
 {
 	// vectorize the image using potrace and return a list of GCImageVectorReps for each pixel value in the 8-bit representation of
@@ -40,6 +45,10 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	if ( levels < 2 || levels > 256 )
 		return nil;
 		
+#if TARGET_OS_IPHONE
+   twlog("implement vectorizeToGrayscale");
+   return nil;
+#else
 	NSBitmapImageRep* b8 = [self eightBitImageRep];
 	
 	// OK, we have an 8-bit grayscale version of the image. Now we need to convert each "bitplane" to a bitmap structure
@@ -117,6 +126,7 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	// that really we don't want to use all the data.
 
 	return [bitplanes autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 - (NSArray*)			vectorizeToColourWithPrecision:(NSInteger) prec quantizationMethod:(DKColourQuantizationMethod) qm
@@ -127,6 +137,11 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	if ( prec < 3 || prec > 8 )
 		return nil;
 		
+#if TARGET_OS_IPHONE
+   (void)qm;
+   twlog("implement vectorizeToColourWithPrecision");
+   return nil;
+#else
 	NSUInteger levels = ( 1 << prec );
 
 	NSBitmapImageRep* b24 = [self twentyFourBitImageRep];
@@ -230,10 +245,12 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	// that really we don't want to use all the data.
 
 	return [bitplanes autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 
 #pragma mark -
+#ifndef TARGET_OS_IPHONE
 - (NSBitmapImageRep*)	eightBitImageRep
 {
 	NSSize	imageSize = [self size];
@@ -270,15 +287,21 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	// fill background - has pixel value 255
 
 	[[NSColor whiteColor] set];
-	NSRectFill( hr );
+	DKRectFill( hr );
 	
+#if TARGET_OS_IPHONE
+	[self drawAtPoint:NSMakePoint( 2, 2 ) blendMode:kCGBlendModeCopy alpha:1];
+#else
 	[self drawAtPoint:NSMakePoint( 2, 2 ) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+#endif TARGET_OS_IPHONE
 	[NSGraphicsContext restoreGraphicsState];
 	
 	return [b8 autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSBitmapImageRep*)	twentyFourBitImageRep
 {
 	NSSize	imageSize = [self size];
@@ -316,13 +339,18 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	// fill background - has pixel value FFFFFF
 
 	[[NSColor whiteColor] set];
-	NSRectFill( hr );
+	DKRectFill( hr );
 	
+#if TARGET_OS_IPHONE
+	[self drawAtPoint:NSMakePoint( 2, 2 ) blendMode:kCGBlendModeCopy alpha:1];
+#else
 	[self drawAtPoint:NSMakePoint( 2, 2 ) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+#endif TARGET_OS_IPHONE
 	[NSGraphicsContext restoreGraphicsState];
 	
 	return [b24 autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
 @end
@@ -334,7 +362,8 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 
 @interface DKImageVectorRep (Private)
 
-- (NSBezierPath*)		newPathFromTracePath:(potrace_path_t*) tp;
+//- (NSBezierPath*)		newPathFromTracePath:(potrace_path_t*) tp;
+- (DKBezierPath*)		newPathFromTracePath:(potrace_path_t*) tp;
 
 @end
 
@@ -380,12 +409,14 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 #pragma mark -
 #pragma mark - get the traced path, performing the trace if needed
 
-- (NSBezierPath*)		newPathFromTracePath:(potrace_path_t*) tp
+//- (NSBezierPath*)		newPathFromTracePath:(potrace_path_t*) tp
+- (DKBezierPath*)		newPathFromTracePath:(potrace_path_t*) tp
 {
 	if ( tp == NULL || tp->curve.n == 0 )
 		return nil;
 	
-	NSBezierPath* vd = [[NSBezierPath bezierPath] retain];
+	//NSBezierPath* vd = [[NSBezierPath bezierPath] retain];
+	DKBezierPath* vd = [[DKBezierPath bezierPath] retain];
 	
 	NSInteger					i, m, k, tag;
 	potrace_dpoint_t	cp;
@@ -432,7 +463,8 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	
 	if ( tp->sign == '-' )
 	{
-		NSBezierPath* temp = [vd bezierPathByReversingPath];
+		//NSBezierPath* temp = [vd bezierPathByReversingPath];
+		DKBezierPath* temp = [vd bezierPathByReversingPath];
 		[vd release];
 		vd = [temp retain];
 	}
@@ -444,7 +476,8 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 
 
 
-- (NSBezierPath*)		vectorPath
+//- (NSBezierPath*)		vectorPath
+- (DKBezierPath*)		vectorPath
 {
 	if ( mVectorData == nil && mBits != NULL )
 	{
@@ -462,11 +495,13 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 			// NSBezierpath object
 			
 			potrace_path_t*		tp = traceResult->plist;
-			NSBezierPath*		temp;
+			//NSBezierPath*		temp;
+			DKBezierPath*		temp;
 			
 			if ( tp )
 			{
-				mVectorData = [[NSBezierPath bezierPath] retain];
+				//mVectorData = [[NSBezierPath bezierPath] retain];
+				mVectorData = [[DKBezierPath bezierPath] retain];
 				[mVectorData setWindingRule:NSEvenOddWindingRule];
 			}
 			
@@ -494,7 +529,8 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 
 #pragma mark -
 #pragma mark - colour from original image associated with this bitplane
-- (void)				setColour:(NSColor*) cin
+//- (void)				setColour:(NSColor*) cin
+- (void)				setColour:(DKColor*) cin
 {
 	[cin retain];
 	[mColour release];
@@ -502,7 +538,8 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 }
 
 
-- (NSColor*)			colour
+//- (NSColor*)			colour
+- (DKColor*)			colour
 {
 	// if the colour wasn't explicitly set as part of the image analysis, assume we are working in grayscale
 	// and calculate the colour based on the pixel value and number of levels
@@ -510,7 +547,8 @@ NSString*	kDKTracingParam_opttolerance	= @"kDKTracingParam_opttolerance";
 	if ( mColour == nil )
 	{
 		CGFloat gray = (CGFloat)mPixelValue / (CGFloat)mLevels;
-		mColour = [[NSColor colorWithCalibratedWhite:gray alpha:1.0] retain];
+		//mColour = [[NSColor colorWithCalibratedWhite:gray alpha:1.0] retain];
+		mColour = [[DKColor colorWithCalibratedWhite:gray alpha:1.0] retain];
 	}
 	
 	return mColour;

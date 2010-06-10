@@ -10,6 +10,7 @@
 // (and straightforward patches like removing inappropriate #imports).
 //
 
+#import "DKCompatibility.h"
 
 // with pre-3.0 SDKs, NSUndoManager is not available
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 30000 // __IPHONE_3_0
@@ -29,18 +30,19 @@
 - (void)removeAllActions;
 @end
 enum { NSUndoCloseGroupingRunLoopOrdering = 350000 };
-FOUNDATION_EXPORT NSString * const NSUndoManagerCheckpointNotification;
-FOUNDATION_EXPORT NSString * const NSUndoManagerWillUndoChangeNotification;
-FOUNDATION_EXPORT NSString * const NSUndoManagerWillRedoChangeNotification;
-FOUNDATION_EXPORT NSString * const NSUndoManagerDidUndoChangeNotification;
-FOUNDATION_EXPORT NSString * const NSUndoManagerDidRedoChangeNotification;
-FOUNDATION_EXPORT NSString * const NSUndoManagerDidOpenUndoGroupNotification;
-FOUNDATION_EXPORT NSString * const NSUndoManagerWillCloseUndoGroupNotification;
+extern NSString * const NSUndoManagerCheckpointNotification;
+extern NSString * const NSUndoManagerWillUndoChangeNotification;
+extern NSString * const NSUndoManagerWillRedoChangeNotification;
+extern NSString * const NSUndoManagerDidUndoChangeNotification;
+extern NSString * const NSUndoManagerDidRedoChangeNotification;
+extern NSString * const NSUndoManagerDidOpenUndoGroupNotification;
+extern NSString * const NSUndoManagerWillCloseUndoGroupNotification;
 #endif __IPHONE_OS_VERSION_MAX_ALLOWED < 30000
 
-// with pre-3.2 SDKs, NSAttributedString is not available
+// with pre-3.2 SDKs, NS[Mutable]AttributedString and UIBezierPath are not available
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 30200 // __IPHONE_3_2
-@interface NSAttributedString : NSObject
+#error I really don't think you want to be doing this. Stick with 3.2+. Seriously.
+@interface NSAttributedString : NSObject<NSCopying>
 - (id)initWithString:(NSString *)str attributes:(NSDictionary *)attrs;
 - (id)initWithAttributedString:(NSAttributedString *)attrStr;
 - (NSString *)string;
@@ -62,27 +64,30 @@ FOUNDATION_EXPORT NSString * const NSUndoManagerWillCloseUndoGroupNotification;
 - (void)removeAttribute:(NSString *)name range:(NSRange)range;
 - (void)appendAttributedString:(NSAttributedString *)attrString;
 @end
+@interface UIBezierPath : NSObject<NSCopying, NSCoding>
++ (UIBezierPath *)bezierPath;
+- (void)addLineToPoint:(CGPoint)point;
+- (void)appendPath:(UIBezierPath *)bezierPath;
+- (void)applyTransform:(CGAffineTransform)transform;
+// and others ... but let's just stop here, emulating it is unfeasible.
+@end
 #endif __IPHONE_OS_VERSION_MAX_ALLOWED < 30200
-
 
 
 // not existing in any iPhone SDK
 // (although Simulator 2.x SDKs' CoreServices.framework erroneously #imports many)
 
-typedef struct CGPoint NSPoint;
-typedef NSPoint *NSPointArray;
-typedef struct CGRect NSRect;
-typedef NSRect *NSRectPointer;
-typedef struct CGSize NSSize;
+#if TAKEN_CARE_OF
+#error all this should be dealt with elsewhere
+
 typedef struct FSRef { int x; } FSRef;
+typedef struct CGImageDestination *CGImageDestinationRef;
+typedef unsigned int NSGlyph;
+typedef NSUInteger NSFontTraitMask;
 typedef struct {
    CGFloat m11, m12, m21, m22;
    CGFloat tX, tY;
 } NSAffineTransformStruct;
-typedef unsigned int NSGlyph;
-typedef NSUInteger NSFontTraitMask;
-typedef struct CGImageDestination *CGImageDestinationRef;
-
 
 enum {
    NSNonZeroWindingRule = 0,
@@ -102,14 +107,13 @@ enum {
    NSOnState    =  1    
 };
 //typedef NSInteger NSCellStateValue;
-enum {
+ enum {
    NSAutoPagination = 0,
    NSFitPagination = 1,
    //NSClipPagination = 2
 };
 typedef NSUInteger NSPrintingPaginationMode;
 enum {
-   //NSImageInterpolationDefault,
    NSImageInterpolationNone,
    NSImageInterpolationLow,
    NSImageInterpolationHigh
@@ -118,7 +122,6 @@ typedef NSUInteger NSImageInterpolation;
 enum {
    NSButtLineCapStyle = kCGLineCapButt,
    NSRoundLineCapStyle = kCGLineCapRound,
-   //NSSquareLineCapStyle = kCGLineCapSquare
 };
 typedef enum CGLineCap NSLineCapStyle;
 enum {
@@ -127,121 +130,61 @@ enum {
    NSBevelLineJoinStyle = kCGLineJoinBevel
 };
 typedef enum CGLineJoin NSLineJoinStyle;
-/*
  enum {
    NSAlphaFirstBitmapFormat            = 1 << 0,       // 0 means is alpha last (RGBA, CMYKA, etc.)
    NSAlphaNonpremultipliedBitmapFormat = 1 << 1,       // 0 means is premultiplied
    NSFloatingPointSamplesBitmapFormat  = 1 << 2	// 0 is integer
 };
-*/
 typedef NSUInteger NSBitmapFormat;
 enum {
-   //NSHorizontalRuler,
    NSVerticalRuler
 };
 typedef NSUInteger NSRulerOrientation;
 enum {
-   //NSAlphaShiftKeyMask         = 1 << 16,
    NSShiftKeyMask              = 1 << 17,
    NSControlKeyMask            = 1 << 18,
    NSAlternateKeyMask          = 1 << 19,
    NSCommandKeyMask            = 1 << 20,
-   //NSNumericPadKeyMask         = 1 << 21,
-   //NSHelpKeyMask               = 1 << 22,
-   //NSFunctionKeyMask           = 1 << 23,
    NSDeviceIndependentModifierFlagsMask    = 0xffff0000UL
 };
 enum {
    NSLeftMouseDown             = 1,            
    NSLeftMouseUp               = 2,
-   //NSRightMouseDown            = 3,
-   //NSRightMouseUp              = 4,
    NSMouseMoved                = 5,
    NSLeftMouseDragged          = 6,
-   //NSRightMouseDragged         = 7,
-   //NSMouseEntered              = 8,
-   //NSMouseExited               = 9,
    NSKeyDown                   = 10,
-   //NSKeyUp                     = 11,
-   //NSFlagsChanged              = 12,
-   //NSAppKitDefined             = 13,
-   //NSSystemDefined             = 14,
-   //NSApplicationDefined        = 15,
    NSPeriodic                  = 16,
-   //NSCursorUpdate              = 17,
    NSScrollWheel               = 22,
-   //NSTabletPoint               = 23,
-   //NSTabletProximity           = 24,
-   //NSOtherMouseDown            = 25,
-   //NSOtherMouseUp              = 26,
-   //NSOtherMouseDragged         = 27
 };
 typedef NSUInteger NSEventType;
 enum {
    NSLeftMouseDownMask         = 1 << NSLeftMouseDown,
    NSLeftMouseUpMask           = 1 << NSLeftMouseUp,
-   //NSRightMouseDownMask        = 1 << NSRightMouseDown,
-   //NSRightMouseUpMask          = 1 << NSRightMouseUp,
    NSMouseMovedMask            = 1 << NSMouseMoved,
    NSLeftMouseDraggedMask      = 1 << NSLeftMouseDragged,
-   //NSRightMouseDraggedMask     = 1 << NSRightMouseDragged,
-   //NSMouseEnteredMask          = 1 << NSMouseEntered,
-   //NSMouseExitedMask           = 1 << NSMouseExited,
    NSKeyDownMask               = 1 << NSKeyDown,
-   //NSKeyUpMask                 = 1 << NSKeyUp,
-   //NSFlagsChangedMask          = 1 << NSFlagsChanged,
-   //NSAppKitDefinedMask         = 1 << NSAppKitDefined,
-   //NSSystemDefinedMask         = 1 << NSSystemDefined,
-   //NSApplicationDefinedMask    = 1 << NSApplicationDefined,
    NSPeriodicMask              = 1 << NSPeriodic,
-   //NSCursorUpdateMask          = 1 << NSCursorUpdate,
    NSScrollWheelMask           = 1 << NSScrollWheel,
-   //NSTabletPointMask           = 1 << NSTabletPoint,
-   //NSTabletProximityMask       = 1 << NSTabletProximity,
-   //NSOtherMouseDownMask        = 1 << NSOtherMouseDown,
-   //NSOtherMouseUpMask          = 1 << NSOtherMouseUp,
-   //NSOtherMouseDraggedMask     = 1 << NSOtherMouseDragged,
    NSAnyEventMask              = NSUIntegerMax
 };
 enum {
    NSBorderlessWindowMask		= 0,
-   //NSTitledWindowMask			= 1 << 0,
-   //NSClosableWindowMask		= 1 << 1,
-   //NSMiniaturizableWindowMask		= 1 << 2,
-   //NSResizableWindowMask		= 1 << 3
 };
 enum {
-   //NSBackingStoreRetained	 = 0,
-   //NSBackingStoreNonretained	 = 1,
    NSBackingStoreBuffered	 = 2
 };
 typedef NSUInteger NSBackingStoreType;
 enum {
 	NSAnimationEffectDisappearingItemDefault = 0,
-	//NSAnimationEffectPoof = 10
 };
 typedef NSUInteger NSAnimationEffect;
 enum {
-   //NSCompositeClear		= 0,
    NSCompositeCopy		= 1,
    NSCompositeSourceOver	= 2,
-   //NSCompositeSourceIn		= 3,
-   //NSCompositeSourceOut	= 4,
    NSCompositeSourceAtop	= 5,
-   //NSCompositeDestinationOver	= 6,
-   //NSCompositeDestinationIn	= 7,
-   //NSCompositeDestinationOut	= 8,
-   //NSCompositeDestinationAtop	= 9,
-   //NSCompositeXOR		= 10,
-   //NSCompositePlusDarker	= 11,
-   //NSCompositeHighlight	= 12,
-   //NSCompositePlusLighter	= 13
 };
 typedef NSUInteger NSCompositingOperation;
-enum {
-   //NSImageCacheDefault,
-   //NSImageCacheAlways,
-   //NSImageCacheBySize,
+ enum {
    NSImageCacheNever
 };
 typedef NSUInteger NSImageCacheMode;
@@ -253,16 +196,13 @@ enum {
    NSNaturalTextAlignment	= 4
 };
 typedef NSUInteger NSTextAlignment;
-/*
  enum {
    NSLineSweepLeft     = 0,
    NSLineSweepRight    = 1,
    NSLineSweepDown     = 2,
    NSLineSweepUp       = 3
 };
-*/
 typedef NSUInteger NSLineSweepDirection;
-/*
 enum {
    NSLineDoesntMove    = 0, 
    NSLineMovesLeft     = 1,
@@ -270,33 +210,22 @@ enum {
    NSLineMovesDown     = 3,
    NSLineMovesUp       = 4
 };
-*/
 typedef NSUInteger NSLineMovementDirection;
 enum {
    NSUnderlineStyleNone                = 0x00,
-   //NSUnderlineStyleSingle              = 0x01,
    NSUnderlineStyleThick               = 0x02,
-   //NSUnderlineStyleDouble              = 0x09
 };
 enum {
-   //NSUnderlinePatternSolid             = 0x0000,
    NSUnderlinePatternDot               = 0x0100,
    NSUnderlinePatternDash              = 0x0200,
    NSUnderlinePatternDashDot           = 0x0300,
    NSUnderlinePatternDashDotDot        = 0x0400
 };
 enum {
-   //NSLineBreakByWordWrapping = 0,
-   //NSLineBreakByCharWrapping,
    NSLineBreakByClipping,
-   //NSLineBreakByTruncatingHead,
-   //NSLineBreakByTruncatingTail,
-   //NSLineBreakByTruncatingMiddle
 };
 typedef NSUInteger NSLineBreakMode;
 enum {
-   //NSStringDrawingTruncatesLastVisibleLine = (1 << 5),
-   //NSStringDrawingUsesLineFragmentOrigin = (1 << 0),
    NSStringDrawingUsesFontLeading = (1 << 1),
    NSStringDrawingDisableScreenFontSubstitution = (1 << 2),
    NSStringDrawingUsesDeviceMetrics = (1 << 3),
@@ -306,16 +235,9 @@ typedef NSInteger NSStringDrawingOptions;
 enum {
    NSDragOperationNone		= 0,
    NSDragOperationCopy		= 1,
-   //NSDragOperationLink		= 2,
    NSDragOperationGeneric	= 4,
-   //NSDragOperationPrivate	= 8,
-   //NSDragOperationAll_Obsolete	= 15,
-   //NSDragOperationMove		= 16,
-   //NSDragOperationDelete	= 32,
-   //NSDragOperationEvery	= NSUIntegerMax
 };
 typedef NSUInteger NSDragOperation;
-/*
  enum {
    NSTIFFCompressionNone		= 1,
    NSTIFFCompressionCCITTFAX3		= 3,
@@ -326,7 +248,6 @@ typedef NSUInteger NSDragOperation;
    NSTIFFCompressionPackBits		= 32773,
    NSTIFFCompressionOldJPEG		= 32865
 };
-*/
 typedef NSUInteger NSTIFFCompression;
 
 
@@ -381,22 +302,6 @@ typedef NSUInteger NSTIFFCompression;
 @class NSAlert;
 @class NSColorSpace;
 // forward defines
-@class NSApplication;
-@class NSBezierPath;
-@class NSBitmapImageRep;
-@class NSEvent;
-@class NSFont;
-@class NSGraphicsContext;
-@class NSImage;
-@class NSLayoutManager;
-@class NSMenu;
-@class NSPasteboard;
-@class NSRulerMarker;
-@class NSScrollView;
-@class NSTextView;
-@class NSTypesetter;
-@class NSView;
-@class NSWindow;
 
 
 extern NSString *NSCalibratedRGBColorSpace;
@@ -449,11 +354,7 @@ extern NSString *NSImageCompressionFactor;
 extern NSString *NSImageProgressive;
 extern NSString *NSImageInterlaced;
 extern NSString *NSImageGamma;
-extern CFStringRef kUTTypeJPEG;
-extern CFStringRef kUTTypeTIFF;
-extern CFStringRef kUTTypePNG;
 extern NSApplication * NSApp;
-// CarbonCore/fp.h -- no iPhone SDK equivalent??
 extern const double_t pi;
 // = kCGFloatingWindowLevel = CGWindowLevelForKey(kCGFloatingWindowLevelKey)
 #define NSFloatingWindowLevel 3
@@ -471,7 +372,7 @@ extern const double_t pi;
 @end
 
 @protocol NSDraggingInfo
-- (NSPasteboard *)draggingPasteboard;
+//- (NSPasteboard *)draggingPasteboard;
 - (NSPoint)draggingLocation;
 - (NSPoint)draggedImageLocation;
 - (id)draggingSource;
@@ -525,7 +426,7 @@ extern const double_t pi;
 - (void)removeLayoutManager:(NSLayoutManager *)obj;
 @end
 
-@interface NSBezierPath : NSObject
+@interface NSBezierPath : NSObject<NSCopying>
 + (NSBezierPath *)bezierPath;
 + (NSBezierPath *)bezierPathWithRect:(NSRect)rect;
 + (NSBezierPath *)bezierPathWithOvalInRect:(NSRect)rect;
@@ -542,14 +443,15 @@ extern const double_t pi;
 - (void)lineToPoint:(NSPoint)point;
 - (void)relativeLineToPoint:(NSPoint)point;
 - (void)curveToPoint:(NSPoint)endPoint controlPoint1:(NSPoint)controlPoint1 controlPoint2:(NSPoint)controlPoint2;
-- (void)transformUsingAffineTransform:(NSAffineTransform *)transform;
+//- (void)transformUsingAffineTransform:(NSAffineTransform *)transform;
+- (void)transformUsingAffineTransform:(DKAffineTransform *)transform;
 - (void)appendBezierPath:(NSBezierPath *)path;
 - (void)appendBezierPathWithRect:(NSRect)rect;
 - (void)appendBezierPathWithOvalInRect:(NSRect)rect;
 - (void)appendBezierPathWithArcWithCenter:(NSPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle;
 - (void)appendBezierPathWithArcWithCenter:(NSPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle clockwise:(BOOL)clockwise;
 - (void)appendBezierPathWithArcFromPoint:(NSPoint)point1 toPoint:(NSPoint)point2 radius:(CGFloat)radius;
-- (void)appendBezierPathWithGlyph:(NSGlyph)glyph inFont:(NSFont *)font;
+//- (void)appendBezierPathWithGlyph:(NSGlyph)glyph inFont:(NSFont *)font;
 - (void)appendBezierPathWithPackedGlyphs:(const char *)packedGlyphs;
 - (NSWindingRule)windingRule;
 - (void)setWindingRule:(NSWindingRule)windingRule;
@@ -581,7 +483,7 @@ extern const double_t pi;
 - (NSRect)bounds;
 @end
 
-@interface NSColor : NSObject
+ @interface NSColor : NSObject
 + (NSColor *)cyanColor;
 + (NSColor *)blackColor;
 + (NSColor *)whiteColor;
@@ -601,8 +503,8 @@ extern const double_t pi;
 + (NSColor *)colorWithCalibratedWhite:(CGFloat)white alpha:(CGFloat)alpha;
 + (NSColor *)colorWithCalibratedHue:(CGFloat)hue saturation:(CGFloat)saturation brightness:(CGFloat)brightness alpha:(CGFloat)alpha;
 + (NSColor *)colorWithDeviceRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha;
-+ (NSColor *)colorWithPatternImage:(NSImage*)image;
-+ (NSColor *)colorFromPasteboard:(NSPasteboard *)pasteBoard;
++ (NSColor *)colorWithPatternImage:(DKImage*)image;
+//+ (NSColor *)colorFromPasteboard:(NSPasteboard *)pasteBoard;
 + (NSColor *)selectedTextBackgroundColor;
 - (NSColor *)colorUsingColorSpaceName:(NSString *)colorSpace;
 - (NSColor *)colorWithAlphaComponent:(CGFloat)alpha;
@@ -617,7 +519,7 @@ extern const double_t pi;
 - (void)set;
 - (void)setFill;
 - (void)setStroke;
-- (void)writeToPasteboard:(NSPasteboard *)pasteBoard;
+//- (void)writeToPasteboard:(NSPasteboard *)pasteBoard;
 - (void)drawSwatchInRect:(NSRect)rect;
 - (NSInteger)numberOfComponents;
 - (void)getComponents:(CGFloat *)components;
@@ -665,9 +567,9 @@ extern const double_t pi;
 @interface NSDocument : NSObject
 - (id)initWithType:(NSString *)typeName error:(NSError **)outError;
 - (void)setUndoManager:(NSUndoManager *)undoManager;
-- (void)setPrintInfo:(NSPrintInfo *)printInfo;
-- (void)runModalPrintOperation:(NSPrintOperation *)printOperation delegate:(id)delegate didRunSelector:(SEL)didRunSelector contextInfo:(void *)contextInfo;
-- (NSPrintInfo *)printInfo;
+//- (void)setPrintInfo:(NSPrintInfo *)printInfo;
+//- (void)runModalPrintOperation:(NSPrintOperation *)printOperation delegate:(id)delegate didRunSelector:(SEL)didRunSelector contextInfo:(void *)contextInfo;
+//- (NSPrintInfo *)printInfo;
 - (NSString *)displayName;
 - (NSUndoManager *)undoManager;
 - (NSURL *)fileURL;
@@ -680,10 +582,10 @@ extern const double_t pi;
 @end
 
 @interface NSEvent : NSObject
-+ (NSEvent *)mouseEventWithType:(NSEventType)type location:(NSPoint)location modifierFlags:(NSUInteger)flags timestamp:(NSTimeInterval)time windowNumber:(NSInteger)wNum context:(NSGraphicsContext*)context eventNumber:(NSInteger)eNum clickCount:(NSInteger)cNum pressure:(float)pressure;
+//+ (NSEvent *)mouseEventWithType:(NSEventType)type location:(NSPoint)location modifierFlags:(NSUInteger)flags timestamp:(NSTimeInterval)time windowNumber:(NSInteger)wNum context:(NSGraphicsContext*)context eventNumber:(NSInteger)eNum clickCount:(NSInteger)cNum pressure:(float)pressure;
 - (NSInteger)clickCount;
 - (unsigned short)keyCode;
-- (NSWindow *)window;
+//- (NSWindow *)window;
 - (NSPoint)locationInWindow;
 - (NSTimeInterval)timestamp;
 - (NSUInteger)modifierFlags;
@@ -714,24 +616,24 @@ extern const double_t pi;
 - (NSFont *)convertFont:(NSFont *)fontObj toNotHaveTrait:(NSFontTraitMask)trait;
 - (void)setSelectedAttributes:(NSDictionary *)attributes isMultiple:(BOOL)flag;
 - (void)setSelectedFont:(NSFont *)fontObj isMultiple:(BOOL)flag;
-- (NSMenu *)fontMenu:(BOOL)create;
+//- (NSMenu *)fontMenu:(BOOL)create;
 @end
 
-@interface NSGraphicsContext : NSObject
+ @interface NSGraphicsContext : NSObject
 + (NSGraphicsContext *)graphicsContextWithGraphicsPort:(void *)graphicsPort flipped:(BOOL)initialFlippedState;
 + (BOOL)currentContextDrawingToScreen;
 + (void)saveGraphicsState;
 + (void)restoreGraphicsState;
 + (NSGraphicsContext *)currentContext;
 + (void)setCurrentContext:(NSGraphicsContext *)context;
-+ (NSGraphicsContext *)graphicsContextWithBitmapImageRep:(NSBitmapImageRep *)bitmapRep;
+//+ (NSGraphicsContext *)graphicsContextWithBitmapImageRep:(NSBitmapImageRep *)bitmapRep;
 - (void)saveGraphicsState;
 - (void)restoreGraphicsState;
 - (void *)graphicsPort;
 - (BOOL)isFlipped;
 - (BOOL)isDrawingToScreen;
-- (void)setImageInterpolation:(NSImageInterpolation)interpolation;
-- (void)setCompositingOperation:(NSCompositingOperation)operation;
+//- (void)setImageInterpolation:(NSImageInterpolation)interpolation;
+//- (void)setCompositingOperation:(NSCompositingOperation)operation;
 - (void)setShouldAntialias:(BOOL)antialias;
 @end
 
@@ -750,16 +652,16 @@ extern const double_t pi;
 - (void)getPixel:(NSUInteger[])p atX:(NSInteger)x y:(NSInteger)y;
 @end
 
-@interface NSPDFImageRep : NSImageRep
+@interface NSPDFImageRep : NSImageRep<NSCopying>
 - (NSData*)PDFRepresentation;
 @end
 
-@interface NSImage : NSObject
-+ (BOOL)canInitWithPasteboard:(NSPasteboard *)pasteboard;
+@interface NSImage : NSObject<NSCopying>
+//+ (BOOL)canInitWithPasteboard:(NSPasteboard *)pasteboard;
 + (NSArray *)imagePasteboardTypes;
 + (id)imageNamed:(NSString *)name;
 - (id)initWithSize:(NSSize)aSize;
-- (id)initWithPasteboard:(NSPasteboard *)pasteboard;
+//- (id)initWithPasteboard:(NSPasteboard *)pasteboard;
 - (NSArray *)representations;
 - (void)addRepresentation:(NSImageRep *)imageRep;
 - (BOOL)isValid;
@@ -821,12 +723,12 @@ extern const double_t pi;
 
 @interface NSParagraphStyle : NSObject
 + (NSParagraphStyle *)defaultParagraphStyle;
-- (NSTextAlignment)alignment;
+- (DKTextAlignment)alignment;
 @end
 
 @interface NSMutableParagraphStyle : NSParagraphStyle
 - (void)setLineBreakMode:(NSLineBreakMode)mode;
-- (void)setAlignment:(NSTextAlignment)alignment;
+- (void)setAlignment:(DKTextAlignment)alignment;
 @end
 
 @interface NSPasteboard : NSObject
@@ -882,9 +784,9 @@ extern const double_t pi;
 @interface NSResponder : NSObject
 - (NSResponder *)nextResponder;
 - (void)setNextResponder:(NSResponder *)aResponder;
-- (void)keyDown:(NSEvent *)theEvent;
-- (void)mouseUp:(NSEvent *)theEvent;
-- (void)scrollWheel:(NSEvent *)theEvent;
+//- (void)keyDown:(NSEvent *)theEvent;
+//- (void)mouseUp:(NSEvent *)theEvent;
+//- (void)scrollWheel:(NSEvent *)theEvent;
 - (void)interpretKeyEvents:(NSArray *)eventArray;
 - (void)doCommandBySelector:(SEL)aSelector;
 - (BOOL)tryToPerform:(SEL)anAction with:(id)anObject;
@@ -894,12 +796,12 @@ extern const double_t pi;
 - (void)insertTabIgnoringFieldEditor:(id)sender;
 @end
 
-@interface NSShadow : NSObject
+@interface NSShadow : NSObject<NSCopying>
 - (NSSize)shadowOffset;
 - (CGFloat)shadowBlurRadius;
 - (void)setShadowBlurRadius:(CGFloat)val;
-- (NSColor *)shadowColor;
-- (void)setShadowColor:(NSColor *)color;
+- (DKColor *)shadowColor;
+- (void)setShadowColor:(DKColor *)color;
 - (void)setShadowOffset:(NSSize)offset;
 - (void)set;
 @end
@@ -910,15 +812,15 @@ extern const double_t pi;
 
 @interface NSWindow : NSObject
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)aStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)flag;
-- (void)setExcludedFromWindowsMenu:(BOOL)flag;
+//- (void)setExcludedFromWindowsMenu:(BOOL)flag;
 - (NSInteger)windowNumber;
 - (id)contentView;
 - (NSRect)frame;
 - (void)center;
-- (void)setMenu:(NSMenu *)menu;
+//- (void)setMenu:(NSMenu *)menu;
 - (BOOL)isVisible;
 - (BOOL)isMainWindow;
-- (NSColor *)backgroundColor;
+- (DKColor *)backgroundColor;
 - (void)makeKeyAndOrderFront:(id)sender;
 - (void)orderFront:(id)sender;
 - (void)orderOut:(id)sender;
@@ -927,7 +829,7 @@ extern const double_t pi;
 - (void)discardEventsMatchingMask:(NSUInteger)mask beforeEvent:(NSEvent *)lastEvent;
 - (void)postEvent:(NSEvent *)event atStart:(BOOL)flag;
 - (NSEvent *)nextEventMatchingMask:(NSUInteger)mask;
-- (void)invalidateCursorRectsForView:(NSView *)aView;
+//- (void)invalidateCursorRectsForView:(NSView *)aView;
 - (NSResponder *)firstResponder;
 - (BOOL)makeFirstResponder:(NSResponder *)aResponder;
 - (void)setAcceptsMouseMovedEvents:(BOOL)flag;
@@ -937,7 +839,7 @@ extern const double_t pi;
 - (void)setOpaque:(BOOL)isOpaque;
 - (NSPoint)convertBaseToScreen:(NSPoint)aPoint;
 - (void)setFrameOrigin:(NSPoint)aPoint;
-- (void)setBackgroundColor:(NSColor *)color;
+- (void)setBackgroundColor:(DKColor *)color;
 @end
 
 @interface NSWindowController : NSResponder
@@ -945,25 +847,25 @@ extern const double_t pi;
 - (IBAction)showWindow:(id)sender;
 @end
 
-@interface NSView : NSResponder
+@interface NSView : NSObject // NSResponder
 - (id)initWithFrame:(NSRect)frameRect;
 - (NSUndoManager *)undoManager;
-- (void)setNeedsDisplay:(BOOL)flag;
+//- (void)setNeedsDisplay:(BOOL)flag;
 - (void)setNeedsDisplayInRect:(NSRect)invalidRect;
-- (NSWindow *)window;
+//- (NSWindow *)window;
 - (NSView *)superview;
-- (NSRect)visibleRect;
+//- (NSRect)visibleRect;
 - (NSRect)bounds;
 - (void)setBoundsSize:(NSSize)newSize;
 - (void)setFrame:(NSRect)frameRect;
 - (BOOL)isFlipped;
 - (NSRect)frame;
-- (void)setFrameSize:(NSSize)newSize;
+//- (void)setFrameSize:(NSSize)newSize;
 - (NSPoint)convertPoint:(NSPoint)aPoint fromView:(NSView *)aView;
-- (BOOL)autoscroll:(NSEvent *)theEvent;
-- (void)scrollPoint:(NSPoint)aPoint;
+//- (BOOL)autoscroll:(NSEvent *)theEvent;
+//- (void)scrollPoint:(NSPoint)aPoint;
 - (BOOL)scrollRectToVisible:(NSRect)aRect;
-- (NSScrollView *)enclosingScrollView;
+//- (NSScrollView *)enclosingScrollView;
 - (void)registerForDraggedTypes:(NSArray *)newTypes;
 - (void)unregisterDraggedTypes;
 - (void)addSubview:(NSView *)aView;
@@ -973,13 +875,13 @@ extern const double_t pi;
 - (void)getRectsExposedDuringLiveResize:(NSRect[4])exposedRects count:(NSInteger *)count;
 - (void)getRectsBeingDrawn:(const NSRect **)rects count:(NSInteger *)count;
 - (BOOL)inLiveResize;
-- (void)addCursorRect:(NSRect)aRect cursor:(NSCursor *)anObj;
-- (NSMenu *)menuForEvent:(NSEvent *)event;
-- (void)scaleUnitSquareToSize:(NSSize)newUnitSize;
+//- (void)addCursorRect:(NSRect)aRect cursor:(NSCursor *)anObj;
+//- (NSMenu *)menuForEvent:(NSEvent *)event;
+//- (void)scaleUnitSquareToSize:(NSSize)newUnitSize;
 - (NSPoint)convertPoint:(NSPoint)aPoint toView:(NSView *)aView;
 - (BOOL)needsToDrawRect:(NSRect)aRect;
 - (NSData *)dataWithPDFInsideRect:(NSRect)rect;
-- (void)dragImage:(NSImage *)anImage at:(NSPoint)viewLocation offset:(NSSize)initialOffset event:(NSEvent *)event pasteboard:(NSPasteboard *)pboard source:(id)sourceObj slideBack:(BOOL)slideFlag;
+//- (void)dragImage:(NSImage *)anImage at:(NSPoint)viewLocation offset:(NSSize)initialOffset event:(NSEvent *)event pasteboard:(NSPasteboard *)pboard source:(id)sourceObj slideBack:(BOOL)slideFlag;
 @end
 
 @interface NSClipView : NSView
@@ -1036,7 +938,7 @@ extern const double_t pi;
 - (void)setHasVerticalRuler:(BOOL)flag;
 - (void)setBackgroundColor:(NSColor *)color;
 - (void)setDrawsBackground:(BOOL)flag;
-- (NSClipView *)contentView;
+//- (NSClipView *)contentView;
 @end
 
 @interface NSCell : NSObject
@@ -1069,7 +971,7 @@ extern const double_t pi;
 - (void)setDrawsBackground:(BOOL)flag;
 - (void)setEditable:(BOOL)flag;
 - (void)setSelectable:(BOOL)flag;
-- (void)setTextColor:(NSColor *)color;
+- (void)setTextColor:(DKColor *)color;
 @end
 
 
@@ -1092,10 +994,6 @@ extern bool CGImageDestinationFinalize(CGImageDestinationRef idst);
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem;
 @end
 
-@interface NSObject (NSCopying)
-- (id)copyWithZone:(NSZone *)zone;
-@end
-
 @interface NSBundle (NSBundleImageExtension)
 - (id)pathForImageResource:(id)a;
 @end
@@ -1104,7 +1002,7 @@ extern bool CGImageDestinationFinalize(CGImageDestinationRef idst);
 - (NSSize)sizeWithAttributes:(NSDictionary *)attrs;
 - (void)drawAtPoint:(NSPoint)point withAttributes:(NSDictionary *)attrs;
 - (void)drawInRect:(NSRect)rect withAttributes:(NSDictionary *)attrs;
-- (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options attributes:(NSDictionary *)attributes;
+//- (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options attributes:(NSDictionary *)attributes;
 @end
 
 @interface NSAttributedString (NotInIPadSDK)
@@ -1121,7 +1019,7 @@ extern bool CGImageDestinationFinalize(CGImageDestinationRef idst);
 @interface NSMutableAttributedString (NotInIPadSDK)
 - (void)fixAttributesInRange:(NSRange)range;
 - (void)fixFontAttributeInRange:(NSRange)range;
-- (void)setAlignment:(NSTextAlignment)alignment range:(NSRange)range;
+- (void)setAlignment:(DKTextAlignment)alignment range:(NSRange)range;
 @end
 
 @interface NSDate (NSCalendarDateExtras)
@@ -1137,9 +1035,10 @@ extern bool CGImageDestinationFinalize(CGImageDestinationRef idst);
 - (void)setFormat:(NSString *)string;
 @end
 
-@interface NSObject (RandomMetadataIntrospection)
+ @interface NSObject (RandomMetadataIntrospection)
 - (NSDate *)dateValue;
 - (NSRect)rect;
 - (NSAttributedString *)attributedString;
 @end
 
+#endif TAKEN_CARE_OF

@@ -8,9 +8,12 @@
 #import <TargetConditionals.h>
 
 #ifdef __OBJC__
-#import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+
+#import "DKCompatibility.h"
 #endif __OBJC__
 
 #import "DKDrawKit_Prefix.pch"

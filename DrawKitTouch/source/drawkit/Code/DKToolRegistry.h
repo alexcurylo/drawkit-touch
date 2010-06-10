@@ -24,7 +24,9 @@
 
 - (DKDrawingTool*)		drawingToolWithName:(NSString*) name;
 - (void)				registerDrawingTool:(DKDrawingTool*) tool withName:(NSString*) name;
+#ifndef TARGET_OS_IPHONE
 - (DKDrawingTool*)		drawingToolWithKeyboardEquivalent:(NSEvent*) keyEvent;
+#endif TARGET_OS_IPHONE
 
 - (void)				registerStandardTools;
 - (NSArray*)			toolNames;

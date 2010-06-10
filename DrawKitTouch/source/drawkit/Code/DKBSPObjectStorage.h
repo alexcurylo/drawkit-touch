@@ -72,7 +72,8 @@ DKBSPOperation;
 	NSSize				mCanvasSize;
 	DKBSPOperation		mOp;
 	NSUInteger			mOpIndex;
-	NSBezierPath*		mDebugPath;
+	//NSBezierPath*		mDebugPath;
+	DKBezierPath*		mDebugPath;
 }
 
 + (Class)			leafClass;
@@ -92,7 +93,8 @@ DKBSPOperation;
 
 - (void)			shiftIndexesStartingAtIndex:(NSUInteger) startIndex by:(NSInteger) delta;
 
-- (NSBezierPath*)	debugStorageDivisions;
+//- (NSBezierPath*)	debugStorageDivisions;
+- (DKBezierPath*)	debugStorageDivisions;
 
 
 

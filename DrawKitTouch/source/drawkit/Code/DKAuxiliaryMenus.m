@@ -6,6 +6,10 @@
 //  Copyright 2009 Apptree.net. All rights reserved.
 //
 
+#if TARGET_OS_IPHONE
+#error there are no menus on the iPhone
+#endif TARGET_OS_IPHONE
+
 #import "DKAuxiliaryMenus.h"
 
 

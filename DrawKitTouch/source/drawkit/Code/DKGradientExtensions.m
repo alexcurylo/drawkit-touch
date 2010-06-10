@@ -1,6 +1,6 @@
 //
 //  DKGradientExtensions.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by Jason Jobe on 3/3/07.
 ///
@@ -10,8 +10,12 @@
 #import "DKGradientExtensions.h"
 
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 @implementation NSView (DKGradientExtensions)
 
 - (void) dragStandardSwatchGradient:(DKGradient*)gradient slideBack:(BOOL)slideBack event:(NSEvent *)event
@@ -31,7 +35,8 @@
 	pt = [self convertPoint:pt fromView:nil];
 	
 	NSImage *swatchImage = [gradient swatchImageWithSize:size withBorder:YES];
-	NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+	//NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
+	DKPasteboard *pboard = [DKPasteboard pasteboardWithName:NSDragPboard];
 
 	// this method must not write data to the pasteboard. That must have been done prior to calling it.	That's because
 	// the gradient object does not have a single pasteboard representation - it depends on the context of the drag.
@@ -44,14 +49,18 @@
 	
 	[swatchImage setFlipped:NO];
 	
+#ifndef TARGET_OS_IPHONE
 	[[NSCursor currentCursor] push];
 	[[NSCursor closedHandCursor] set];
+#endif TARGET_OS_IPHONE
 
 	[self dragImage:swatchImage at:pt offset:size event:event
 		 pasteboard:pboard
 			 source:self slideBack:slideBack];
 			 
+#ifndef TARGET_OS_IPHONE
 	[NSCursor pop];
+#endif TARGET_OS_IPHONE
 }
 
 - (void) dragColor:(NSColor*)color swatchSize:(NSSize)size slideBack:(BOOL)slideBack event:(NSEvent *)event
@@ -74,13 +83,32 @@
 }
 
 @end
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
-@implementation NSColor (DKGradientExtensions)
+//@implementation NSColor (DKGradientExtensions)
+@implementation DKColor (DKGradientExtensions)
 
-- (NSImage*) swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder
+//- (NSImage*) swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder
+- (DKImage*) swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder
 {
+#if TARGET_OS_IPHONE
+   UIGraphicsBeginImageContext(size);
+
+	NSRect box = { .size = size };
+   [self drawSwatchInRect:box];
+	if (showBorder)
+	{
+		//[[NSColor grayColor] set];
+		[[DKColor grayColor] set];
+		DKFrameRectWithWidth( box, 1.0 );
+	}
+   
+   UIImage *swatchImage = UIGraphicsGetImageFromCurrentImageContext();
+   UIGraphicsEndImageContext();
+   return swatchImage;
+#else
 	NSImage *swatchImage = [[NSImage alloc] initWithSize:size];
 	NSRect box = NSMakeRect(0.0, 0.0, size.width, size.height);
 	
@@ -91,12 +119,13 @@
 	if (showBorder)
 	{
 		[[NSColor grayColor] set];
-		NSFrameRectWithWidth( box, 1.0 );
+		DKFrameRectWithWidth( box, 1.0 );
 	}
 	[swatchImage unlockFocus];
 	[[NSGraphicsContext currentContext] restoreGraphicsState];
 	
 	return [swatchImage autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 @end

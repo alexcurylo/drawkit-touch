@@ -30,21 +30,29 @@ DKImageFittingOption;
 {
 @private
 	NSString*				mImageKey;
-	NSImage*				m_image;
+	//NSImage*				m_image;
+	DKImage*				m_image;
 	CGFloat					m_scale;
 	CGFloat					m_opacity;
 	CGFloat					m_angle;
 	NSPoint					m_origin;
+#if TARGET_OS_IPHONE
+	CGBlendMode	m_op;
+#else
 	NSCompositingOperation	m_op;
+#endif TARGET_OS_IPHONE
 	DKImageFittingOption	m_fittingOption;
 	NSString*				m_imageIdentifier;
 }
 
-+ (DKImageAdornment*)	imageAdornmentWithImage:(NSImage*) image;
+//+ (DKImageAdornment*)	imageAdornmentWithImage:(NSImage*) image;
++ (DKImageAdornment*)	imageAdornmentWithImage:(DKImage*) image;
 + (DKImageAdornment*)	imageAdornmentWithImageFromFile:(NSString*) path;
 
-- (void)				setImage:(NSImage*) image;
-- (NSImage*)			image;
+//- (void)				setImage:(NSImage*) image;
+//- (NSImage*)			image;
+- (void)				setImage:(DKImage*) image;
+- (DKImage*)			image;
 
 - (void)				setImageWithKey:(NSString*) key forDrawing:(DKDrawing*) drawing;
 - (void)				setImageKey:(NSString*) key;
@@ -67,13 +75,19 @@ DKImageFittingOption;
 - (void)				setAngleInDegrees:(CGFloat) degrees;
 - (CGFloat)				angleInDegrees;
 
+#if TARGET_OS_IPHONE
+- (void)				setOperation:(CGBlendMode) op;
+- (CGBlendMode) operation;
+#else
 - (void)				setOperation:(NSCompositingOperation) op;
 - (NSCompositingOperation) operation;
+#endif TARGET_OS_IPHONE
 
 - (void)				setFittingOption:(DKImageFittingOption) fopt;
 - (DKImageFittingOption) fittingOption;
 
-- (NSAffineTransform*)	imageTransformForObject:(id<DKRenderable>) renderableObject;
+//- (NSAffineTransform*)	imageTransformForObject:(id<DKRenderable>) renderableObject;
+- (DKAffineTransform*)	imageTransformForObject:(id<DKRenderable>) renderableObject;
 
 @end
 

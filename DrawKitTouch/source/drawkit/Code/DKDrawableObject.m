@@ -18,18 +18,28 @@
 #import "LogEvent.h"
 #import "NSAffineTransform+DKAdditions.h"
 #import "DKDrawKitMacros.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#else
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 #import "NSBezierPath+Combinatorial.h"
 #import "DKDrawableObject+Metadata.h"
 #import "DKDrawableContainerProtocol.h"
 #import "DKObjectDrawingLayer+Alignment.h"
+#ifndef TARGET_OS_IPHONE
 #import "DKAuxiliaryMenus.h"
+#endif TARGET_OS_IPHONE
 #import "DKSelectionPDFView.h"
 #import "DKPasteboardInfo.h"
 
 
 #ifdef qIncludeGraphicDebugging
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #endif
 
 #pragma mark Contants (Non-localized)
@@ -51,7 +61,8 @@ NSString*		kDKDrawableCachedImageKey	= @"DKD_Cached_Img";
 
 #pragma mark Static vars
 
-static NSColor*			s_ghostColour = nil;
+//static NSColor*			s_ghostColour = nil;
+static DKColor*			s_ghostColour = nil;
 static NSDictionary*	s_interconversionTable = nil;
 
 #pragma mark -
@@ -211,9 +222,11 @@ static NSDictionary*	s_interconversionTable = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSArray*)		nativeObjectsFromPasteboard:(NSPasteboard*) pb
+//+ (NSArray*)		nativeObjectsFromPasteboard:(NSPasteboard*) pb
++ (NSArray*)		nativeObjectsFromPasteboard:(DKPasteboard*) pb
 {
-	NSData*	 pbdata = [pb dataForType:kDKDrawableObjectPasteboardType];
+	//NSData*	 pbdata = [pb dataForType:kDKDrawableObjectPasteboardType];
+	NSData*	 pbdata = [pb dataForPasteboardType:kDKDrawableObjectPasteboardType];
 	NSArray* objects = nil;
 	
 	if ( pbdata != nil )
@@ -238,7 +251,8 @@ static NSDictionary*	s_interconversionTable = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSUInteger)			countOfNativeObjectsOnPasteboard:(NSPasteboard*) pb
+//+ (NSUInteger)			countOfNativeObjectsOnPasteboard:(NSPasteboard*) pb
++ (NSUInteger)			countOfNativeObjectsOnPasteboard:(DKPasteboard*) pb
 {
 	DKPasteboardInfo* info = [DKPasteboardInfo pasteboardInfoWithPasteboard:pb];
 	return [info count];
@@ -259,7 +273,8 @@ static NSDictionary*	s_interconversionTable = nil;
 ///
 ///********************************************************************************************************************
 
-+ (void)				setGhostColour:(NSColor*) ghostColour
+//+ (void)				setGhostColour:(NSColor*) ghostColour
++ (void)				setGhostColour:(DKColor*) ghostColour
 {
 	[ghostColour retain];
 	[s_ghostColour release];
@@ -283,14 +298,17 @@ static NSDictionary*	s_interconversionTable = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSColor*)			ghostColour
+//+ (NSColor*)			ghostColour
++ (DKColor*)			ghostColour
 {
 	if( s_ghostColour == nil )
 	{
-		NSColor* ghost = [NSColor colorWithHexString:[[NSUserDefaults standardUserDefaults] stringForKey:kDKGhostColourPreferencesKey]];
+		//NSColor* ghost = [NSColor colorWithHexString:[[NSUserDefaults standardUserDefaults] stringForKey:kDKGhostColourPreferencesKey]];
+		DKColor* ghost = [DKColor colorWithHexString:[[NSUserDefaults standardUserDefaults] stringForKey:kDKGhostColourPreferencesKey]];
 		
 		if( ghost == nil )
-			ghost = [NSColor lightGrayColor];
+			//ghost = [NSColor lightGrayColor];
+			ghost = [DKColor lightGrayColor];
 		
 		[self setGhostColour:ghost];
 	}
@@ -1220,11 +1238,16 @@ static NSDictionary*	s_interconversionTable = nil;
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
 	
 #ifdef qIncludeGraphicDebugging
+#if TARGET_OS_IPHONE
+   CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
 	[NSGraphicsContext saveGraphicsState];
+#endif TARGET_OS_IPHONE
 	
 	if ( m_clipToBBox)
 	{
-		NSBezierPath* clipPath = [NSBezierPath bezierPathWithRect:[self bounds]];
+		//NSBezierPath* clipPath = [NSBezierPath bezierPathWithRect:[self bounds]];
+		DKBezierPath* clipPath = [DKBezierPath bezierPathWithRect:[self bounds]];
 		[clipPath addClip];
 	}
 #endif
@@ -1241,17 +1264,23 @@ static NSDictionary*	s_interconversionTable = nil;
 
 #ifdef qIncludeGraphicDebugging
 
+#if TARGET_OS_IPHONE
+   CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
 	[NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 
 	if ( m_showBBox )
 	{
 		CGFloat sc = 0.5f / [(DKDrawingView*)[self currentView] scale];
 		
-		[[NSColor redColor] set];
+		//[[NSColor redColor] set];
+		[[DKColor redColor] set];
 		
 		NSRect bb = [self bounds];
 		bb = NSInsetRect( bb, sc, sc );
-		NSBezierPath* bbox = [NSBezierPath bezierPathWithRect:bb];
+		//NSBezierPath* bbox = [NSBezierPath bezierPathWithRect:bb];
+		DKBezierPath* bbox = [DKBezierPath bezierPathWithRect:bb];
 
 		[bbox moveToPoint:bb.origin];
 		[bbox lineToPoint:NSMakePoint( NSMaxX( bb ), NSMaxY( bb ))];
@@ -1330,11 +1359,15 @@ static NSDictionary*	s_interconversionTable = nil;
 		// drawing to the screen, a visible but feint fill is drawn so that it can be seen and selected. This is not drawn
 		// to the printer so the drawing remains correct for printed output.
 		
+#ifndef TARGET_OS_IPHONE
 		if([NSGraphicsContext currentContextDrawingToScreen])
+#endif TARGET_OS_IPHONE
 		{
-			[[NSColor rgbGrey:0.95 withAlpha:0.5] set];
+			//[[NSColor rgbGrey:0.95 withAlpha:0.5] set];
+			[[DKColor rgbGrey:0.95 withAlpha:0.5] set];
 			
-			NSBezierPath* rpc = [[self renderingPath] copy];
+			//NSBezierPath* rpc = [[self renderingPath] copy];
+			DKBezierPath* rpc = [[self renderingPath] copy];
 			[rpc fill];
 			[rpc release];
 		}
@@ -1361,7 +1394,8 @@ static NSDictionary*	s_interconversionTable = nil;
 - (void)			drawGhostedContent
 {
 	[[[self class] ghostColour] set];
-	NSBezierPath* rp = [self renderingPath];
+	//NSBezierPath* rp = [self renderingPath];
+	DKBezierPath* rp = [self renderingPath];
 	[rp setLineWidth:0];
 	[rp stroke];
 }
@@ -1404,10 +1438,12 @@ static NSDictionary*	s_interconversionTable = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)			drawSelectionPath:(NSBezierPath*) path
+//- (void)			drawSelectionPath:(NSBezierPath*) path
+- (void)			drawSelectionPath:(DKBezierPath*) path
 {
 	if ([self locked])
-		[[NSColor lightGrayColor] set];
+		//[[NSColor lightGrayColor] set];
+		[[DKColor lightGrayColor] set];
 	else
 		[[[self layer] selectionColour] set];
 
@@ -1612,11 +1648,13 @@ static NSDictionary*	s_interconversionTable = nil;
 		return;
 		
 	SAVE_GRAPHICS_CONTEXT		//[NSGraphicsContext saveGraphicsState];
-	[NSBezierPath clipRect:destRect];
+	//[NSBezierPath clipRect:destRect];
+	[DKBezierPath clipRect:destRect];
 		
 	// compute the necessary transform to perform the scaling and translation from srcRect to destRect.
 
-	NSAffineTransform*	tfm = [NSAffineTransform transform];
+	//NSAffineTransform*	tfm = [NSAffineTransform transform];
+	DKAffineTransform*	tfm = [DKAffineTransform transform];
 	[tfm mapFrom:srcRect to:destRect];
 	[tfm concat];
 	
@@ -1645,7 +1683,7 @@ static NSDictionary*	s_interconversionTable = nil;
 	frame.size = [[self drawing] drawingSize];
 	
 	DKDrawablePDFView* pdfView = [[DKDrawablePDFView alloc] initWithFrame:frame object:self];
-	
+
 	NSData* pdfData = [pdfView dataWithPDFInsideRect:[self bounds]];
 	
 	[pdfView release];
@@ -2288,9 +2326,11 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)			cachedImage
+//- (NSImage*)			cachedImage
+- (DKImage*)			cachedImage
 {
-	NSImage* img = [mRenderingCache objectForKey:kDKDrawableCachedImageKey];
+	//NSImage* img = [mRenderingCache objectForKey:kDKDrawableCachedImageKey];
+	DKImage* img = [mRenderingCache objectForKey:kDKDrawableCachedImageKey];
 	
 	if( img == nil )
 	{
@@ -2377,9 +2417,11 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	transform
+//- (NSAffineTransform*)	transform
+- (DKAffineTransform*)	transform
 {
-	return [NSAffineTransform transform];
+	//return [NSAffineTransform transform];
+	return [DKAffineTransform transform];
 }
 
 
@@ -2398,7 +2440,8 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (void)				applyTransform:(NSAffineTransform*) transform
+//- (void)				applyTransform:(NSAffineTransform*) transform
+- (void)				applyTransform:(DKAffineTransform*) transform
 {
 	NSAssert( transform != nil, @"nil transform in [DKDrawableObject applyTransform:]");
 	
@@ -2526,7 +2569,8 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	#pragma unused(aGroup)
 	#pragma unused(aTransform)
@@ -2776,8 +2820,12 @@ static NSRect s_oldBounds;
 {
 	if ([self visible])
 	{
+#if TARGET_OS_IPHONE
+		NSInteger pc = ( CGRectContainsPoint([self bounds], pt)? kDKDrawingEntireObjectPart : kDKDrawingNoPart );
+#else
 		NSInteger pc = ( NSMouseInRect( pt, [self bounds], [[self drawing] isFlipped])? kDKDrawingEntireObjectPart : kDKDrawingNoPart );
-	
+#endif TARGET_OS_IPHONE
+      
 		if (( pc == kDKDrawingEntireObjectPart ) && [self isSelected] && ![self locked])
 			pc = [self hitSelectedPart:pt forSnapDetection:NO];
 			
@@ -2882,6 +2930,11 @@ static NSRect s_oldBounds;
 
 - (BOOL)				rectHitsPath:(NSRect) r
 {
+#if TARGET_OS_IPHONE
+   (void)r;
+   twlog("implement rectHitsPath");
+   return NO;
+#else
 	NSRect	ir = NSIntersectionRect( r, [self bounds]);
 	BOOL	hit = NO;
 	
@@ -2955,6 +3008,7 @@ static NSRect s_oldBounds;
 	}
 	
 	return hit;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -3045,6 +3099,7 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	#pragma unused( evt, partcode )
@@ -3054,6 +3109,7 @@ static NSRect s_oldBounds;
 	[self setMouseHasMovedSinceStartOfTracking:NO];
 	[self setTrackingMouse:YES];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3073,6 +3129,7 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	#pragma unused(partcode)
@@ -3089,6 +3146,7 @@ static NSRect s_oldBounds;
 		[self setMouseHasMovedSinceStartOfTracking:YES];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3107,6 +3165,7 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	#pragma unused(mp)
@@ -3121,6 +3180,7 @@ static NSRect s_oldBounds;
 	
 	[self setTrackingMouse:NO];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3137,7 +3197,8 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (NSView*)			currentView
+//- (NSView*)			currentView
+- (DKDrawingView*)			currentView
 {
 	return [[self layer] currentView];
 }
@@ -3158,7 +3219,7 @@ static NSRect s_oldBounds;
 ///					partcode. The default is simply to return the standard arrow - override for others.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursorForPartcode:(NSInteger) partcode mouseButtonDown:(BOOL) button
 {
 	#pragma unused(partcode)
@@ -3166,7 +3227,7 @@ static NSRect s_oldBounds;
 	
 	return [NSCursor arrowCursor];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -3186,6 +3247,7 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)			mouseDoubleClickedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	#pragma unused( partcode, evt)
@@ -3199,6 +3261,7 @@ static NSRect s_oldBounds;
 	
 	[[self layer] drawable:self wasDoubleClickedAtPoint:mp];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -3222,10 +3285,12 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSMenu*)				menu
 {
 	return [[[DKAuxiliaryMenus auxiliaryMenus] copyMenuForClass:[self class]] autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3242,6 +3307,7 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			populateContextualMenu:(NSMenu*) theMenu
 {
 	// if the object supports any contextual menu commands, it should add them to the menu and return YES. If subclassing,
@@ -3257,6 +3323,7 @@ static NSRect s_oldBounds;
 
 	return YES;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3275,12 +3342,14 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			populateContextualMenu:(NSMenu*) theMenu atPoint:(NSPoint) localPoint
 {
 	#pragma unused(localPoint)
 	
 	return [self populateContextualMenu:theMenu];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -3299,23 +3368,31 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)		swatchImageWithSize:(NSSize) size
+//- (NSImage*)		swatchImageWithSize:(NSSize) size
+- (DKImage*)		swatchImageWithSize:(NSSize) size
 {
 	if( NSEqualSizes( size, NSZeroSize ))
 		size = [self bounds].size;
 	
 	if(!NSEqualSizes( size, NSZeroSize ))
 	{
-		NSImage* image = [[NSImage alloc] initWithSize:size];
+		//NSImage* image = [[NSImage alloc] initWithSize:size];
+		DKImage* image = [[DKImage alloc] initWithSize:size];
+#if TARGET_OS_IPHONE
+		CGContextSetBlendMode(UIGraphicsGetCurrentContext(), kCGBlendModeNormal);
+#else
 		[image setFlipped:YES];
 		[image lockFocus];
-		
 		[[NSGraphicsContext currentContext] setCompositingOperation:NSCompositeSourceOver];
+#endif TARGET_OS_IPHONE
+		
 		NSRect destRect = NSMakeRect( 0, 0, size.width, size.height );
 		
 		[self drawContentInRect:destRect fromRect:NSZeroRect withStyle:nil];
+#ifndef TARGET_OS_IPHONE
 		[image unlockFocus];
 		[image setFlipped:NO];
+#endif TARGET_OS_IPHONE
 		
 		return [image autorelease];
 	}
@@ -3468,7 +3545,8 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (void)				writeSupplementaryDataToPasteboard:(NSPasteboard*) pb
+//- (void)				writeSupplementaryDataToPasteboard:(NSPasteboard*) pb
+- (void)				writeSupplementaryDataToPasteboard:(DKPasteboard*) pb
 {
 #pragma unused(pb)
 	// override to make use of
@@ -3492,7 +3570,8 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (void)				readSupplementaryDataFromPasteboard:(NSPasteboard*) pb
+//- (void)				readSupplementaryDataFromPasteboard:(NSPasteboard*) pb
+- (void)				readSupplementaryDataFromPasteboard:(DKPasteboard*) pb
 {
 #pragma unused(pb)
 	// override to make use of
@@ -3522,8 +3601,11 @@ static NSRect s_oldBounds;
 	
 	if ([self style] != nil )
 	{
+#ifndef TARGET_OS_IPHONE
 		[[NSPasteboard generalPasteboard] declareTypes:[NSArray array] owner:self];
-		[[self style] copyToPasteboard:[NSPasteboard generalPasteboard]];
+#endif TARGET_OS_IPHONE
+		//[[self style] copyToPasteboard:[NSPasteboard generalPasteboard]];
+		[[self style] copyToPasteboard:[DKPasteboard generalPasteboard]];
 	}
 }
 
@@ -3548,7 +3630,8 @@ static NSRect s_oldBounds;
 	
 	if ( ![self locked])
 	{
-		DKStyle* style = [DKStyle styleFromPasteboard:[NSPasteboard generalPasteboard]];
+		//DKStyle* style = [DKStyle styleFromPasteboard:[NSPasteboard generalPasteboard]];
+		DKStyle* style = [DKStyle styleFromPasteboard:[DKPasteboard generalPasteboard]];
 		
 		if ( style != nil )
 		{
@@ -3783,6 +3866,8 @@ static NSRect s_oldBounds;
 
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
+
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			validateMenuItem:(NSMenuItem*) item
 {
 	SEL	action = [item action];
@@ -3868,6 +3953,7 @@ static NSRect s_oldBounds;
 	
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -3940,12 +4026,15 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	containerTransform
+//- (NSAffineTransform*)	containerTransform
+- (DKAffineTransform*)	containerTransform
 {
-	NSAffineTransform*	ct = [[self container] renderingTransform];
+	//NSAffineTransform*	ct = [[self container] renderingTransform];
+	DKAffineTransform*	ct = [[self container] renderingTransform];
 	
 	if( ct == nil )
-		return [NSAffineTransform transform];
+		//return [NSAffineTransform transform];
+		return [DKAffineTransform transform];
 	else
 		return ct;
 }
@@ -3970,7 +4059,8 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)	renderingPath
+//- (NSBezierPath*)	renderingPath
+- (DKBezierPath*)	renderingPath
 {
 	return nil;
 }

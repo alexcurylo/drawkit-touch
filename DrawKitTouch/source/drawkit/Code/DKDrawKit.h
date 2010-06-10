@@ -1,9 +1,45 @@
+//
+// DKDrawKit.h
+//
+// Umbrella #import for iPhone and non-iPhone projects
+//
+
+#import "DKCompatibility.h"
 
 #ifdef TARGET_OS_IPHONE
+// temporary until we work out actual replacements
 #import "DKTDesktopPlaceholders.h"
 #endif TARGET_OS_IPHONE
 
+
+#ifndef TARGET_OS_IPHONE
+// NSView-based classes with UIView-based DKTXxx analogues
+#import "GCZoomView.h"
 #import "DKDrawingView.h"
+// CIFilters not available
+#import "DKCIFilterRastGroup.h"
+// NSDocument not available
+#import "DKDrawingDocument.h"
+// UIColor is the iPhone color class, most references abstracted to DKColor
+#import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
+
+
+#ifdef TARGET_OS_IPHONE
+// UIView-based analogues to the DKXxx versions
+#import "DKTZoomView.h"
+#import "DKTDrawingView.h"
+// UIColor-based analogue to NSColor+DKAdditions.h
+#import "UIColor+DKTAdditions.h"
+// CoreGraphics analogue to NSShadow
+#import "DKTShadow.h"
+// CoreGraphics analogue to NSAffineTransform
+#import "DKTAffineTransform.h"
+// additions to emulate NSBezierPath
+#import "UIBezierPath+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
+
+
 #import "DKSelectionPDFView.h"
 #import "DKToolController.h"
 #import "DKDrawKitMacros.h"
@@ -53,7 +89,6 @@
 #import "DKRastGroup.h"
 #import "DKRasterizerProtocol.h"
 
-#import "NSColor+DKAdditions.h"
 #import "DKStrokeDash.h"
 #import "DKFillPattern.h"
 #import "DKHatching.h"
@@ -63,15 +98,11 @@
 #import "DKArrowStroke.h"
 #import "DKFill.h"
 #import "DKZigZagFill.h"
-#ifndef TARGET_OS_IPHONE
-#import "DKCIFilterRastGroup.h"
-#endif TARGET_OS_IPHONE
 #import "DKTextAdornment.h"
 #import "DKPathDecorator.h"
 #import "DKQuartzBlendRastGroup.h"
 #import "DKImageAdornment.h"
 
-#import "DKDrawingDocument.h"
 #import "DKDrawkitInspectorBase.h"
 
 #import "DKDrawingToolProtocol.h"
@@ -98,7 +129,6 @@
 #import "DKGradient.h"
 #import "DKGradient+UISupport.h"
 #import "GCInfoFloater.h"
-#import "GCZoomView.h"
 #import "DKUndoManager.h"
 #import "NSBezierPath+Editing.h"
 #import "NSBezierPath+GPC.h"

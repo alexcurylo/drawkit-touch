@@ -15,9 +15,11 @@
 #import "LogEvent.h"
 
 
+#ifndef TARGET_OS_IPHONE
 NSString*	kDKInsertPathPointCursorImageName		= @"Insert Path Point";
 NSString*	kDKDeletePathPointCursorImageName		= @"Delete Path Point";
 NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
+#endif TARGET_OS_IPHONE
 
 @implementation DKPathInsertDeleteTool
 #pragma mark As a DKPathInsertDeleteTool
@@ -91,7 +93,7 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 	}
 }
 
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)		cursor
 {
 	NSImage* img;
@@ -118,8 +120,10 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 	NSCursor* curs = [[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint( 1, 1 )];	
 	return [curs autorelease];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(layer)
@@ -148,8 +152,10 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 	
 	return pc;
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
 	#pragma unused(aDel)
@@ -181,8 +187,10 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 			m_performedAction = [mTargetRef pathDeleteElementAtPoint:p];
 		}
 	
+#ifndef TARGET_OS_IPHONE
 		if( !m_performedAction )
 			NSBeep();
+#endif TARGET_OS_IPHONE
 
 		if(![(DKObjectDrawingLayer*)layer isSelectedObject:mTargetRef] && m_performedAction )
 		{
@@ -194,6 +202,7 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 	mTargetRef = nil;
 	return m_performedAction;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (BOOL)			isValidTargetLayer:(DKLayer*) aLayer

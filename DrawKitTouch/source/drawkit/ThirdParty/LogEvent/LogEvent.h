@@ -133,24 +133,44 @@ extern "C" {
 
 
 #pragma mark -
+#if TARGET_OS_IPHONE
+@interface LoggingController : UIViewController
+#else
 @interface LoggingController : NSWindowController
+#endif TARGET_OS_IPHONE
 {
 @private
 	NSDictionary*		mEventTypes;
 	BOOL				mIsNibLoaded;
 	
-	IBOutlet NSButton*	mUserActions;
-	IBOutlet NSButton*	mScriptingActions;
-	IBOutlet NSButton*	mReactiveEvents;
-	IBOutlet NSButton*	mInterfaceEvents;
-	IBOutlet NSButton*	mFileInteraction;
-	IBOutlet NSButton*	mObjectLifetime;
-	IBOutlet NSButton*	mObjectChanges;
-	IBOutlet NSButton*	mMiscInfo;
-	IBOutlet NSButton*	mKVOInfo;
-	IBOutlet NSButton*	mUndoInfo;
+#if TARGET_OS_IPHONE
+	IBOutlet UIView*	window;
+#endif TARGET_OS_IPHONE
+	//IBOutlet NSButton*	mUserActions;
+	//IBOutlet NSButton*	mScriptingActions;
+	//IBOutlet NSButton*	mReactiveEvents;
+	//IBOutlet NSButton*	mInterfaceEvents;
+	//IBOutlet NSButton*	mFileInteraction;
+	//IBOutlet NSButton*	mObjectLifetime;
+	//IBOutlet NSButton*	mObjectChanges;
+	//IBOutlet NSButton*	mMiscInfo;
+	//IBOutlet NSButton*	mKVOInfo;
+	//IBOutlet NSButton*	mUndoInfo;
 	
-	IBOutlet NSButton*	mZombiesCheckbox;
+	//IBOutlet NSButton*	mZombiesCheckbox;
+
+	IBOutlet DKButton*	mUserActions;
+	IBOutlet DKButton*	mScriptingActions;
+	IBOutlet DKButton*	mReactiveEvents;
+	IBOutlet DKButton*	mInterfaceEvents;
+	IBOutlet DKButton*	mFileInteraction;
+	IBOutlet DKButton*	mObjectLifetime;
+	IBOutlet DKButton*	mObjectChanges;
+	IBOutlet DKButton*	mMiscInfo;
+	IBOutlet DKButton*	mKVOInfo;
+	IBOutlet DKButton*	mUndoInfo;
+	
+	IBOutlet DKButton*	mZombiesCheckbox;
 }
 
 + (LoggingController*)sharedLoggingController;

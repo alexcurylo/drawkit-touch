@@ -47,9 +47,18 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 
 - (CGImageRef)			CGImageWithResolution:(NSInteger) dpi hasAlpha:(BOOL) hasAlpha relativeScale:(CGFloat) relScale
-
 {
+#if TARGET_OS_IPHONE
+   (void)dpi;
+   (void)hasAlpha;
+   (void)relScale;
+   twlog("implement CGImageWithResolution");
+   return nil;
+#else
+
+#ifndef TARGET_OS_IPHONE
 	NSPDFImageRep* pdfRep = [NSPDFImageRep imageRepWithData:[self pdf]];
+#endif TARGET_OS_IPHONE
 	
 	NSAssert( pdfRep != nil, @"couldn't create pdf image rep");
 	NSAssert( relScale > 0, @"scale factor must be greater than zero");
@@ -64,6 +73,10 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 	bmSize.width = ceil(( bmSize.width * (CGFloat)dpi * relScale ) / 72.0f );
 	bmSize.height = ceil(( bmSize.height * (CGFloat)dpi * relScale ) / 72.0f );
 	
+#if TARGET_OS_IPHONE
+   UIGraphicsBeginImageContext(bmSize);
+   CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+#else
 	NSBitmapImageRep* bmRep;
 	
 	bmRep = [[NSBitmapImageRep alloc]	initWithBitmapDataPlanes:NULL
@@ -92,6 +105,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 	
 	[context setShouldAntialias:YES];
 	[context setImageInterpolation:NSImageInterpolationHigh];
+#endif TARGET_OS_IPHONE
 	
 	NSRect destRect = NSZeroRect;
 	destRect.size = bmSize;
@@ -101,9 +115,20 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 	if ( !hasAlpha )
 	{
 		[[self paperColour] set];
+#if TARGET_OS_IPHONE
+      UIRectFill( destRect );
+#else
 		NSRectFill( destRect );
+#endif TARGET_OS_IPHONE
 	}
 	
+#if TARGET_OS_IPHONE
+   CGRect drawRect = { .size = bmSize };
+	CGContextDrawImage(UIGraphicsGetCurrentContext(), drawRect, pdfRep);
+   UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+   UIGraphicsEndImageContext();
+   return image.CGImage;
+#else
 	// draw the PDF rep into the bitmap rep.
 
 	[pdfRep drawInRect:destRect];
@@ -113,6 +138,9 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 	CGImageRef	image = CGBitmapContextCreateImage([context graphicsPort]);
 	
 	return (CGImageRef)[(NSObject*)image autorelease];
+#endif TARGET_OS_IPHONE
+
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -133,6 +161,11 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				JPEGDataWithProperties:(NSDictionary*) props
 {
+#if TARGET_OS_IPHONE
+   (void)props;
+   twlog("implement JPEGDataWithProperties");
+   return nil;
+#else
 	NSAssert( props != nil, @"cannot create JPEG data - properties were nil");
 	
 	// convert properties into a form useful to Image I/O
@@ -189,6 +222,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 		CFRelease( data );
 		return nil;
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -210,6 +244,11 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				TIFFDataWithProperties:(NSDictionary*) props
 {
+#if TARGET_OS_IPHONE
+   (void)props;
+   twlog("implement TIFFDataWithProperties");
+   return nil;
+#else
 	NSAssert( props != nil, @"cannot create TIFF data - properties were nil");
 	
 	NSInteger dpi = [[props objectForKey:kDKExportPropertiesResolution] integerValue];
@@ -289,6 +328,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 		CFRelease( data );
 		return nil;
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -310,6 +350,11 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				PNGDataWithProperties:(NSDictionary*) props
 {
+#if TARGET_OS_IPHONE
+   (void)props;
+   twlog("implement PNGDataWithProperties");
+   return nil;
+#else
 	NSAssert( props != nil, @"cannot create PNG data - properties were nil");
 	
 	NSInteger dpi = [[props objectForKey:kDKExportPropertiesResolution] integerValue];
@@ -360,6 +405,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 		CFRelease( data );
 		return nil;
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -382,12 +428,20 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				JPEGDataWithResolution:(NSInteger) dpi quality:(CGFloat) quality progressive:(BOOL) progressive
 {
+#if TARGET_OS_IPHONE
+   (void)dpi;
+   (void)quality;
+   (void)progressive;
+   twlog("implement JPEGDataWithResolution");
+   return nil;
+#else
 	NSDictionary* props = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInteger:dpi],			kDKExportPropertiesResolution,
 																		[NSNumber numberWithDouble:quality],		NSImageCompressionFactor,
 																		[NSNumber numberWithBool:progressive],	NSImageProgressive,
 																		nil ];
 																		
 	return [self JPEGDataWithProperties:props];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -406,6 +460,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSData*)				TIFFDataWithResolution:(NSInteger) dpi compressionType:(NSTIFFCompression) compType
 {
 	NSDictionary* props = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInteger:dpi],			kDKExportPropertiesResolution,
@@ -414,6 +469,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 																		
 	return [self TIFFDataWithProperties:props];
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -434,12 +490,20 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				PNGDataWithResolution:(NSInteger) dpi gamma:(CGFloat) gumma interlaced:(BOOL) interlaced
 {
+#if TARGET_OS_IPHONE
+   (void)dpi;
+   (void)gumma;
+   (void)interlaced;
+   twlog("implement PNGDataWithResolution");
+   return nil;
+#else
 	NSDictionary* props = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInteger:dpi],			kDKExportPropertiesResolution,
 																		[NSNumber numberWithDouble:gumma],		NSImageGamma,
 																		[NSNumber numberWithBool:interlaced],	NSImageInterlaced,
 																		nil ];
 																		
 	return [self PNGDataWithProperties:props];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -458,6 +522,10 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				thumbnailData
 {
+#if TARGET_OS_IPHONE
+   twlog("implement thumbnailData");
+   return nil;
+#else
 	NSDictionary* props = [NSDictionary dictionaryWithObjectsAndKeys:	[NSNumber numberWithInteger:72],			kDKExportPropertiesResolution,
 						   [NSNumber numberWithDouble:0.5],		NSImageCompressionFactor,
 						   [NSNumber numberWithBool:YES],	NSImageProgressive,
@@ -465,6 +533,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 						   nil ];
 	
 	return [self JPEGDataWithProperties:props];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -483,6 +552,11 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSArray*)			layerBitmapsWithDPI:(NSUInteger) dpi
 {
+#if TARGET_OS_IPHONE
+   (void)dpi;
+   twlog("implement layerBitmapsWithDPI");
+   return nil;
+#else
 	NSMutableArray* layerBitmaps = [NSMutableArray array];
 	NSEnumerator*	iter = [[self flattenedLayers] reverseObjectEnumerator];
 	DKLayer*		layer;
@@ -498,6 +572,7 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 	}
 	
 	return layerBitmaps;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -516,7 +591,13 @@ NSString* kDKExportedImageRelativeScale = @"kDKExportedImageRelativeScale";
 
 - (NSData*)				multipartTIFFDataWithResolution:(NSUInteger) dpi
 {
+#if TARGET_OS_IPHONE
+   (void)dpi;
+   twlog("implement multipartTIFFDataWithResolution");
+   return nil;
+#else
 	return [NSBitmapImageRep TIFFRepresentationOfImageRepsInArray:[self layerBitmapsWithDPI:dpi]];
+#endif TARGET_OS_IPHONE
 }
 
 

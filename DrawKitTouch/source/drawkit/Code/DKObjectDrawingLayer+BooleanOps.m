@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKObjectDrawingLayer+BooleanOps.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 03/11/2006.
 ///
@@ -42,7 +42,8 @@
 	NSEnumerator*		iter = [sel objectEnumerator];
 	DKDrawableShape*	obj, *firstObj;
 	DKDrawableShape*	result;
-	NSBezierPath*		rp = nil;
+	//NSBezierPath*		rp = nil;
+	DKBezierPath*		rp = nil;
 	
 	// at least 2 objects required:
 	
@@ -116,7 +117,8 @@
 	if ([sel count] == 2 )
 	{
 		DKDrawableShape		*a, *b;
-		NSBezierPath*		rp;
+		//NSBezierPath*		rp;
+		DKBezierPath*		rp;
 		
 		// get the objects in shape form
 		
@@ -127,7 +129,9 @@
 		
 		if( ! NSIntersectsRect([a bounds], [b bounds]))
 		{
+#ifndef TARGET_OS_IPHONE
 			NSBeep();
+#endif TARGET_OS_IPHONE
 			return;
 		}
 		
@@ -194,7 +198,8 @@
 	if ([sel count] == 2 )
 	{
 		DKDrawableShape		*a, *b;
-		NSBezierPath*		rp;
+		//NSBezierPath*		rp;
+		DKBezierPath*		rp;
 		
 		// get the objects in shape form
 		
@@ -203,15 +208,18 @@
 		
 		// are they likely to intersect?
 		
+#ifndef TARGET_OS_IPHONE
 		if( ! NSIntersectsRect([a bounds], [b bounds]))
 		{
 			NSBeep();
 			return;
 		}
+#endif TARGET_OS_IPHONE
 		
 		// form the result
 		
-		NSBezierPath* pa, *pb;
+		//NSBezierPath* pa, *pb;
+		DKBezierPath* pa, *pb;
 		
 		pa = [a renderingPath];
 		pb = [b renderingPath];
@@ -295,7 +303,8 @@
 	if ([sel count] == 2 )
 	{
 		DKDrawableShape		*a, *b;
-		NSBezierPath*		rp;
+		//NSBezierPath*		rp;
+		DKBezierPath*		rp;
 		
 		// get the objects in shape form
 		
@@ -306,7 +315,9 @@
 		
 		if( ! NSIntersectsRect([a bounds], [b bounds]))
 		{
+#ifndef TARGET_OS_IPHONE
 			NSBeep();
+#endif TARGET_OS_IPHONE
 			return;
 		}
 		
@@ -380,9 +391,11 @@
 	if ([sel count] > 1 )
 	{
 		DKDrawableObject*	o, *firstObj, *shape;
-		NSBezierPath*		rp;
+		//NSBezierPath*		rp;
+		DKBezierPath*		rp;
 		
-		rp = [NSBezierPath bezierPath];
+		//rp = [NSBezierPath bezierPath];
+		rp = [DKBezierPath bezierPath];
 		NSEnumerator*		iter = [sel objectEnumerator];
 		
 		firstObj = [sel lastObject];
@@ -447,7 +460,8 @@
 
 - (IBAction)		setBooleanOpsFittingPolicy:(id) sender
 {
-	[NSBezierPath setPathUnflatteningPolicy:[sender tag]];
+	//[NSBezierPath setPathUnflatteningPolicy:[sender tag]];
+	[DKBezierPath setPathUnflatteningPolicy:[sender tag]];
 }
 
 
@@ -468,7 +482,8 @@
 ///
 ///********************************************************************************************************************
 
-- (NSArray*)			cropToPath:(NSBezierPath*) croppingPath
+//- (NSArray*)			cropToPath:(NSBezierPath*) croppingPath
+- (NSArray*)			cropToPath:(DKBezierPath*) croppingPath
 {
 	// first gather the subset of objects that could be affected. Any others are deleted.
 	
@@ -492,13 +507,17 @@
 		// initially do not unflatten at all - later we can selectively unflatten paths
 		// that were actually cropped depending on the original policy.
 		
-		DKPathUnflatteningPolicy ufp = [NSBezierPath pathUnflatteningPolicy];
-		[NSBezierPath setPathUnflatteningPolicy:kDKPathUnflattenNever];
+		//DKPathUnflatteningPolicy ufp = [NSBezierPath pathUnflatteningPolicy];
+		DKPathUnflatteningPolicy ufp = [DKBezierPath pathUnflatteningPolicy];
+		//[NSBezierPath setPathUnflatteningPolicy:kDKPathUnflattenNever];
+		[DKBezierPath setPathUnflatteningPolicy:kDKPathUnflattenNever];
 		
 		NSEnumerator*		iter = [cropCandidates objectEnumerator];
 		DKDrawableObject*	od;
-		NSBezierPath*		path;
-		NSBezierPath*		cPath;
+		//NSBezierPath*		path;
+		//NSBezierPath*		cPath;
+		DKBezierPath*		path;
+		DKBezierPath*		cPath;
 		
 		while((od = [iter nextObject]))
 		{
@@ -535,7 +554,8 @@
 		
 		// restore the original policy:
 		
-		[NSBezierPath setPathUnflatteningPolicy:ufp];
+		//[NSBezierPath setPathUnflatteningPolicy:ufp];
+		[DKBezierPath setPathUnflatteningPolicy:ufp];
 
 		// delete the objects excluded:
 		
@@ -567,7 +587,8 @@
 - (NSArray*)			cropToRect:(NSRect) croppingRect
 {
 	if( !NSIsEmptyRect( croppingRect ))
-		return [self cropToPath:[NSBezierPath bezierPathWithRect:croppingRect]];
+		//return [self cropToPath:[NSBezierPath bezierPathWithRect:croppingRect]];
+		return [self cropToPath:[DKBezierPath bezierPathWithRect:croppingRect]];
 	else
 		return nil;
 }

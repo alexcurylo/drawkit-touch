@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKShapeGroup.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 28/10/2006.
 ///
@@ -54,7 +54,8 @@
 {
 	NSMutableArray*		objects = [NSMutableArray array];
 	NSEnumerator*		iter = [paths objectEnumerator];
-	NSBezierPath*		path;
+	//NSBezierPath*		path;
+	DKBezierPath*		path;
 	DKDrawableObject*	od;
 	
 	while(( path = [iter nextObject]))
@@ -170,7 +171,8 @@
 	}
 	if (self != nil)
 	{
-		NSBezierPath* path = [NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
+		//NSBezierPath* path = [NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
+		DKBezierPath* path = [DKBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
 		[self setPath:path];
 		
 		//[self setCacheOptions:kDKGroupCacheUsingCGLayer];
@@ -410,7 +412,8 @@
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	contentTransform
+//- (NSAffineTransform*)	contentTransform
+- (DKAffineTransform*)	contentTransform
 {
 	CGFloat sx, sy;
 	
@@ -420,7 +423,8 @@
 	NSPoint p = NSZeroPoint;
 	p = [[self transform] transformPoint:p];
 
-	NSAffineTransform* xform = [NSAffineTransform transform];
+	//NSAffineTransform* xform = [NSAffineTransform transform];
+	DKAffineTransform* xform = [DKAffineTransform transform];
 	[xform translateXBy:p.x yBy:p.y];
 	[xform rotateByRadians:[self angle]];
 	
@@ -451,7 +455,8 @@
 {
 	// given a point <p> in the container's coordinates, returns the same point relative to this group
 	
-	NSAffineTransform* ct = [self contentTransform];
+	//NSAffineTransform* ct = [self contentTransform];
+	DKAffineTransform* ct = [self contentTransform];
 	[ct invert];
 	return [ct transformPoint:p];
 }
@@ -484,8 +489,13 @@
 	
 	if ( m_transformVisually )
 	{
-		[NSGraphicsContext saveGraphicsState];
-		NSAffineTransform* tfm = [self contentTransform];
+#if TARGET_OS_IPHONE
+      CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
+      [NSGraphicsContext saveGraphicsState];
+#endif TARGET_OS_IPHONE
+		//NSAffineTransform* tfm = [self contentTransform];
+		DKAffineTransform* tfm = [self contentTransform];
 		[tfm concat];
 	}
 	
@@ -500,7 +510,11 @@
 	}
 	
 	if ( m_transformVisually )
-		[NSGraphicsContext restoreGraphicsState];
+#if TARGET_OS_IPHONE
+      CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
+      [NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -636,7 +650,8 @@
 
 	NSEnumerator*		iter = [m_objects objectEnumerator];
 	DKDrawableObject*	obj;
-	NSAffineTransform*	tfm;
+	//NSAffineTransform*	tfm;
+	DKAffineTransform*	tfm;
 	NSInteger			insertIndex = groupIndex;
 	
 	if ( m_transformVisually )
@@ -919,15 +934,24 @@
 {
 	if ( m_transformVisually )
 	{
-		[NSGraphicsContext saveGraphicsState];
-		NSAffineTransform* tfm = [self contentTransform];
+#if TARGET_OS_IPHONE
+      CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
+      [NSGraphicsContext saveGraphicsState];
+#endif TARGET_OS_IPHONE
+		//NSAffineTransform* tfm = [self contentTransform];
+		DKAffineTransform* tfm = [self contentTransform];
 		[tfm concat];
 	}
 
 	[[self groupObjects] makeObjectsPerformSelector:@selector(drawContentWithStyle:) withObject:aStyle];
 
 	if ( m_transformVisually )
-		[NSGraphicsContext restoreGraphicsState];
+#if TARGET_OS_IPHONE
+      CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
+      [NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -989,6 +1013,7 @@
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu
 {
 	[[theMenu addItemWithTitle:NSLocalizedString(@"Ungroup", @"menu item for ungroup") action:@selector( ungroupObjects: ) keyEquivalent:@""] setTarget:self];
@@ -996,6 +1021,7 @@
 	[[theMenu addItemWithTitle:NSLocalizedString(@"Clip Contents", @"menu item for toggle clipping") action:@selector( toggleClipToPath: ) keyEquivalent:@""] setTarget:self];
 	return YES;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1062,7 +1088,8 @@
 ///
 ///********************************************************************************************************************
 
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	// groups within groups can be tricky, as multiple transforms apply and they are hard.
 	// currently, this implementation is unable to preserve combined rotated and scaled groups exactly because
@@ -1215,7 +1242,8 @@
 	self = [super init];
 	if (self != nil)
 	{
-		NSBezierPath* path = [NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
+		//NSBezierPath* path = [NSBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
+		DKBezierPath* path = [DKBezierPath bezierPathWithRect:[[self class] unitRectAtOrigin]];
 		[self setPath:path];
 		//[self setCacheOptions:kDKGroupCacheUsingCGLayer];
 	}
@@ -1251,25 +1279,29 @@
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)	renderingTransform
+//- (NSAffineTransform*)	renderingTransform
+- (DKAffineTransform*)	renderingTransform
 {
 	// returns the concatenation of all groups and layers transforms containing this one
 	
 	if ( mIsWritingToCache )
 	{
-		NSAffineTransform* stf = [NSAffineTransform transform];
+		//NSAffineTransform* stf = [NSAffineTransform transform];
+		DKAffineTransform* stf = [DKAffineTransform transform];
 		//[stf translateXBy:m_bounds.origin.x yBy:m_bounds.origin.y];
 		return stf;
 	}
 	else
 	{
-		NSAffineTransform*	tfm = [self containerTransform];
+		//NSAffineTransform*	tfm = [self containerTransform];
+		DKAffineTransform*	tfm = [self containerTransform];
 		
 		if ( m_transformVisually )
 			return tfm;
 		else
 		{
-			NSAffineTransform*	ct = [self contentTransform];
+			//NSAffineTransform*	ct = [self contentTransform];
+			DKAffineTransform*	ct = [self contentTransform];
 			
 			if ( tfm )
 			{
@@ -1377,6 +1409,8 @@
 
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
+
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL		action = [item action];
@@ -1397,6 +1431,6 @@
 		
 	return [super validateMenuItem:item];
 }
-
+#endif TARGET_OS_IPHONE
 
 @end

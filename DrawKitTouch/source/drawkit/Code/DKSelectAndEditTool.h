@@ -58,7 +58,8 @@ DKEditToolDragPhase;
 	CGFloat					mViewScale;					// the view's current scale, valid for the renderingPath callback
 	NSUInteger				mProxyDragThreshold;		// number of objects in the selection where a proxy drag is used; 0 = never do a proxy drag
 	BOOL					mInProxyDrag;				// YES during a proxy drag
-	NSImage*				mProxyDragImage;			// the proxy image being dragged
+	//NSImage*				mProxyDragImage;			// the proxy image being dragged
+	DKImage*				mProxyDragImage;			// the proxy image being dragged
 	NSRect					mProxyDragDestRect;			// where it is drawn
 	NSArray*				mDraggedObjects;			// cache of objects being dragged
 	BOOL					mWasInLockedObject;			// YES if initial mouse down was in a locked object
@@ -95,12 +96,17 @@ DKEditToolDragPhase;
 
 // handling the selection
 
+#ifndef TARGET_OS_IPHONE
 - (void)					changeSelectionWithTarget:(DKDrawableObject*) targ inLayer:(DKObjectDrawingLayer*) layer event:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
 // dragging objects
 
+#ifndef TARGET_OS_IPHONE
 - (void)					dragObjectsAsGroup:(NSArray*) objects inLayer:(DKObjectDrawingLayer*) layer toPoint:(NSPoint) p event:(NSEvent*) event dragPhase:(DKEditToolDragPhase) ph;
-- (NSImage*)				prepareDragImage:(NSArray*) objectsToDrag inLayer:(DKObjectDrawingLayer*) layer;
+#endif TARGET_OS_IPHONE
+//- (NSImage*)				prepareDragImage:(NSArray*) objectsToDrag inLayer:(DKObjectDrawingLayer*) layer;
+- (DKImage*)				prepareDragImage:(NSArray*) objectsToDrag inLayer:(DKObjectDrawingLayer*) layer;
 
 // setting the undo action name
 

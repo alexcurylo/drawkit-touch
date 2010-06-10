@@ -10,12 +10,16 @@
 
 #import "DKLinearObjectStorage.h"
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "DKTZoomView.h"
+#endif TARGET_OS_IPHONE
 
 @implementation DKLinearObjectStorage
 
 #pragma mark - as implementor of the DKObjectStorage protocol
 
-- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+//- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(NSView*) aView options:(DKObjectStorageOptions) options
+- (NSArray*)				objectsIntersectingRect:(NSRect) aRect inView:(DKDrawingView*) aView options:(DKObjectStorageOptions) options
 {
 	NSMutableArray*			temp = [NSMutableArray array];
 	NSEnumerator*			iter;

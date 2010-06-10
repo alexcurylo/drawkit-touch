@@ -18,21 +18,28 @@
 @interface DKViewController : NSObject
 {
 @private
-	NSView*				mViewRef;				// weak ref to the view that is associated with this
+	//NSView*				mViewRef;				// weak ref to the view that is associated with this
+	DKDrawingView* mViewRef;				// weak ref to the view that is associated with this
 	DKDrawing*			mDrawingRef;			// weak ref to the drawing that owns this
 	BOOL				m_autoLayerSelect;		// YES to allow mouse to activate layers automatically
+#ifndef TARGET_OS_IPHONE
 	BOOL				mEnableDKMenus;			// YES to enable all standard contextual menus provided by DK.
+#endif TARGET_OS_IPHONE
 @protected
+#ifndef TARGET_OS_IPHONE
 	NSEvent*			mDragEvent;				// cached drag event for autoscroll to use
+#endif TARGET_OS_IPHONE
 }
 
 // designated initializer
 
-- (id)					initWithView:(NSView*) aView;
+//- (id)					initWithView:(NSView*) aView;
+- (id)					initWithView:(DKDrawingView*) aView;
 
 // fundamental objects in the controller's world
 
-- (NSView*)				view;
+//- (NSView*)				view;
+- (DKDrawingView*)				view;
 - (DKDrawing*)			drawing;
 
 // updating the view from the drawing (refresh). Note that these are typically invoked via the DKDrawing,
@@ -59,6 +66,7 @@
 
 // handling mouse input events from the view
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDown:(NSEvent*) event;
 - (void)				mouseDragged:(NSEvent*) event;
 - (void)				mouseUp:(NSEvent*) event;
@@ -71,7 +79,9 @@
 
 - (void)				setContextualMenusEnabled:(BOOL) enable;
 - (BOOL)				contextualMenusEnabled;
+
 - (NSMenu*)				menuForEvent:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
 // autoscrolling:
 
@@ -90,7 +100,9 @@
 - (void)				activeLayerWillChangeToLayer:(DKLayer*) aLayer;
 - (void)				activeLayerDidChangeToLayer:(DKLayer*) aLayer;
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				autoActivateLayerWithEvent:(NSEvent*) event;
+#endif TARGET_OS_IPHONE
 
 // user actions for layer stacking
 
@@ -113,7 +125,8 @@
 // establishing relationships:
 
 - (void)				setDrawing:(DKDrawing*) aDrawing;
-- (void)				setView:(NSView*) aView;
+//- (void)				setView:(NSView*) aView;
+- (void)				setView:(DKDrawingView*) aView;
 
 @end
 

@@ -1,12 +1,16 @@
 ///**********************************************************************************************************************************
 ///  GCZoomView.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 1/08/2006.
 ///
 ///	 This software is released subject to licensing conditions as detailed in DRAWKIT-LICENSING.TXT, which must accompany this source file. 
 ///
 ///**********************************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+#error GCZoomView is NSView-based; use DKTZoomView in iPhone SDK
+#endif TARGET_OS_IPHONE
 
 #import "GCZoomView.h"
 #import "DKRetriggerableTimer.h"

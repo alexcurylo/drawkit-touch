@@ -54,26 +54,31 @@ DKMetadataType;
 + (DKMetadataItem*)		metadataItemWithBoolean:(BOOL) aBool;
 + (DKMetadataItem*)		metadataItemWithUnsigned:(NSUInteger) anInteger;
 + (DKMetadataItem*)		metadataItemWithAttributedString:(NSAttributedString*) attrString;
-+ (DKMetadataItem*)		metadataItemWithImage:(NSImage*) image;
+//+ (DKMetadataItem*)		metadataItemWithImage:(NSImage*) image;
++ (DKMetadataItem*)		metadataItemWithImage:(DKImage*) image;
 + (DKMetadataItem*)		metadataItemWithImageData:(NSData*) imageData;
 + (DKMetadataItem*)		metadataItemWithURL:(NSURL*) url;
 + (DKMetadataItem*)		metadataItemWithDate:(NSDate*) date;
-+ (DKMetadataItem*)		metadataItemWithColour:(NSColor*) colour;
+//+ (DKMetadataItem*)		metadataItemWithColour:(NSColor*) colour;
++ (DKMetadataItem*)		metadataItemWithColour:(DKColor*) colour;
 + (DKMetadataItem*)		metadataItemWithData:(NSData*) data;
 + (DKMetadataItem*)		metadataItemWithSize:(NSSize) size;
 + (DKMetadataItem*)		metadataItemWithPoint:(NSPoint) point;
 + (DKMetadataItem*)		metadataItemWithRect:(NSRect) rect;
 + (DKMetadataItem*)		metadataItemWithObject:(id) value;
 
-+ (DKMetadataItem*)		metadataItemWithPasteboard:(NSPasteboard*) pb;
+//+ (DKMetadataItem*)		metadataItemWithPasteboard:(NSPasteboard*) pb;
++ (DKMetadataItem*)		metadataItemWithPasteboard:(DKPasteboard*) pb;
 
 // wholesale conversion
 
 + (NSDictionary*)		dictionaryOfMetadataItemsWithDictionary:(NSDictionary*) aDict;
 + (NSArray*)			arrayOfMetadataItemsWithArray:(NSArray*) array;
-+ (NSDictionary*)		metadataItemsWithPasteboard:(NSPasteboard*) pb;
+//+ (NSDictionary*)		metadataItemsWithPasteboard:(NSPasteboard*) pb;
++ (NSDictionary*)		metadataItemsWithPasteboard:(DKPasteboard*) pb;
 
-+ (BOOL)				writeMetadataItems:(NSArray*) items forKeys:(NSArray*) keys toPasteboard:(NSPasteboard*) pb;
+//+ (BOOL)				writeMetadataItems:(NSArray*) items forKeys:(NSArray*) keys toPasteboard:(NSPasteboard*) pb;
++ (BOOL)				writeMetadataItems:(NSArray*) items forKeys:(NSArray*) keys toPasteboard:(DKPasteboard*) pb;
 
 // initializing various types of metadata item
 
@@ -84,11 +89,13 @@ DKMetadataType;
 - (id)					initWithBoolean:(BOOL) aBool;
 - (id)					initWithUnsigned:(NSUInteger) anInteger;
 - (id)					initWithAttributedString:(NSAttributedString*) attrString;
-- (id)					initWithImage:(NSImage*) image;
+//- (id)					initWithImage:(NSImage*) image;
+- (id)					initWithImage:(DKImage*) image;
 - (id)					initWithImageData:(NSData*) imageData;
 - (id)					initWithURL:(NSURL*) url;
 - (id)					initWithDate:(NSDate*) date;
-- (id)					initWithColour:(NSColor*) colour;
+//- (id)					initWithColour:(NSColor*) colour;
+- (id)					initWithColour:(DKColor*) colour;
 - (id)					initWithData:(NSData*) data;
 - (id)					initWithSize:(NSSize) size;
 - (id)					initWithPoint:(NSPoint) point;
@@ -119,13 +126,15 @@ DKMetadataType;
 - (NSInteger)			intValue;
 - (CGFloat)				floatValue;
 - (BOOL)				boolValue;
-- (NSColor*)			colourValue;
+//- (NSColor*)			colourValue;
+- (DKColor*)			colourValue;
 - (NSSize)				sizeValue;
 - (NSPoint)				pointValue;
 - (NSRect)				rectValue;
 
 - (NSData*)				data;
-- (BOOL)				writeToPasteboard:(NSPasteboard*) pb;
+//- (BOOL)				writeToPasteboard:(NSPasteboard*) pb;
+- (BOOL)				writeToPasteboard:(DKPasteboard*) pb;
 
 @end
 
@@ -138,8 +147,10 @@ extern NSString*		DKMultipleMetadataItemsPBoardType;
 @interface NSObject (DKMetadataItemConversions)
 
 - (NSURL*)		url;
-- (NSColor*)	colorValue;
-- (NSColor*)	colourValue;
+//- (NSColor*)	colorValue;
+//- (NSColor*)	colourValue;
+- (DKColor*)	colorValue;
+- (DKColor*)	colourValue;
 - (NSString*)	hexString;
 - (NSData*)		imageData;
 - (NSPoint)		point;

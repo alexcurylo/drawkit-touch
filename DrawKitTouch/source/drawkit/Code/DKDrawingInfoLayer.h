@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKDrawingInfoLayer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 27/08/2006.
 ///
@@ -40,8 +40,10 @@ DKInfoBoxPlacement;
 - (void)				setPlacement:(DKInfoBoxPlacement) placement;
 - (DKInfoBoxPlacement)	placement;
 
-- (void)				setBackgroundColour:(NSColor*) colour;
-- (NSColor*)			backgroundColour;
+//- (void)				setBackgroundColour:(NSColor*) colour;
+//- (NSColor*)			backgroundColour;
+- (void)				setBackgroundColour:(DKColor*) colour;
+- (DKColor*)			backgroundColour;
 
 - (void)				setDrawsBorder:(BOOL) border;
 - (BOOL)				drawsBorder;

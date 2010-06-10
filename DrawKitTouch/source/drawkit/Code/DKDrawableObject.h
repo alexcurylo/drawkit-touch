@@ -55,14 +55,18 @@
 
 // ghosting settings:
 
-+ (void)				setGhostColour:(NSColor*) ghostColour;
-+ (NSColor*)			ghostColour;
+//+ (void)				setGhostColour:(NSColor*) ghostColour;
+//+ (NSColor*)			ghostColour;
++ (void)				setGhostColour:(DKColor*) ghostColour;
++ (DKColor*)			ghostColour;
 
 // pasteboard types for drag/drop:
 
 + (NSArray*)			pasteboardTypesForOperation:(DKPasteboardOperationType) op;
-+ (NSArray*)			nativeObjectsFromPasteboard:(NSPasteboard*) pb;
-+ (NSUInteger)			countOfNativeObjectsOnPasteboard:(NSPasteboard*) pb;
+//+ (NSArray*)			nativeObjectsFromPasteboard:(NSPasteboard*) pb;
+//+ (NSUInteger)			countOfNativeObjectsOnPasteboard:(NSPasteboard*) pb;
++ (NSArray*)			nativeObjectsFromPasteboard:(DKPasteboard*) pb;
++ (NSUInteger)			countOfNativeObjectsOnPasteboard:(DKPasteboard*) pb;
 
 // interconversion table used when changing one drawable into another - can be customised
 
@@ -134,7 +138,8 @@
 - (void)				drawContentWithStyle:(DKStyle*) aStyle;
 - (void)				drawGhostedContent;
 - (void)				drawSelectedState;
-- (void)				drawSelectionPath:(NSBezierPath*) path;
+//- (void)				drawSelectionPath:(NSBezierPath*) path;
+- (void)				drawSelectionPath:(DKBezierPath*) path;
 
 // refresh notifiers:
 
@@ -147,7 +152,8 @@
 - (void)				setNeedsDisplayInRects:(NSSet*) setOfRects;
 - (void)				setNeedsDisplayInRects:(NSSet*) setOfRects withExtraPadding:(NSSize) padding;
 
-- (NSBezierPath*)		renderingPath;
+//- (NSBezierPath*)		renderingPath;
+- (DKBezierPath*)		renderingPath;
 - (BOOL)				useLowQualityDrawing;
 
 - (NSUInteger)			geometryChecksum;
@@ -196,9 +202,12 @@
 
 // path transforms
 
-- (NSAffineTransform*)	transform;
-- (NSAffineTransform*)	containerTransform;
-- (void)				applyTransform:(NSAffineTransform*) transform;
+//- (NSAffineTransform*)	transform;
+//- (NSAffineTransform*)	containerTransform;
+//- (void)				applyTransform:(NSAffineTransform*) transform;
+- (DKAffineTransform*)	transform;
+- (DKAffineTransform*)	containerTransform;
+- (void)				applyTransform:(DKAffineTransform*) transform;
 
 // bounding rects:
 
@@ -216,7 +225,8 @@
 // grouping/ungrouping protocol:
 
 - (void)				groupWillAddObject:(DKShapeGroup*) aGroup;
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform;
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform;
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform;
 - (void)				objectWasUngrouped;
 
 // post-processing when being substituted for another object (boolean ops, etc)
@@ -251,11 +261,15 @@
 
 // mouse events:
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;
 - (void)				mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;
-- (NSView*)				currentView;
+#endif TARGET_OS_IPHONE
+//- (NSView*)				currentView;
+- (DKDrawingView*)				currentView;
 
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)			cursorForPartcode:(NSInteger) partcode mouseButtonDown:(BOOL) button;
 - (void)				mouseDoubleClickedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;
 
@@ -264,10 +278,12 @@
 - (NSMenu*)				menu;
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu;
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu atPoint:(NSPoint) localPoint;
+#endif TARGET_OS_IPHONE
 
 // swatch image of this object:
 
-- (NSImage*)			swatchImageWithSize:(NSSize) size;
+//- (NSImage*)			swatchImageWithSize:(NSSize) size;
+- (DKImage*)			swatchImageWithSize:(NSSize) size;
 
 // user info:
 
@@ -280,12 +296,15 @@
 // cache management:
 
 - (void)				invalidateRenderingCache;
-- (NSImage*)			cachedImage;
+//- (NSImage*)			cachedImage;
+- (DKImage*)			cachedImage;
 
 // pasteboard:
 
-- (void)				writeSupplementaryDataToPasteboard:(NSPasteboard*) pb;
-- (void)				readSupplementaryDataFromPasteboard:(NSPasteboard*) pb;
+//- (void)				writeSupplementaryDataToPasteboard:(NSPasteboard*) pb;
+//- (void)				readSupplementaryDataFromPasteboard:(NSPasteboard*) pb;
+- (void)				writeSupplementaryDataToPasteboard:(DKPasteboard*) pb;
+- (void)				readSupplementaryDataFromPasteboard:(DKPasteboard*) pb;
 
 // user level commands that can be responded to by this object (and its subclasses)
 

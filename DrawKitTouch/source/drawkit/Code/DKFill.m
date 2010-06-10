@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKFill.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 25/11/2006.
 ///
@@ -19,7 +19,8 @@
 
 @implementation DKFill
 #pragma mark As a DKFill
-+ (DKFill*)		fillWithColour:(NSColor*) colour
+//+ (DKFill*)		fillWithColour:(NSColor*) colour
++ (DKFill*)		fillWithColour:(DKColor*) colour
 {
 	DKFill* fill = [[DKFill alloc] init];
 	[fill setColour:colour];
@@ -38,9 +39,11 @@
 }
 
 
-+ (DKFill*)		fillWithPatternImage:(NSImage*) image
+//+ (DKFill*)		fillWithPatternImage:(NSImage*) image
++ (DKFill*)		fillWithPatternImage:(DKImage*) image
 {
-	NSColor* pc = [NSColor colorWithPatternImage:image];
+	//NSColor* pc = [NSColor colorWithPatternImage:image];
+	DKColor* pc = [DKColor colorWithPatternImage:image];
 	
 	return [self fillWithColour:pc];
 }
@@ -48,14 +51,16 @@
 
 + (DKFill*)		fillWithPatternImageNamed:(NSString*) path
 {
-	NSImage* ip = [NSImage imageResourceNamed:path];
+	//NSImage* ip = [NSImage imageResourceNamed:path];
+	DKImage* ip = [DKImage imageResourceNamed:path];
 	
 	return [self fillWithPatternImage:ip];
 }
 
 
 #pragma mark -
-- (void)		setColour:(NSColor*) colour
+//- (void)		setColour:(NSColor*) colour
+- (void)		setColour:(DKColor*) colour
 {
 	//LogEvent_(kReactiveEvent, @"fill setting colour: %@", colour);
 	
@@ -65,14 +70,16 @@
 }
 
 
-- (NSColor*)	colour
+//- (NSColor*)	colour
+- (DKColor*)	colour
 {
 	return m_fillColour;
 }
 
 
 #pragma mark -
-- (void)		setShadow:(NSShadow*) shadw
+//- (void)		setShadow:(NSShadow*) shadw
+- (void)		setShadow:(DKShadow*) shadw
 {
 	[shadw retain];
 	[m_shadow release];
@@ -80,7 +87,8 @@
 }
 
 
-- (NSShadow*)	shadow
+//- (NSShadow*)	shadow
+- (DKShadow*)	shadow
 {
 	return m_shadow;
 }
@@ -203,7 +211,8 @@
 	self = [super init];
 	if (self != nil)
 	{
-		[self setColour:[NSColor grayColor]];
+		//[self setColour:[NSColor grayColor]];
+		[self setColour:[DKColor grayColor]];
 		NSAssert(m_shadow == nil, @"Expected init to zero");
 		NSAssert(m_gradient == nil, @"Expected init to zero");
 		m_angleTracksObject = YES;
@@ -240,14 +249,19 @@
 		if( ![obj conformsToProtocol:@protocol(DKRenderable)])
 			return;
 
-		NSBezierPath* path = [self renderingPathForObject:obj];
+		//NSBezierPath* path = [self renderingPathForObject:obj];
+		DKBezierPath* path = [self renderingPathForObject:obj];
 		
 		// if the path is empty, or has zero width or height, do nothing:
 		
 		if([path isEmpty] || [path bounds].size.width <= 0.0 || [path bounds].size.height <= 0.0)
 			return;
 			
+#if TARGET_OS_IPHONE
+      CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
 		[[NSGraphicsContext currentContext] saveGraphicsState];
+#endif TARGET_OS_IPHONE
 		
 		// if low quality, don't bother with shadow - shadows really sap performance
 		
@@ -264,7 +278,8 @@
 		if([self colour])
 			[[self colour] setFill];
 		else
-			[[NSColor clearColor] setFill];
+			//[[NSColor clearColor] setFill];
+			[[DKColor clearColor] setFill];
 		
 		[path fill];
 		
@@ -287,7 +302,11 @@
 				[[self gradient] setAngleWithoutNotifying:ga];
 		}
 		
+#if TARGET_OS_IPHONE
+      CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
 		[[NSGraphicsContext currentContext] restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 	}
 }
 
@@ -350,7 +369,8 @@
 	
 	[copy setColour:[self colour]];
 	
-	NSShadow* shcopy = [[self shadow] copyWithZone:zone];
+	//NSShadow* shcopy = [[self shadow] copyWithZone:zone];
+	DKShadow* shcopy = [[self shadow] copyWithZone:zone];
 	[copy setShadow:shcopy];
 	[shcopy release];
 	

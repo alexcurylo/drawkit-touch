@@ -11,15 +11,22 @@
 //#import <Cocoa/Cocoa.h>
 
 
-@interface NSAffineTransform (DKAdditions)
+//@interface NSAffineTransform (DKAdditions)
+@interface DKAffineTransform (DKAdditions)
 
 
-- (NSAffineTransform*)		mapFrom:(NSRect) src to:(NSRect) dst;
-- (NSAffineTransform*)		mapFrom:(NSRect) src to:(NSRect) dst dstAngle:(CGFloat) radians;
+//- (NSAffineTransform*)		mapFrom:(NSRect) src to:(NSRect) dst;
+//- (NSAffineTransform*)		mapFrom:(NSRect) src to:(NSRect) dst dstAngle:(CGFloat) radians;
 
-- (NSAffineTransform*)		scaleBounds:(NSRect) bounds toHeight:(CGFloat) height centeredDistance:(CGFloat) distance abovePoint:(NSPoint) location;
-- (NSAffineTransform*)		scaleBounds:(NSRect) bounds toHeight: (CGFloat) height centeredAboveOrigin:(CGFloat) distance;
-- (NSAffineTransform*)		flipVertical:(NSRect) bounds;
+//- (NSAffineTransform*)		scaleBounds:(NSRect) bounds toHeight:(CGFloat) height centeredDistance:(CGFloat) distance abovePoint:(NSPoint) location;
+//- (NSAffineTransform*)		scaleBounds:(NSRect) bounds toHeight: (CGFloat) height centeredAboveOrigin:(CGFloat) distance;
+//- (NSAffineTransform*)		flipVertical:(NSRect) bounds;
+- (DKAffineTransform*)		mapFrom:(NSRect) src to:(NSRect) dst;
+- (DKAffineTransform*)		mapFrom:(NSRect) src to:(NSRect) dst dstAngle:(CGFloat) radians;
+
+- (DKAffineTransform*)		scaleBounds:(NSRect) bounds toHeight:(CGFloat) height centeredDistance:(CGFloat) distance abovePoint:(NSPoint) location;
+- (DKAffineTransform*)		scaleBounds:(NSRect) bounds toHeight: (CGFloat) height centeredAboveOrigin:(CGFloat) distance;
+- (DKAffineTransform*)		flipVertical:(NSRect) bounds;
 
 @end
 

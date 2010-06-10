@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKHatching.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 06/10/2006.
 ///
@@ -17,9 +17,12 @@
 @interface DKHatching : DKRasterizer <NSCoding, NSCopying>
 {
 @private
-	NSBezierPath*	m_cache;
-	NSBezierPath*	mRoughenedCache;
-	NSColor*		m_hatchColour;
+	//NSBezierPath*	m_cache;
+	//NSBezierPath*	mRoughenedCache;
+	//NSColor*		m_hatchColour;
+	DKBezierPath*	m_cache;
+	DKBezierPath*	mRoughenedCache;
+	DKColor*		m_hatchColour;
 	DKStrokeDash*	m_hatchDash;
 	NSLineCapStyle	m_cap;
 	NSLineJoinStyle	m_join;
@@ -38,8 +41,10 @@
 + (DKHatching*)		hatchingWithDotPitch:(CGFloat) pitch diameter:(CGFloat) diameter;
 + (DKHatching*)		hatchingWithDotDensity:(CGFloat) density;
 
-- (void)			hatchPath:(NSBezierPath*) path;
-- (void)			hatchPath:(NSBezierPath*) path objectAngle:(CGFloat) oa;
+//- (void)			hatchPath:(NSBezierPath*) path;
+//- (void)			hatchPath:(NSBezierPath*) path objectAngle:(CGFloat) oa;
+- (void)			hatchPath:(DKBezierPath*) path;
+- (void)			hatchPath:(DKBezierPath*) path objectAngle:(CGFloat) oa;
 
 - (void)			setAngle:(CGFloat) radians;
 - (CGFloat)			angle;
@@ -60,8 +65,10 @@
 - (void)			setLineJoinStyle:(NSLineJoinStyle) ljs;
 - (NSLineJoinStyle)	lineJoinStyle;
 
-- (void)			setColour:(NSColor*) colour;
-- (NSColor*)		colour;
+//- (void)			setColour:(NSColor*) colour;
+//- (NSColor*)		colour;
+- (void)			setColour:(DKColor*) colour;
+- (DKColor*)		colour;
 
 - (void)			setDash:(DKStrokeDash*) dash;
 - (DKStrokeDash*)	dash;

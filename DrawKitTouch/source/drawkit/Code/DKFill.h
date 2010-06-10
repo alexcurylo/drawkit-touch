@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKFill.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 25/11/2006.
 ///
@@ -10,29 +10,36 @@
 
 #import "DKRasterizer.h"
 
-
 @class DKGradient;
 
 
 @interface DKFill : DKRasterizer <NSCoding, NSCopying>
 {
 @private
-	NSColor*		m_fillColour;
-	NSShadow*		m_shadow;
+//	NSColor*		m_fillColour;
+//	NSShadow*		m_shadow;
+	DKColor*		m_fillColour;
+	DKShadow*		m_shadow;
 	DKGradient*		m_gradient;
 	BOOL			m_angleTracksObject;	// set if gradient angle remains relative to the object being filled
 }
 
-+ (DKFill*)			fillWithColour:(NSColor*) colour;
+//+ (DKFill*)			fillWithColour:(NSColor*) colour;
++ (DKFill*)			fillWithColour:(DKColor*) colour;
 + (DKFill*)			fillWithGradient:(DKGradient*) gradient;
-+ (DKFill*)			fillWithPatternImage:(NSImage*) image;
+//+ (DKFill*)			fillWithPatternImage:(NSImage*) image;
++ (DKFill*)			fillWithPatternImage:(DKImage*) image;
 + (DKFill*)			fillWithPatternImageNamed:(NSString*) path;
 
-- (void)			setColour:(NSColor*) colour;
-- (NSColor*)		colour;
+//- (void)			setColour:(NSColor*) colour;
+//- (NSColor*)		colour;
+- (void)			setColour:(DKColor*) colour;
+- (DKColor*)		colour;
 
-- (void)			setShadow:(NSShadow*) shadow;
-- (NSShadow*)		shadow;
+//- (void)			setShadow:(NSShadow*) shadow;
+//- (NSShadow*)		shadow;
+- (void)			setShadow:(DKShadow*) shadow;
+- (DKShadow*)		shadow;
 
 - (void)			setGradient:(DKGradient*) grad;
 - (DKGradient*)		gradient;

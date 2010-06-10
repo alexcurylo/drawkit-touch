@@ -26,11 +26,13 @@
 
 + (DKGradient*)		sweptAngleGradient
 {
-	return [self sweptAngleGradientWithStartingColor:[NSColor whiteColor] endingColor:[NSColor blackColor]];
+//	return [self sweptAngleGradientWithStartingColor:[NSColor whiteColor] endingColor:[NSColor blackColor]];
+	return [self sweptAngleGradientWithStartingColor:[DKColor whiteColor] endingColor:[DKColor blackColor]];
 }
 
 
-+ (DKGradient*)		sweptAngleGradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2
+//+ (DKGradient*)		sweptAngleGradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2
++ (DKGradient*)		sweptAngleGradientWithStartingColor:(DKColor*) c1 endingColor:(DKColor*) c2
 {
 	DKSweptAngleGradient* sa = [[DKSweptAngleGradient alloc] init];
 	
@@ -133,7 +135,8 @@
 		
 		cp.x *= 1.5;
 		cp.y *= 1.5;
-		twopi = 2 * pi;
+		//twopi = 2 * pi;
+		twopi = 2 * M_PI;
 		
 		unsigned long* p = (unsigned long*) buffer;
 		
@@ -143,7 +146,8 @@
 			{
 				// need to know angle of x,y relative to centre point which gives us an index into the colour table
 				
-				angle = atan2f((CGFloat) y - cp.y, (CGFloat) x - cp.x ) + pi;
+				//angle = atan2f((CGFloat) y - cp.y, (CGFloat) x - cp.x ) + pi;
+				angle = atan2f((CGFloat) y - cp.y, (CGFloat) x - cp.x ) + M_PI;
 				colour = (NSUInteger)(( angle * (CGFloat) nColours ) / twopi );
 				
 				// add a bit of random dither to the colour
@@ -184,7 +188,8 @@
 
 #pragma mark -
 #pragma mark As a DKGradient
-- (void)			fillPath:(NSBezierPath*) path startingAtPoint:(NSPoint) p startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er
+//- (void)			fillPath:(NSBezierPath*) path startingAtPoint:(NSPoint) p startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er
+- (void)			fillPath:(DKBezierPath*) path startingAtPoint:(NSPoint) p startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er
 {
 	#pragma unused(sr)
 	#pragma unused(ep)
@@ -231,7 +236,11 @@
 	SAVE_GRAPHICS_CONTEXT		//[NSGraphicsContext saveGraphicsState];
 	[path addClip];
 
+#if TARGET_OS_IPHONE
+	CGContextRef context = UIGraphicsGetCurrentContext();
+#else
 	CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+#endif TARGET_OS_IPHONE
 	
 	CGContextTranslateCTM( context, rcp.x, rcp.y );
 	CGContextRotateCTM( context, sa );

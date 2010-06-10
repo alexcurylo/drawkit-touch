@@ -1,6 +1,6 @@
 //
 //  DKSelectionPDFView.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by graham on 30/09/2006.
 ///
@@ -22,8 +22,13 @@
 	//[[NSColor clearColor] set];
 	//NSRectFill([self bounds]);
 	
+#if TARGET_OS_IPHONE
+   twlog("implement some drawRect equivalent of holding down option/shift/command?");
+	BOOL			drawSelected = NO;
+#else
 	NSUInteger mask = ( NSAlternateKeyMask | NSShiftKeyMask | NSCommandKeyMask );
 	BOOL drawSelected = (([[NSApp currentEvent] modifierFlags] & mask) == mask );
+#endif TARGET_OS_IPHONE
 	
 	DKObjectDrawingLayer*	layer = (DKObjectDrawingLayer*)[[self controller] activeLayer];
 
@@ -40,7 +45,7 @@
 
 
 #pragma mark -
-@implementation DKLayerPDFView : DKDrawingView
+@implementation DKLayerPDFView
 
 
 - (id)		initWithFrame:(NSRect) frame withLayer:(DKLayer*) aLayer
@@ -113,8 +118,9 @@
 {
 #pragma unused(rect)
 	
-	[[NSColor clearColor] set];
-	NSRectFill([self bounds]);
+	//[[NSColor clearColor] set];
+	[[DKColor clearColor] set];
+	DKRectFill([self bounds]);
 	
 	if ( mObjectRef )
 		[mObjectRef drawContentWithSelectedState:NO];

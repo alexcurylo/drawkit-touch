@@ -7,6 +7,9 @@
 //
 
 #import "DKBoundingRectHandle.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#endif TARGET_OS_IPHONE
 
 
 @implementation DKBoundingRectHandle
@@ -19,16 +22,20 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
+	//return [NSColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
+	return [DKColor colorWithDeviceRed:0.5 green:0.9 blue:1.0 alpha:1.0];
 }
 
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor blackColor];
+	//return [NSColor blackColor];
+	return [DKColor blackColor];
 }
 
 
@@ -54,20 +61,25 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor whiteColor];
+	//return [NSColor whiteColor];
+	return [DKColor whiteColor];
 }
 
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor grayColor];
+	//return [NSColor grayColor];
+	return [DKColor grayColor];
 }
 
 
-- (void)				setColour:(NSColor*) colour
+//- (void)				setColour:(NSColor*) colour
+- (void)				setColour:(DKColor*) colour
 {
 #pragma unused(colour)
 	[super setColour:nil];
@@ -88,20 +100,25 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor lightGrayColor];
+	//return [NSColor lightGrayColor];
+	return [DKColor lightGrayColor];
 }
 
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor grayColor];
+	//return [NSColor grayColor];
+	return [DKColor grayColor];
 }
 
 
-- (void)				setColour:(NSColor*) colour
+//- (void)				setColour:(NSColor*) colour
+- (void)				setColour:(DKColor*) colour
 {
 #pragma unused(colour)
 	[super setColour:nil];

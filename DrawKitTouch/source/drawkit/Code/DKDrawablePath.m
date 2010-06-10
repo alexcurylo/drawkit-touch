@@ -30,7 +30,8 @@ NSString*		kDKPathOnPathHitDetectionPriorityDefaultsKey = @"kDKPathOnPathHitDete
 
 #pragma mark Static Vars
 static CGFloat			sAngleConstraint = 0.261799387799;	// 15 degrees
-static NSColor*			sInfoWindowColour = nil;
+//static NSColor*			sInfoWindowColour = nil;
+static DKColor*			sInfoWindowColour = nil;
 
 
 @interface DKDrawablePath (Private)
@@ -57,7 +58,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path
+//+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path
++ (DKDrawablePath*)		drawablePathWithBezierPath:(DKBezierPath*) path
 {
 	DKDrawablePath* dp = [[self alloc] initWithBezierPath:path];
 	
@@ -80,7 +82,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle
+//+ (DKDrawablePath*)		drawablePathWithBezierPath:(NSBezierPath*) path withStyle:(DKStyle*) aStyle
++ (DKDrawablePath*)		drawablePathWithBezierPath:(DKBezierPath*) path withStyle:(DKStyle*) aStyle
 {
 	DKDrawablePath* dp = [[self alloc] initWithBezierPath:path style:aStyle];
 	return [dp autorelease];
@@ -101,7 +104,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (void)				setInfoWindowBackgroundColour:(NSColor*) colour
+//+ (void)				setInfoWindowBackgroundColour:(NSColor*) colour
++ (void)				setInfoWindowBackgroundColour:(DKColor*) colour
 {
 	[colour retain];
 	[sInfoWindowColour release];
@@ -123,7 +127,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-+ (NSColor*)			infoWindowBackgroundColour
+//+ (NSColor*)			infoWindowBackgroundColour
++ (DKColor*)			infoWindowBackgroundColour
 {
 	return sInfoWindowColour;
 }
@@ -190,7 +195,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (id)				initWithBezierPath:(NSBezierPath*) aPath
+//- (id)				initWithBezierPath:(NSBezierPath*) aPath
+- (id)				initWithBezierPath:(DKBezierPath*) aPath
 {
 	self = [self init];
 	if (self != nil)
@@ -217,7 +223,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle
+//- (id)					initWithBezierPath:(NSBezierPath*) aPath style:(DKStyle*) aStyle
+- (id)					initWithBezierPath:(DKBezierPath*) aPath style:(DKStyle*) aStyle
 {
 	self = [self initWithStyle:aStyle];
 	if( self )
@@ -245,7 +252,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)			setPath:(NSBezierPath*) path
+//- (void)			setPath:(NSBezierPath*) path
+- (void)			setPath:(DKBezierPath*) path
 {
 	if ( path != m_path )
 	{
@@ -255,7 +263,8 @@ static NSColor*			sInfoWindowColour = nil;
 		
 		[self notifyVisualChange];
 		
-		NSBezierPath* oldPath = [m_path copy];
+		//NSBezierPath* oldPath = [m_path copy];
+		DKBezierPath* oldPath = [m_path copy];
 		[[self undoManager] registerUndoWithTarget:self selector:@selector(setPath:) object:oldPath];
 		[oldPath release];
 		
@@ -282,7 +291,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)	path
+//- (NSBezierPath*)	path
+- (DKBezierPath*)	path
 {
 	return m_path;
 }
@@ -303,7 +313,8 @@ static NSColor*			sInfoWindowColour = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)			drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs
+//- (void)			drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs
+- (void)			drawControlPointsOfPath:(DKBezierPath*) path usingKnobs:(DKKnob*) knobs
 {
 	// draws the control points of the entire path using the knobs supplied.
 	
@@ -537,7 +548,8 @@ static NSColor*			sInfoWindowColour = nil;
 }
 
 
-- (NSBezierPath*)		undoPath
+//- (NSBezierPath*)		undoPath
+- (DKBezierPath*)		undoPath
 {
 	return m_undoPath;
 }
@@ -569,7 +581,8 @@ static NSColor*			sInfoWindowColour = nil;
 
 - (void)				combine:(DKDrawablePath*) anotherPath
 {
-	NSBezierPath* path = [[self path] copy];
+	//NSBezierPath* path = [[self path] copy];
+	DKBezierPath* path = [[self path] copy];
 
 	[path appendBezierPath:[anotherPath path]];
 	[self setPath:path];
@@ -594,7 +607,8 @@ static NSColor*			sInfoWindowColour = nil;
 
 - (DKDrawablePathJoinResult)	wouldJoin:(DKDrawablePath*) anotherPath tolerance:(CGFloat) tol
 {
-	NSBezierPath* ap = [anotherPath path];
+	//NSBezierPath* ap = [anotherPath path];
+	DKBezierPath* ap = [anotherPath path];
 	DKDrawablePathJoinResult result = kDKPathNoJoin;
 	
 	if ( anotherPath == nil || [ap isPathClosed] || [[self path] isPathClosed])
@@ -670,7 +684,8 @@ static NSColor*			sInfoWindowColour = nil;
 {
 //	LogEvent_(kReactiveEvent, @"joining path, tolerance = %f", tol );
 	
-	NSBezierPath* ap = [anotherPath path];
+	//NSBezierPath* ap = [anotherPath path];
+	DKBezierPath* ap = [anotherPath path];
 	DKDrawablePathJoinResult result = kDKPathNoJoin;
 	
 	if ([ap isPathClosed] || [[self path] isPathClosed])
@@ -705,7 +720,8 @@ static NSColor*			sInfoWindowColour = nil;
 					
 				// join to whichever path has the tail aligned
 				
-				NSBezierPath* newPath;
+				//NSBezierPath* newPath;
+				DKBezierPath* newPath;
 				NSInteger			  ec;
 				
 				if ( k == 0 )
@@ -738,7 +754,8 @@ static NSColor*			sInfoWindowColour = nil;
 				
 					if (( el == fl ) && ( el == NSCurveToBezierPathElement ))
 					{
-						[NSBezierPath colineariseVertex:&elp[1] cpA:&elp[1] cpB:&elp[3]];
+						//[NSBezierPath colineariseVertex:&elp[1] cpA:&elp[1] cpB:&elp[3]];
+						[DKBezierPath colineariseVertex:&elp[1] cpA:&elp[1] cpB:&elp[3]];
 					
 						[newPath setAssociatedPoints:elp atIndex:ec];
 						[newPath setAssociatedPoints:&elp[3] atIndex:ec+1];
@@ -770,7 +787,8 @@ static NSColor*			sInfoWindowColour = nil;
 					
 						if (( el == fl ) && ( el == NSCurveToBezierPathElement ))
 						{
-							[NSBezierPath colineariseVertex:&elp[1] cpA:&elp[1] cpB:&elp[3]];
+							//[NSBezierPath colineariseVertex:&elp[1] cpA:&elp[1] cpB:&elp[3]];
+							[DKBezierPath colineariseVertex:&elp[1] cpA:&elp[1] cpB:&elp[3]];
 						
 							[newPath setAssociatedPoints:elp atIndex:ec];
 							[newPath setAssociatedPoints:&elp[3] atIndex:1];
@@ -812,7 +830,8 @@ static NSColor*			sInfoWindowColour = nil;
 	
 	NSArray*		subpaths = [[self path] subPaths];
 	NSEnumerator*	iter = [subpaths objectEnumerator];
-	NSBezierPath*	pp;
+	//NSBezierPath*	pp;
+	DKBezierPath*	pp;
 	NSMutableArray*	newObjects;
 	DKDrawablePath*	dp;
 	
@@ -857,8 +876,10 @@ static NSColor*			sInfoWindowColour = nil;
 		
 		if( distance < length )
 		{
-			NSBezierPath* remainingPath = [[self path] bezierPathByTrimmingFromLength:distance];
-			NSBezierPath* newPath = [[self path] bezierPathByTrimmingToLength:distance];
+			//NSBezierPath* remainingPath = [[self path] bezierPathByTrimmingFromLength:distance];
+			//NSBezierPath* newPath = [[self path] bezierPathByTrimmingToLength:distance];
+			DKBezierPath* remainingPath = [[self path] bezierPathByTrimmingFromLength:distance];
+			DKBezierPath* newPath = [[self path] bezierPathByTrimmingToLength:distance];
 
 			[self setPath:newPath];
 			
@@ -939,6 +960,11 @@ static NSColor*			sInfoWindowColour = nil;
 
 - (void)				pathCreateLoop:(NSPoint) initialPoint
 {
+#if TARGET_OS_IPHONE
+   (void)initialPoint;
+   twlog("implement pathCreateLoop");
+#else
+   
 	// when we create a path, we capture the mouse on the first mouse down and don't return until the path is complete. This is necessary because
 	// the layer isn't designed to handle this type of multi-click behaviour by itself.
 	
@@ -946,7 +972,8 @@ static NSColor*			sInfoWindowColour = nil;
 
 	NSEvent*	theEvent;
 	NSInteger			mask = NSLeftMouseDownMask | NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSMouseMovedMask | NSPeriodicMask | NSScrollWheelMask | NSKeyDownMask;
-	NSView*		view = [[self layer] currentView];
+	//NSView*		view = [[self layer] currentView];
+	DKDrawingView*		view = [[self layer] currentView];
 	BOOL		loop = YES;
 	BOOL		first = YES;
 	NSInteger			element, partcode;
@@ -956,7 +983,8 @@ static NSColor*			sInfoWindowColour = nil;
 	
 	LogEvent_(kReactiveEvent, @"entering path create loop");
 	
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	
 	[path moveToPoint:p];
 	[path curveToPoint:p controlPoint1:p controlPoint2:p];
@@ -997,8 +1025,10 @@ static NSColor*			sInfoWindowColour = nil;
 		{
 			// if the event isn't a mouse event, post a mouse up which the creation tool needs to complete the object creation
 			
+#ifndef TARGET_OS_IPHONE
 			if([theEvent type] == NSKeyDown )
 				theEvent = [self postMouseUpAtPoint:p];
+#endif TARGET_OS_IPHONE
 			
 			NSRect tr = NSMakeRect( ip.x - 3.0, ip.y - 3.0, 6.0, 6.0 );
 			
@@ -1011,7 +1041,8 @@ static NSColor*			sInfoWindowColour = nil;
 				
 				centre = [path controlPointForPartcode:partcodeForElement( 0 )];
 				
-				opp = [NSBezierPath colinearPointForPoint:[path controlPointForPartcode:partcodeForElementControlPoint( 1, 0)] centrePoint:centre]; 
+				//opp = [NSBezierPath colinearPointForPoint:[path controlPointForPartcode:partcodeForElementControlPoint( 1, 0)] centrePoint:centre]; 
+				opp = [DKBezierPath colinearPointForPoint:[path controlPointForPartcode:partcodeForElementControlPoint( 1, 0)] centrePoint:centre]; 
 				[path setControlPoint:opp forPartcode:partcodeForElementControlPoint( element, 1 )];
 			}
 			
@@ -1036,7 +1067,8 @@ static NSColor*			sInfoWindowColour = nil;
 					
 					centre = [path controlPointForPartcode:partcodeForElement( 0 )];
 					
-					opp = [NSBezierPath colinearPointForPoint:[path controlPointForPartcode:partcodeForElementControlPoint( 1, 0)] centrePoint:centre]; 
+					//opp = [NSBezierPath colinearPointForPoint:[path controlPointForPartcode:partcodeForElementControlPoint( 1, 0)] centrePoint:centre]; 
+					opp = [DKBezierPath colinearPointForPoint:[path controlPointForPartcode:partcodeForElementControlPoint( 1, 0)] centrePoint:centre]; 
 					[path setControlPoint:opp forPartcode:partcodeForElementControlPoint( element, 1 )];
 				}
 				else
@@ -1063,7 +1095,8 @@ static NSColor*			sInfoWindowColour = nil;
 					// also affects the previous cp2 colinearly
 					
 					centre = [path controlPointForPartcode:partcodeForElementControlPoint( element - 1, 2 )];
-					opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre]; 
+					//opp = [NSBezierPath colinearPointForPoint:p centrePoint:centre]; 
+					opp = [DKBezierPath colinearPointForPoint:p centrePoint:centre]; 
 					
 					[path setControlPoint:opp forPartcode:partcodeForElementControlPoint( element - 1, 1 )];
 				}
@@ -1101,6 +1134,7 @@ finish:
 	
 	[self setPath:[path bezierPathByStrippingRedundantElements]];
 	[self setPathCreationMode:kDKPathCreateModeEditExisting];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1120,12 +1154,18 @@ finish:
 
 - (void)				lineCreateLoop:(NSPoint) initialPoint
 {
+#if TARGET_OS_IPHONE
+   (void)initialPoint;
+   (void)sAngleConstraint;
+   twlog("implement lineCreateLoop");
+#else
 	// creates a single straight line path, with only one segment. There are two ways a user can make a line - click and release,
 	// move, then click. Or click-drag-release.
 	
 	NSEvent*	theEvent;
 	NSInteger			mask = NSLeftMouseDownMask | NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSMouseMovedMask | NSPeriodicMask | NSScrollWheelMask;
-	NSView*		view = [[self layer] currentView];
+	//NSView*		view = [[self layer] currentView];
+	DKDrawingView*		view = [[self layer] currentView];
 	BOOL		loop = YES, constrain = NO;
 	NSInteger			element, partcode;
 	NSPoint		p, ip, nsp;
@@ -1134,7 +1174,8 @@ finish:
 	
 	LogEvent_(kReactiveEvent, @"entering line create loop");
 	
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	
 	[path moveToPoint:p];
 	[path lineToPoint:p];
@@ -1216,7 +1257,13 @@ finish:
 
 	[self setPathCreationMode:kDKPathCreateModeEditExisting];
 	[self notifyVisualChange];
+#if TARGET_OS_IPHONE
+   twlog("implement lineCreateLoop end handling, some equivalent of postMouseUpAtPoint?");
+#else
 	[self postMouseUpAtPoint:p];
+#endif TARGET_OS_IPHONE
+
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1236,11 +1283,16 @@ finish:
 
 - (void)				polyCreateLoop:(NSPoint) initialPoint
 {
+#if TARGET_OS_IPHONE
+   (void)initialPoint;
+   twlog("implement polyCreateLoop");
+#else
 	// creates a polygon or multi-segment line. Each click makes a new node, double-click or click in first point to finish.
 	
 	NSEvent*	theEvent;
 	NSInteger	mask = NSLeftMouseDownMask | NSMouseMovedMask | NSPeriodicMask | NSScrollWheelMask | NSKeyDownMask;
-	NSView*		view = [[self layer] currentView];
+	//NSView*		view = [[self layer] currentView];
+	DKDrawingView*		view = [[self layer] currentView];
 	BOOL		loop = YES, constrain = NO;
 	NSInteger	element, partcode;
 	NSPoint		p, ip, lp, nsp;
@@ -1251,7 +1303,8 @@ finish:
 	
 	// if we are extending an existing path, start with that path and its open endpoint. Otherwise start from scratch
 	
-	NSBezierPath* path;
+	//NSBezierPath* path;
+	DKBezierPath* path;
 	
 	if( m_extending && ![self isPathClosed])
 	{
@@ -1260,7 +1313,8 @@ finish:
 	}
 	else
 	{
-		path = [NSBezierPath bezierPath];
+		//path = [NSBezierPath bezierPath];
+		path = [DKBezierPath bezierPath];
 		
 		[path moveToPoint:p];
 		[path lineToPoint:p];
@@ -1302,9 +1356,11 @@ finish:
 		
 		if ([self shouldEndPathCreationWithEvent:theEvent])
 		{
+#ifndef TARGET_OS_IPHONE
 			if([theEvent type] == NSKeyDown )
 				theEvent = [self postMouseUpAtPoint:p];
 			else
+#endif TARGET_OS_IPHONE
 				path = [path bezierPathByRemovingTrailingElements:1];
 
 			NSRect tr = NSMakeRect( ip.x - 3.0, ip.y - 3.0, 6.0, 6.0 );
@@ -1390,6 +1446,7 @@ finish:
 	
 	[self setPathCreationMode:kDKPathCreateModeEditExisting];
 	[self notifyVisualChange];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1409,11 +1466,16 @@ finish:
 
 - (void)				freehandCreateLoop:(NSPoint) initialPoint
 {
+#if TARGET_OS_IPHONE
+   (void)initialPoint;
+   twlog("implement freehandCreateLoop");
+#else
 	// this works by building a freehand vector path (line segments) then smoothing it using curve fitting at the end.
 	
 	NSEvent*	theEvent;
 	NSInteger			mask = NSLeftMouseDownMask | NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask | NSScrollWheelMask;
-	NSView*		view = [[self layer] currentView];
+	//NSView*		view = [[self layer] currentView];
+	DKDrawingView*		view = [[self layer] currentView];
 	BOOL		loop = YES;
 	NSPoint		p, lastPoint;
 	
@@ -1421,7 +1483,8 @@ finish:
 	
 	LogEvent_(kReactiveEvent, @"entering freehand create loop");
 	
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	
 	[path moveToPoint:p];
 	[self setPath:path];
@@ -1480,6 +1543,7 @@ finish:
 	[self notifyVisualChange];
 	
 	[view mouseUp:theEvent];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1500,11 +1564,16 @@ finish:
 
 - (void)				arcCreateLoop:(NSPoint) initialPoint
 {
+#if TARGET_OS_IPHONE
+   (void)initialPoint;
+   twlog("implement arcCreateLoop");
+#else
 	// creates a circle segment. First click sets the centre, second the first radius, third the second radius.
 	
 	NSEvent*		theEvent;
 	NSInteger				mask = NSLeftMouseDownMask | NSMouseMovedMask | NSPeriodicMask | NSScrollWheelMask;
-	NSView*			view = [[self layer] currentView];
+	//NSView*		view = [[self layer] currentView];
+	DKDrawingView*		view = [[self layer] currentView];
 	BOOL			loop = YES, constrain = NO;
 	NSInteger				element, partcode, phase;
 	NSPoint			p, centre, lp, nsp;
@@ -1522,7 +1591,8 @@ finish:
 	
 	LogEvent_(kReactiveEvent, @"entering arc create loop");
 	
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	
 	[path moveToPoint:p];
 	[path lineToPoint:p];	// begin rubber band of first line segment
@@ -1568,7 +1638,8 @@ finish:
 					// start angle based on the slope of this line
 					
 					radius = hypotf( p.x - centre.x, p.y - centre.y );
-					startAngle = ( atan2f( p.y - centre.y, p.x - centre.x ) * 180.0 ) / pi;
+					//startAngle = ( atan2f( p.y - centre.y, p.x - centre.x ) * 180.0 ) / pi;
+					startAngle = ( atan2f( p.y - centre.y, p.x - centre.x ) * 180.0 ) / M_PI;
 					++phase;	// now setting the arc
 				}
 				else
@@ -1595,7 +1666,8 @@ finish:
 				}
 				else if ( phase == 1 )
 				{
-					endAngle = ( atan2f( p.y - centre.y, p.x - centre.x ) * 180.0 ) / pi;
+					//endAngle = ( atan2f( p.y - centre.y, p.x - centre.x ) * 180.0 ) / pi;
+					endAngle = ( atan2f( p.y - centre.y, p.x - centre.x ) * 180.0 ) / M_PI;
 					
 					[self setStyle:savedStyle];
 					[path removeAllPoints];
@@ -1646,6 +1718,7 @@ finish:
 	
 
 	[view mouseUp:theEvent];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1683,6 +1756,7 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				shouldEndPathCreationWithEvent:(NSEvent*) event
 {
 	// determine if path creation loop should be terminated - can be overridden to terminate differently.
@@ -1694,11 +1768,13 @@ finish:
 	else
 		return NO;
 }
+#endif TARGET_OS_IPHONE
 
-
+#ifndef TARGET_OS_IPHONE
 - (NSEvent*)	postMouseUpAtPoint:(NSPoint) p
 {
-	NSView* view = [[self layer] currentView];
+	//NSView*		view = [[self layer] currentView];
+	DKDrawingView*		view = [[self layer] currentView];
 	p = [view convertPoint:p toView:nil];
 	
 	NSEvent* mouseUp = [NSEvent mouseEventWithType:NSLeftMouseUp
@@ -1714,6 +1790,7 @@ finish:
 	[NSApp postEvent:mouseUp atStart:NO];
 	return mouseUp;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1836,7 +1913,8 @@ finish:
 	
 	if ( pc > kDKDrawingNoPart && [[self path] elementCount] > 2 )
 	{
-		NSBezierPath* np = [[self path] deleteControlPointForPartcode:pc];
+		//NSBezierPath* np = [[self path] deleteControlPointForPartcode:pc];
+		DKBezierPath* np = [[self path] deleteControlPointForPartcode:pc];
 		
 		if (np != [self path])
 		{
@@ -1866,7 +1944,8 @@ finish:
 
 - (BOOL)				pathDeleteElementAtIndex:(NSInteger) indx
 {
-	NSBezierPath* np = [[self path] bezierPathByRemovingElementAtIndex:indx];
+	//NSBezierPath* np = [[self path] bezierPathByRemovingElementAtIndex:indx];
+	DKBezierPath* np = [[self path] bezierPathByRemovingElementAtIndex:indx];
 	
 	if( np != [self path])
 	{
@@ -1925,7 +2004,8 @@ finish:
 	
 	CGFloat tol = MAX( 4.0, [[self style] maxStrokeWidth]);
 	
-	NSBezierPath* np = [[self path] insertControlPointAtPoint:loc tolerance:tol type:pathPointType];
+	//NSBezierPath* np = [[self path] insertControlPointAtPoint:loc tolerance:tol type:pathPointType];
+	DKBezierPath* np = [[self path] insertControlPointAtPoint:loc tolerance:tol type:pathPointType];
 	
 	if ( np != nil )
 	{
@@ -1953,6 +2033,7 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				movePathPartcode:(NSInteger) pc toPoint:(NSPoint) mp event:(NSEvent*) evt
 {
 	if( pc < 4 )
@@ -1985,6 +2066,7 @@ finish:
 	[self notifyGeometryChange:oldBounds];
 	[self notifyVisualChange];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -2047,7 +2129,8 @@ finish:
 
 - (DKDrawableShape*)	makeShape
 {
-	NSBezierPath* mp = [[[self path] copy] autorelease];
+	//NSBezierPath* mp = [[[self path] copy] autorelease];
+	DKBezierPath* mp = [[[self path] copy] autorelease];
 	
 	Class shapeClass = [DKDrawableObject classForConversionRequestFor:[DKDrawableShape class]];
 	
@@ -2085,7 +2168,8 @@ finish:
 	
 	if( distance != 0.0 )
 	{
-		NSBezierPath* np = [[self path] paralleloidPathWithOffset2:distance];
+		//NSBezierPath* np = [[self path] paralleloidPathWithOffset2:distance];
+		DKBezierPath* np = [[self path] paralleloidPathWithOffset2:distance];
 		
 		if( smooth )
 			np = [np bezierPathByInterpolatingPath:1.0];
@@ -2134,8 +2218,10 @@ finish:
 		[layer removeObject:self];
 		[layer commitSelectionUndoWithActionName:NSLocalizedString(@"Convert To Shape", @"undo string for convert to shape")];
 	}
+#ifndef TARGET_OS_IPHONE
 	else
 		NSBeep();
+#endif TARGET_OS_IPHONE
 }
 
 ///*********************************************************************************************************************
@@ -2155,7 +2241,9 @@ finish:
 {
 #pragma unused(sender)
 
+#ifndef TARGET_OS_IPHONE
    NSBeep();
+#endif TARGET_OS_IPHONE
 }
 
 ///*********************************************************************************************************************
@@ -2205,7 +2293,8 @@ finish:
 {
 	#pragma unused(sender)
 	
-	NSBezierPath* path = [self path];
+	//NSBezierPath* path = [self path];
+	DKBezierPath* path = [self path];
 	
 	CGFloat sw = [[self style] maxStrokeWidthDifference] / 2.0;
 	[[self style] applyStrokeAttributesToPath:path];
@@ -2223,7 +2312,8 @@ finish:
 	{
 		DKStroke*	stroke = [rs lastObject];
 		DKStroke*	firstStroke = [rs objectAtIndex:0];
-		NSColor*	strokeColour = nil;
+		//NSColor*	strokeColour = nil;
+		DKColor*	strokeColour = nil;
 		
 		if ( firstStroke != stroke )
 			strokeColour = [firstStroke colour];
@@ -2285,7 +2375,8 @@ finish:
 {
 	#pragma unused(sender)
 	
-	NSBezierPath* path = [self path];
+	//NSBezierPath* path = [self path];
+	DKBezierPath* path = [self path];
 	
 	CGFloat sw = [[self style] maxStrokeWidthDifference] / 2.0;
 	[[self style] applyStrokeAttributesToPath:path];
@@ -2305,7 +2396,8 @@ finish:
 	{
 		DKStroke*	stroke = [rs lastObject];
 		DKStroke*	firstStroke = [rs objectAtIndex:0];
-		NSColor*	strokeColour = nil;
+		//NSColor*	strokeColour = nil;
+		DKColor*	strokeColour = nil;
 		
 		if ( firstStroke != stroke )
 			strokeColour = [firstStroke colour];
@@ -2426,7 +2518,8 @@ finish:
 	
 	if(![self locked])
 	{
-		NSBezierPath* newPath = [[self path] bezierPathByUnflatteningPath];
+		//NSBezierPath* newPath = [[self path] bezierPathByUnflatteningPath];
+		DKBezierPath* newPath = [[self path] bezierPathByUnflatteningPath];
 		[self setPath:newPath];
 		[[self undoManager] setActionName:NSLocalizedString(@"Curve Fit", @"undo action for Curve Fit")];
 	}
@@ -2454,7 +2547,8 @@ finish:
 	
 	if(![self locked])
 	{
-		NSBezierPath* newPath = [[self path] bezierPathByReversingPath];
+		//NSBezierPath* newPath = [[self path] bezierPathByReversingPath];
+		DKBezierPath* newPath = [[self path] bezierPathByReversingPath];
 		[self setPath:newPath];
 		[[self undoManager] setActionName:NSLocalizedString(@"Reverse Path", @"undo action for Reverse Path")];
 	}
@@ -2484,7 +2578,8 @@ finish:
 	cp.x = NSMidX([self bounds]);
 	cp.y = NSMidY([self bounds]);
 	
-	NSBezierPath* np = [[self path] horizontallyFlippedPathAboutPoint:cp];
+	//NSBezierPath* np = [[self path] horizontallyFlippedPathAboutPoint:cp];
+	DKBezierPath* np = [[self path] horizontallyFlippedPathAboutPoint:cp];
 	
 	NSAssert( np != nil, @"bad path when flipping");
 	
@@ -2516,7 +2611,8 @@ finish:
 	cp.x = NSMidX([self bounds]);
 	cp.y = NSMidY([self bounds]);
 	
-	NSBezierPath* np = [[self path] verticallyFlippedPathAboutPoint:cp];
+	//NSBezierPath* np = [[self path] verticallyFlippedPathAboutPoint:cp];
+	DKBezierPath* np = [[self path] verticallyFlippedPathAboutPoint:cp];
 	
 	NSAssert( np != nil, @"bad path when flipping");
 
@@ -2545,7 +2641,8 @@ finish:
 	
 	if(![self isPathClosed] && ![self locked])
 	{
-		NSBezierPath* path = [[self path] copy];
+		//NSBezierPath* path = [[self path] copy];
+		DKBezierPath* path = [[self path] copy];
 		[path closePath];
 		[self setPath:path];
 		[path release];
@@ -2581,8 +2678,17 @@ finish:
 + (NSArray*)			pasteboardTypesForOperation:(DKPasteboardOperationType) op
 {
 	#pragma unused(op)
+#if TARGET_OS_IPHONE
+	NSMutableArray* types = [NSMutableArray arrayWithObjects:kDKStylePasteboardType, kDKStyleKeyPasteboardType, nil];
+   [types addObjectsFromArray:UIPasteboardTypeListImage];
+   [types addObjectsFromArray:UIPasteboardTypeListURL];
+   [types addObjectsFromArray:UIPasteboardTypeListString];
+   [types addObjectsFromArray:UIPasteboardTypeListColor];
+   return types;
+#else
 	return [NSArray arrayWithObjects:NSColorPboardType, NSStringPboardType, NSPDFPboardType, NSTIFFPboardType,
-										NSFilenamesPboardType, kDKStylePasteboardType, kDKStyleKeyPasteboardType, nil];
+           NSFilenamesPboardType, kDKStylePasteboardType, kDKStyleKeyPasteboardType, nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -2710,7 +2816,8 @@ finish:
 		
 		BOOL hasFill = [[self style] hasFill] || [[self style] hasHatch];
 		
-		DKStyle* temp = [DKStyle styleWithFillColour:hasFill? [NSColor blackColor] : nil strokeColour:[NSColor blackColor] strokeWidth:strokeWidth];
+		//DKStyle* temp = [DKStyle styleWithFillColour:hasFill? [NSColor blackColor] : nil strokeColour:[NSColor blackColor] strokeWidth:strokeWidth];
+		DKStyle* temp = [DKStyle styleWithFillColour:hasFill? [DKColor blackColor] : nil strokeColour:[DKColor blackColor] strokeWidth:strokeWidth];
 		[temp render:self];
 	}
 	else
@@ -2738,7 +2845,8 @@ finish:
 	
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
 	
-	NSBezierPath* path = [self renderingPath];
+	//NSBezierPath* path = [self renderingPath];
+	DKBezierPath* path = [self renderingPath];
 	
 	[self drawSelectionPath:path];
 	[self drawControlPointsOfPath:path usingKnobs:[[self layer] knobs]];
@@ -2772,7 +2880,8 @@ finish:
 - (void)			drawGhostedContent
 {
 	[[[self class] ghostColour] set];
-	NSBezierPath* rp = [self renderingPath];
+	//NSBezierPath* rp = [self renderingPath];
+	DKBezierPath* rp = [self renderingPath];
 	
 	// if the path is usually drawn wider than 2, outline it
 	
@@ -2846,7 +2955,12 @@ finish:
 		tol *= 2;
 		
 	NSInteger		pc;
+#if TARGET_OS_IPHONE
+   twlog("implement hitSelectedPart command key equivalent?");
+	BOOL			commandKey = NO;
+#else
 	BOOL			commandKey = ([[NSApp currentEvent] modifierFlags] & NSCommandKeyMask ) != 0;;
+#endif TARGET_OS_IPHONE
 	
 	if([[self class] defaultOnPathHitDetectionPriority])
 		commandKey = !commandKey;
@@ -2915,6 +3029,7 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	[[self layer] setInfoWindowBackgroundColour:[[self class] infoWindowBackgroundColour]];
@@ -2977,6 +3092,7 @@ finish:
 		}
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -2995,6 +3111,7 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	if (partcode == kDKDrawingEntireObjectPart )
@@ -3020,6 +3137,7 @@ finish:
 		[self setMouseHasMovedSinceStartOfTracking:YES];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3038,6 +3156,7 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	if ( partcode == kDKDrawingEntireObjectPart )
@@ -3055,6 +3174,7 @@ finish:
 	[self notifyVisualChange];
 	[self setTrackingMouse:NO];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3087,7 +3207,8 @@ finish:
 			[self notifyVisualChange];
 			[[[self undoManager] prepareWithInvocationTarget:self] setLocation:[self location]];
 			
-			NSAffineTransform* tfm = [NSAffineTransform transform];
+			//NSAffineTransform* tfm = [NSAffineTransform transform];
+			DKAffineTransform* tfm = [DKAffineTransform transform];
 			[tfm translateXBy:dx yBy:dy];
 			
 			[[self path] transformUsingAffineTransform:tfm];
@@ -3144,6 +3265,7 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu
 {
 	// if the object supports any contextual menu commands, it should add them to the menu and return YES. If subclassing,
@@ -3161,6 +3283,7 @@ finish:
 	[super populateContextualMenu:theMenu];
 	return YES;
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -3178,10 +3301,13 @@ finish:
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)	renderingPath
+//- (NSBezierPath*)	renderingPath
+- (DKBezierPath*)	renderingPath
 {
-	NSBezierPath* rPath = [[[self path] copy] autorelease];
-	NSAffineTransform* parentTransform = [self containerTransform];
+	//NSBezierPath* rPath = [[[self path] copy] autorelease];
+	//NSAffineTransform* parentTransform = [self containerTransform];
+	DKBezierPath* rPath = [[[self path] copy] autorelease];
+	DKAffineTransform* parentTransform = [self containerTransform];
 	
 	if ( parentTransform )
 		rPath = [parentTransform transformBezierPath:rPath];
@@ -3354,13 +3480,15 @@ finish:
 ///
 ///********************************************************************************************************************
 
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	#pragma unused(aGroup)
 	
 	NSAssert( aTransform != nil, @"expected valid transform");
 
-	NSBezierPath* path = [[self path] copy];
+	//NSBezierPath* path = [[self path] copy];
+	DKBezierPath* path = [[self path] copy];
 	[path transformUsingAffineTransform:aTransform];
 	[self setPath:path];
 	[path release];
@@ -3381,7 +3509,8 @@ finish:
 ///
 ///********************************************************************************************************************
 
-- (void)				applyTransform:(NSAffineTransform*) transform
+//- (void)				applyTransform:(NSAffineTransform*) transform
+- (void)				applyTransform:(DKAffineTransform*) transform
 {
 	[self notifyVisualChange];
 	[[self path] transformUsingAffineTransform:transform];
@@ -3403,7 +3532,8 @@ finish:
 
 - (id)				init
 {
-	return [self initWithStyle:[DKStyle styleWithFillColour:nil strokeColour:[NSColor blackColor] strokeWidth:1.0]];
+	//return [self initWithStyle:[DKStyle styleWithFillColour:nil strokeColour:[NSColor blackColor] strokeWidth:1.0]];
+	return [self initWithStyle:[DKStyle styleWithFillColour:nil strokeColour:[DKColor blackColor] strokeWidth:1.0]];
 }
 
 
@@ -3435,7 +3565,8 @@ finish:
 - (id)				copyWithZone:(NSZone*) zone
 {
 	DKDrawablePath* copy = [super copyWithZone:zone];
-	NSBezierPath*	pc = [[self path] copyWithZone:zone];
+	//NSBezierPath*	pc = [[self path] copyWithZone:zone];
+	DKBezierPath*	pc = [[self path] copyWithZone:zone];
 	
 	[copy setPath:pc];
 	[pc release];
@@ -3449,6 +3580,7 @@ finish:
 #pragma mark -
 #pragma mark As part of NSDraggingDestination protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				performDragOperation:(id <NSDraggingInfo>) sender
 {
 	// this is called when the owning layer permits it, and the drag pasteboard contains a type that matches the class's
@@ -3475,10 +3607,13 @@ finish:
 	
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
+
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL	action = [item action];
@@ -3509,6 +3644,6 @@ finish:
 
 	return [super validateMenuItem:item];
 }
-
+#endif TARGET_OS_IPHONE
 
 @end

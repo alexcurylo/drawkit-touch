@@ -14,7 +14,11 @@
 #import "DKDrawing.h"
 #import "DKDrawKitMacros.h"
 #import "DKStyle+Text.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKFill.h"
 #import "DKObjectDrawingLayer.h"
 #import "DKShapeGroup.h"
@@ -92,9 +96,14 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	DKTextShape*  te = [[self alloc] initWithRect:bounds style:[DKStyle defaultTextStyle]];
 	
+#if TARGET_OS_IPHONE
+   (void)rtfData;
+   twlog("implement textShapeWithRTFData");
+#else
 	NSAttributedString* str = [[NSAttributedString alloc] initWithRTF:rtfData documentAttributes:nil];
 	[te setText:str];
 	[str release];
+#endif TARGET_OS_IPHONE
 
 	return [te autorelease];
 }
@@ -118,17 +127,23 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	NSAssert( str != nil, @"string can't be nil");
 	
+#if TARGET_OS_IPHONE
+   twlog("implement textShapeWithAttributedString");
+   return nil;
+#else
 	NSSize	bboxSize = [str size];
 	bboxSize.width = MIN( 2000.0, bboxSize.width * 1.1 );
 	
 	DKTextShape*  te = [[self alloc] initWithRect:NSMakeRect( 0, 0, bboxSize.width, bboxSize.height ) style:[DKStyle defaultTextStyle]];
 	
 	[te setWrapsLines:NO];
-	[te setAlignment:NSLeftTextAlignment];
+	//[te setAlignment:NSLeftTextAlignment];
+	[te setAlignment:DKLeftTextAlignment];
 	[te setText:str];
 	[te sizeVerticallyToFitText];
 	
 	return [te autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -216,7 +231,11 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 + (NSArray*)				pastableTextTypes
 {
+#if TARGET_OS_IPHONE
+	return UIPasteboardTypeListString;
+#else
 	return [NSArray arrayWithObjects:NSRTFPboardType, NSRTFDPboardType, NSHTMLPboardType, NSStringPboardType, nil];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -237,13 +256,16 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 #define PLUS_SIGN_A		0.4
 #define PLUS_SIGN_B		0.6
 
-+ (NSBezierPath*)			textOverflowIndicatorPath
+//+ (NSBezierPath*)			textOverflowIndicatorPath
++ (DKBezierPath*)			textOverflowIndicatorPath
 {
-	static NSBezierPath* mtp = nil;
+	//static NSBezierPath* mtp = nil;
+	static DKBezierPath* mtp = nil;
 	
 	if( mtp == nil )
 	{
-		mtp = [[NSBezierPath bezierPathWithRect:NSMakeRect( 0, 0, 1, 1 )] retain];
+		//mtp = [[NSBezierPath bezierPathWithRect:NSMakeRect( 0, 0, 1, 1 )] retain];
+		mtp = [[DKBezierPath bezierPathWithRect:NSMakeRect( 0, 0, 1, 1 )] retain];
 	
 		[mtp moveToPoint:NSMakePoint( PLUS_SIGN_A, 0.1 )];
 		[mtp lineToPoint:NSMakePoint( PLUS_SIGN_B, 0.1 )];
@@ -386,10 +408,12 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)			text
 {
 	return [mTextAdornment textToDraw:self];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -408,7 +432,12 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 - (NSString*)				string
 {
+#if TARGET_OS_IPHONE
+   twlog("implement string");
+   return @"";
+#else
 	return [[self text] string];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -451,16 +480,23 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
-- (void)					pasteTextFromPasteboard:(NSPasteboard*) pb ignoreFormatting:(BOOL) fmt
+//- (void)					pasteTextFromPasteboard:(NSPasteboard*) pb ignoreFormatting:(BOOL) fmt
+- (void)					pasteTextFromPasteboard:(DKPasteboard*) pb ignoreFormatting:(BOOL) fmt
 {
 	NSAssert( pb != nil, @"pasteboard was nil");
 	
+#if TARGET_OS_IPHONE
+   (void)fmt;
+   if (pb.string)
+      [self setText:pb.string];
+#else
 	NSArray*	types = [[self class] pastableTextTypes];
 	NSString*	pbtype = [pb availableTypeFromArray:types];
 	
 	if ( pbtype )
 	{
-		NSData* data = [pb dataForType:pbtype];
+		//NSData* data = [pb dataForType:pbtype];
+		NSData* data = [pb dataForPasteboardType:pbtype];
 		
 		NSAttributedString*	str;
 		
@@ -486,6 +522,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 			
 		[str release];
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -503,9 +540,14 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
-- (BOOL)					canPasteText:(NSPasteboard*) pb
+//- (BOOL)					canPasteText:(NSPasteboard*) pb
+- (BOOL)					canPasteText:(DKPasteboard*) pb
 {
+#if TARGET_OS_IPHONE
+   return (nil != pb.string) && ![self locked];
+#else
 	return ([pb availableTypeFromArray:[[self class] pastableTextTypes]] != nil && ![self locked]);
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -574,6 +616,11 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 - (NSSize)					idealTextSize
 {
+#if TARGET_OS_IPHONE
+   twlog("implement idealTextSize");
+   NSSize minsize = [self minSize];
+   return minsize;
+#else
     NSTextStorage *contents = [self text];
     NSSize minsize = [self minSize];
     NSSize maxsize = [self maxSize];
@@ -609,6 +656,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
     }
 	else
         return minsize;
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -630,7 +678,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)			textPath
+//- (NSBezierPath*)			textPath
+- (DKBezierPath*)			textPath
 {
 	return [mTextAdornment textAsPathForObject:self];
 }
@@ -704,7 +753,11 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	// keep a note of the original text in the meta-data, in case anyone wants to know - allows
 	// the text of a shape to be "read" by code if necessary (e.g. by a find)
 			
+#if TARGET_OS_IPHONE
+   twlog("implement makeShapeWithText");
+#else
 	[ds setOriginalText:[self text]];
+#endif TARGET_OS_IPHONE
 
 	return ds;
 }
@@ -749,7 +802,11 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	// keep a note of the original text in the meta-data, in case anyone wants to know - allows
 	// the text of a shape to be "read" by code if necessary (e.g. by a find)
 
+#if TARGET_OS_IPHONE
+   twlog("implement makeShapeGroupWithText");
+#else
 	[group setOriginalText:[self text]];
+#endif TARGET_OS_IPHONE
 	
 	return group;
 }
@@ -829,8 +886,10 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 - (void)					updateFontPanel
 {
+#ifndef TARGET_OS_IPHONE
 	[[NSFontManager sharedFontManager] setSelectedFont:[self font] isMultiple:![[self textAdornment] attributeIsHomogeneous:NSFontAttributeName]];
 	[[NSFontManager sharedFontManager] setSelectedAttributes:[self textAttributes] isMultiple:![[self textAdornment] isHomogeneous]];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -848,7 +907,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
-- (void)					setFont:(NSFont*) font
+//- (void)					setFont:(NSFont*) font
+- (void)					setFont:(DKFont*) font
 {
 	if ( ![self locked])
 	{
@@ -872,7 +932,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
-- (NSFont*)					font
+//- (NSFont*)					font
+- (DKFont*)					font
 {
 	return [mTextAdornment font];
 }
@@ -923,7 +984,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 }
 
 
-- (void)					setTextColour:(NSColor*) colour
+//- (void)					setTextColour:(NSColor*) colour
+- (void)					setTextColour:(DKColor*) colour
 {
 	if ( ![self locked])
 	{
@@ -933,7 +995,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 }
 
 
-- (NSColor*)				textColour
+//- (NSColor*)				textColour
+- (DKColor*)				textColour
 {
 	return [mTextAdornment colour];
 }
@@ -975,20 +1038,25 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)					setParagraphStyle:(NSParagraphStyle*) ps
 {
 	if ( ![self locked])
 		[mTextAdornment setParagraphStyle:ps];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSParagraphStyle*)		paragraphStyle
 {
 	return [mTextAdornment paragraphStyle];
 }
+#endif TARGET_OS_IPHONE
 
 
-- (void)					setAlignment:(NSTextAlignment) align
+//- (void)					setAlignment:(NSTextAlignment) align
+- (void)					setAlignment:(DKTextAlignment) align
 {
 	if ( ![self locked])
 	{
@@ -998,7 +1066,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 }
 
 
-- (NSTextAlignment)			alignment
+//- (NSTextAlignment)			alignment
+- (DKTextAlignment)			alignment
 {
 	return [mTextAdornment alignment];
 }
@@ -1061,6 +1130,10 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 #pragma mark - editing the text
 - (void)					startEditingInView:(DKDrawingView*) view
 {
+#if TARGET_OS_IPHONE
+   (void)view;
+   twlog("implement startEditingInView");
+#else
 	if ( m_editorRef == nil )
 	{
 		LogEvent_(kReactiveEvent, @"starting edit of text shape");
@@ -1095,11 +1168,15 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[m_editorRef setVerticallyResizable:YES];
 		[m_editorRef setTypingAttributes:[self textAttributes]];
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
 - (void)					endEditing
 {
+#if TARGET_OS_IPHONE
+   twlog("implement endEditing");
+#else
 	if ( m_editorRef )
 	{
 		LogEvent_(kReactiveEvent, @"finishing edit of text in shape");
@@ -1111,14 +1188,20 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[self notifyVisualChange];
 		m_editorRef = nil;
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
 - (BOOL)					isEditing
 {
 	// returns YES if editing currently in progress - valid during drawing only
+#if TARGET_OS_IPHONE
+   twlog("implement isEditing");
+   return NO;
+#else
 	
 	return( m_editorRef && ([m_editorRef superview] == [[self drawing] currentView]) && [[NSGraphicsContext currentContext] isDrawingToScreen]);
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1130,6 +1213,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 #pragma mark -
 #pragma mark - user actions
+
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				changeFont:(id) sender
 {
 	// Font Panel changed by user - change the whole of the text to the panel's style. Note - if text is currently
@@ -1142,6 +1227,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[self updateFontPanel];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 - (IBAction)				changeFontSize:(id) sender
@@ -1151,6 +1237,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				changeAttributes:(id) sender
 {
 	if ( ![self locked])
@@ -1160,6 +1247,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[self updateFontPanel];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 - (IBAction)				editText:(id) sender
@@ -1171,10 +1259,16 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	
 	if ( ![self locked])
 	{
-		NSResponder*	dv;
+#if TARGET_OS_IPHONE
+		UIResponder*	dv;
+		UIWindow*		w = [[UIApplication sharedApplication] keyWindow];
+		
+		dv = [w findFirstResponder];
+#else
 		NSWindow*		w = [NSApp keyWindow];
 		
 		dv = [w firstResponder];
+#endif TARGET_OS_IPHONE
 		
 		if ([dv isKindOfClass:[DKDrawingView class]])
 			[self startEditingInView:(DKDrawingView*)dv];
@@ -1198,7 +1292,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	
 	// apply the align left attribute to the text's paragraph style
 	
-	[self setAlignment:NSLeftTextAlignment];
+	//[self setAlignment:NSLeftTextAlignment];
+	[self setAlignment:DKLeftTextAlignment];
 }
 
 
@@ -1206,7 +1301,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	#pragma unused(sender)
 	
-	[self setAlignment:NSRightTextAlignment];
+	//[self setAlignment:NSRightTextAlignment];
+	[self setAlignment:DKRightTextAlignment];
 }
 
 
@@ -1214,16 +1310,19 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	#pragma unused(sender)
 	
-	[self setAlignment:NSCenterTextAlignment];
+	//[self setAlignment:NSCenterTextAlignment];
+	[self setAlignment:DKCenterTextAlignment];
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				alignJustified:(id) sender
 {
 	#pragma unused(sender)
 	
 	[self setAlignment:NSJustifiedTextAlignment];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (IBAction)				underline:(id) sender
@@ -1385,8 +1484,10 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[layer commitSelectionUndoWithActionName:NSLocalizedString(@"Convert To Shape", @"undo string for convert text to shape")];
 		[self release];
 	}
+#ifndef TARGET_OS_IPHONE
 	else
 		NSBeep();
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1409,8 +1510,10 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[layer commitSelectionUndoWithActionName:NSLocalizedString(@"Convert To Shape Group", @"undo string for convert text to group")];
 		[self release];
 	}
+#ifndef TARGET_OS_IPHONE
 	else
 		NSBeep();
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1436,8 +1539,10 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[layer commitSelectionUndoWithActionName:NSLocalizedString(@"Convert To Text Path", @"undo string for convert to text path")];
 		[self release];
 	}
+#ifndef TARGET_OS_IPHONE
 	else
 		NSBeep();
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1446,9 +1551,11 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	#pragma unused(sender)
 	
-	if ( ![self locked] && [self canPasteText:[NSPasteboard generalPasteboard]])
+	//if ( ![self locked] && [self canPasteText:[NSPasteboard generalPasteboard]])
+	if ( ![self locked] && [self canPasteText:[DKPasteboard generalPasteboard]])
 	{
-		[self pasteTextFromPasteboard:[NSPasteboard generalPasteboard] ignoreFormatting:NO];
+		//[self pasteTextFromPasteboard:[NSPasteboard generalPasteboard] ignoreFormatting:NO];
+		[self pasteTextFromPasteboard:[DKPasteboard generalPasteboard] ignoreFormatting:NO];
 		[[self undoManager] setActionName:NSLocalizedString(@"Paste Text", @"undo string for paste text into text shape")];
 	}
 }
@@ -1474,8 +1581,13 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	
 	if(![self locked])
 	{
+#if TARGET_OS_IPHONE
+		NSInteger clickedSegment = [(UISegmentedControl *)sender selectedSegmentIndex];
+		NSInteger clickedSegmentTag = clickedSegment; // assume [0..2] as UITextAlignment
+#else
 		NSInteger clickedSegment = [sender selectedSegment];
 		NSInteger clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
+#endif TARGET_OS_IPHONE
 	
 		[self setAlignment:clickedSegmentTag];
 	}
@@ -1489,8 +1601,13 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	
 	if(![self locked])
 	{
+#if TARGET_OS_IPHONE
+		NSInteger clickedSegment = [(UISegmentedControl *)sender selectedSegmentIndex];
+		NSInteger clickedSegmentTag = clickedSegment; // assume [0..2] as UITextAlignment
+#else
 		NSInteger clickedSegment = [sender selectedSegment];
 		NSInteger clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
+#endif TARGET_OS_IPHONE
 		
 		[self setVerticalAlignment:(DKVerticalTextAlignment)clickedSegmentTag];
 		[[self undoManager] setActionName:NSLocalizedString(@"Vertical Alignment", @"undo string for vertical align")];
@@ -1543,7 +1660,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	// create a text path object having the same style and text, but with different path and probably different layout.
 	 
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	NSRect br = [self logicalBounds];
 	[path moveToPoint:NSMakePoint(NSMinX(br), NSMidY(br))];
 	[path curveToPoint:NSMakePoint(NSMaxX(br), NSMidY(br))
@@ -1589,15 +1707,20 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	// keep a note of the original text in the meta-data, in case anyone wants to know - allows
 	// the text of a shape to be "read" by code if necessary (e.g. by a find)
 
+#if TARGET_OS_IPHONE
+   twlog("implement makeShapeGroupWithText");
+#else
 	[dp setOriginalText:[self text]];
-
+#endif TARGET_OS_IPHONE
+   
 	return dp;
 }
 
 #define SCALE_TEXT_WHEN_UNGROUPING		1
 
 #if SCALE_TEXT_WHEN_UNGROUPING
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	NSSize size = [self size];
 	
@@ -1628,7 +1751,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	}
 	if (self != nil)
 	{
-		[self setPath:[NSBezierPath bezierPathWithRect:[DKDrawableShape unitRectAtOrigin]]];
+		//[self setPath:[NSBezierPath bezierPathWithRect:[DKDrawableShape unitRectAtOrigin]]];
+		[self setPath:[DKBezierPath bezierPathWithRect:[DKDrawableShape unitRectAtOrigin]]];
 		[self setVerticalAlignment:kDKTextShapeVerticalAlignmentTop];
 	}
 	return self;
@@ -1638,9 +1762,13 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 {
 	NSRect br = [super bounds];
 	
+#if TARGET_OS_IPHONE
+   twlog("need to worry about text shape bounds?");
+#else
 	if ( m_editorRef )
 		br = NSUnionRect( br, NSInsetRect([m_editorRef frame], -2.0, -2.0 ));
-	
+#endif TARGET_OS_IPHONE
+
 	return br;
 }
 
@@ -1711,11 +1839,13 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		knobSize.width *= 1.6;
 		knobSize.height *= 1.6;
 		
-		NSBezierPath* np = [[self class] textOverflowIndicatorPath];
+		//NSBezierPath* np = [[self class] textOverflowIndicatorPath];
+		DKBezierPath* np = [[self class] textOverflowIndicatorPath];
 		np = [self path:np withFinalSize:knobSize offsetBy:NSMakePoint( -knobSize.width, -knobSize.height ) fromPartcode:kDKDrawableShapeBottomRightHandle];
 		
 		if([self locked])
-			[[NSColor lightGrayColor] set];
+			//[[NSColor lightGrayColor] set];
+			[[DKColor lightGrayColor] set];
 		else
 			[[[self layer] selectionColour] set];
 		[np fill];
@@ -1726,6 +1856,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDoubleClickedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	[super mouseDoubleClickedAtPoint:mp inPart:partcode event:evt];
@@ -1733,6 +1864,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	if ( ![self locked])
 		[self startEditingInView:(DKDrawingView*)[[self layer] currentView]];
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)				objectDidBecomeSelected
@@ -1750,6 +1882,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 
 #define INCLUDE_ALIGNMENT_COMMANDS		0
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)					populateContextualMenu:(NSMenu*) theMenu
 {
 	// if the object supports any contextual menu commands, it should add them to the menu and return YES. If subclassing,
@@ -1810,6 +1943,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	[super populateContextualMenu:theMenu];
 	return YES;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (void)					setStyle:(DKStyle*) aStyle
@@ -1870,7 +2004,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 - (IBAction)		copyDrawingStyle:(id) sender
 {
 #pragma unused(sender)
-	[[self syntheticStyle] copyToPasteboard:[NSPasteboard generalPasteboard]];
+	//[[self syntheticStyle] copyToPasteboard:[NSPasteboard generalPasteboard]];
+	[[self syntheticStyle] copyToPasteboard:[DKPasteboard generalPasteboard]];
 }
 
 
@@ -1888,8 +2023,13 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 ///
 ///********************************************************************************************************************
 
-- (void)				writeSupplementaryDataToPasteboard:(NSPasteboard*) pb
+//- (void)				writeSupplementaryDataToPasteboard:(NSPasteboard*) pb
+- (void)				writeSupplementaryDataToPasteboard:(DKPasteboard*) pb
 {
+#if TARGET_OS_IPHONE
+   (void)pb;
+   twlog("implement writeSupplementaryDataToPasteboard");
+#else
 	if([pb addTypes:[NSArray arrayWithObjects:NSRTFPboardType, NSStringPboardType, nil] owner:self])
 	{
 		NSRange range = NSMakeRange( 0, [[self text] length]);
@@ -1898,6 +2038,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		[pb setData:rtfData forType:NSRTFPboardType];
 		[pb setString:[self string] forType:NSStringPboardType];
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1953,6 +2094,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 #pragma mark -
 #pragma mark As part of NSDraggingDestination protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				performDragOperation:(id <NSDraggingInfo>) sender
 {
 	// if there's text on the pasteboard, set it as the object's text
@@ -1966,7 +2108,8 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 		return YES;
 	}
 	
-	NSColor* pc = [NSColor colorFromPasteboard:pb];
+	//NSColor* pc = [NSColor colorFromPasteboard:pb];
+	DKColor* pc = [DKColor colorFromPasteboard:pb];
 	
 	if( pc )
 	{
@@ -1977,7 +2120,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	
 	return [super performDragOperation:sender];
 }
-
+#endif TARGET_OS_IPHONE
 
 
 
@@ -2035,7 +2178,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL	action = [item action];
@@ -2125,6 +2268,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -2143,6 +2287,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 }
 
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)					textView:(NSTextView*) tv doCommandBySelector:(SEL) selector
 {
 	// this allows the texview to act as a special field editor. Return + Enter complete text editing, but Tab does not. Also, for convenience to
@@ -2173,6 +2318,7 @@ static NSString*	sDefault_string = @"Double-click to edit this text";
 	}
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark - as a KVO observer

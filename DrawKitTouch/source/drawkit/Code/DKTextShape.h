@@ -1,6 +1,6 @@
 //
 //  DKTextShape.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by graham on 16/09/2006.
 ///
@@ -19,7 +19,11 @@
 {
 @private
 	DKTextAdornment*		mTextAdornment;				// handles the text storage, layout and rendering of the text
+#if TARGET_OS_IPHONE
+ // need something here...
+#else
 	NSTextView*				m_editorRef;				// when editing, a reference to the editor view
+#endif TARGET_OS_IPHONE
 	BOOL					mIsSettingStyle;			// flags text being set by style
 	
 #ifdef DRAWKIT_DEPRECATED
@@ -44,7 +48,8 @@
 + (Class)					textAdornmentClass;
 + (NSArray*)				pastableTextTypes;
 
-+ (NSBezierPath*)			textOverflowIndicatorPath;
+//+ (NSBezierPath*)			textOverflowIndicatorPath;
++ (DKBezierPath*)			textOverflowIndicatorPath;
 + (void)					setShowsTextOverflowIndicator:(BOOL) overflowShown;
 + (BOOL)					showsTextOverflowIndicator;
 
@@ -54,14 +59,18 @@
 // the text:
 
 - (void)					setText:(id) contents;
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)			text;
+#endif TARGET_OS_IPHONE
 - (NSString*)				string;
 - (void)					sizeVerticallyToFitText;
 
 // pasteboard ops:
 
-- (void)					pasteTextFromPasteboard:(NSPasteboard*) pb ignoreFormatting:(BOOL) fmt;
-- (BOOL)					canPasteText:(NSPasteboard*) pb;
+//- (void)					pasteTextFromPasteboard:(NSPasteboard*) pb ignoreFormatting:(BOOL) fmt;
+//- (BOOL)					canPasteText:(NSPasteboard*) pb;
+- (void)					pasteTextFromPasteboard:(DKPasteboard*) pb ignoreFormatting:(BOOL) fmt;
+- (BOOL)					canPasteText:(DKPasteboard*) pb;
 
 // text layout and drawing:
 
@@ -71,7 +80,8 @@
 
 // conversion to path/shape with text path:
 
-- (NSBezierPath*)			textPath;
+//- (NSBezierPath*)			textPath;
+- (DKBezierPath*)			textPath;
 - (NSArray*)				textPathGlyphs;
 - (NSArray*)				textPathGlyphsUsedSize:(NSSize*) textSize;
 - (DKDrawableShape*)		makeShapeWithText;
@@ -86,12 +96,16 @@
 
 // setting text attributes for the entire text:
 
-- (void)					setFont:(NSFont*) font;
-- (NSFont*)					font;
+//- (void)					setFont:(NSFont*) font;
+//- (NSFont*)					font;
+- (void)					setFont:(DKFont*) font;
+- (DKFont*)					font;
 - (void)					setFontSize:(CGFloat) size;
 - (CGFloat)					fontSize;
-- (void)					setTextColour:(NSColor*) colour;
-- (NSColor*)				textColour;
+//- (void)					setTextColour:(NSColor*) colour;
+//- (NSColor*)				textColour;
+- (void)					setTextColour:(DKColor*) colour;
+- (DKColor*)				textColour;
 
 - (void)					scaleTextBy:(CGFloat) factor;
 
@@ -101,10 +115,14 @@
 - (DKVerticalTextAlignment)	verticalAlignment;
 - (void)					setVerticalAlignmentProportion:(CGFloat) prop;
 - (CGFloat)					verticalAlignmentProportion;
+#ifndef TARGET_OS_IPHONE
 - (void)					setParagraphStyle:(NSParagraphStyle*) ps;
 - (NSParagraphStyle*)		paragraphStyle;
-- (void)					setAlignment:(NSTextAlignment) align;
-- (NSTextAlignment)			alignment;
+#endif TARGET_OS_IPHONE
+//- (void)					setAlignment:(NSTextAlignment) align;
+//- (NSTextAlignment)			alignment;
+- (void)					setAlignment:(DKTextAlignment) align;
+- (DKTextAlignment)			alignment;
 
 // layout within the text object:
 
@@ -123,9 +141,13 @@
 
 // user actions:
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				changeFont:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)				changeFontSize:(id) sender;
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				changeAttributes:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)				editText:(id) sender;
 
 - (IBAction)				changeLayoutMode:(id) sender;
@@ -133,7 +155,9 @@
 - (IBAction)				alignLeft:(id) sender;
 - (IBAction)				alignRight:(id) sender;
 - (IBAction)				alignCenter:(id) sender;
+#ifndef TARGET_OS_IPHONE
 - (IBAction)				alignJustified:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)				underline:(id) sender;
 
 - (IBAction)				loosenKerning:(id) sender;

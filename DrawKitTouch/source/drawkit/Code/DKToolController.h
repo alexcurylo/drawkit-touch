@@ -54,7 +54,9 @@ DKDrawingToolScope;
 - (BOOL)				automaticallyRevertsToSelectionTool;
 
 - (IBAction)			selectDrawingToolByName:(id) sender;
+#ifndef TARGET_OS_IPHONE
 - (IBAction)			selectDrawingToolByRepresentedObject:(id) sender;
+#endif TARGET_OS_IPHONE
 - (IBAction)			toggleAutoRevertAction:(id) sender;
 
 - (id)					undoManager;

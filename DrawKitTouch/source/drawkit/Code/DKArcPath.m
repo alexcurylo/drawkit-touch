@@ -242,7 +242,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 {
 	// computes the arc's path from the radius and angle params and sets it
 	
-	NSBezierPath*	arcPath = [NSBezierPath bezierPath];
+	//NSBezierPath*	arcPath = [NSBezierPath bezierPath];
+	DKBezierPath*	arcPath = [DKBezierPath bezierPath];
 	NSPoint			ep;
 	
 	if([self arcType] == kDKArcPathCircle )
@@ -373,7 +374,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
-- (void)		drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs
+//- (void)		drawControlPointsOfPath:(NSBezierPath*) path usingKnobs:(DKKnob*) knobs
+- (void)		drawControlPointsOfPath:(DKBezierPath*) path usingKnobs:(DKKnob*) knobs
 {
 	#pragma unused(path)
 	
@@ -427,11 +429,16 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 - (void)				arcCreateLoop:(NSPoint) initialPoint
 {
+#if TARGET_OS_IPHONE
+   (void)initialPoint;
+   twlog("implement arcCreateLoop");
+#else
 	// creates a circle segment. First click sets the centre, second the first radius, third the second radius.
 	
 	NSEvent*		theEvent;
 	NSInteger				mask = NSLeftMouseDownMask | NSMouseMovedMask | NSPeriodicMask | NSScrollWheelMask;
-	NSView*			view = [[self layer] currentView];
+	//NSView*			view = [[self layer] currentView];
+	DKDrawingView*			view = [[self layer] currentView];
 	BOOL			loop = YES, constrain = NO;
 	NSInteger				phase;
 	NSPoint			p, lp, nsp;
@@ -546,6 +553,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 	[self setPathCreationMode:kDKPathCreateModeEditExisting];
 	[self notifyVisualChange];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -704,6 +712,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	[[self layer] setInfoWindowBackgroundColour:[[self class]infoWindowBackgroundColour]];
@@ -728,6 +737,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 			break;
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -747,6 +757,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	BOOL shift	= (([evt modifierFlags] & NSShiftKeyMask ) != 0 );
@@ -800,6 +811,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 	[self setMouseHasMovedSinceStartOfTracking:YES];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -966,10 +978,12 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 		CGFloat angle = ( mStartAngle + mEndAngle ) * 0.5f;
 		
 		if (fabs(mEndAngle - mStartAngle) < 0.001)
-			angle -= pi;
+			//angle -= pi;
+			angle -= M_PI;
 		
 		if ( mEndAngle < mStartAngle )
-			angle += pi;
+			//angle += pi;
+			angle += M_PI;
 		
 		return angle;
 	}
@@ -993,7 +1007,8 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
-- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+//- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(NSAffineTransform*) aTransform
+- (void)				group:(DKShapeGroup*) aGroup willUngroupObjectWithTransform:(DKAffineTransform*) aTransform
 {
 	// note - arc paths can become very distorted if groups are scaled unequally. Should the path be preserved
 	// in the distorted way? Or should the arc be recovered with the most useful radius? Something's got to give... at
@@ -1046,15 +1061,16 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 	return result;
 }
 
-
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				populateContextualMenu:(NSMenu*) theMenu
 {
 	[[theMenu addItemWithTitle:NSLocalizedString(@"Convert To Path", @"menu item for convert to path") action:@selector( convertToPath: ) keyEquivalent:@""] setTarget:self];
 	return [super populateContextualMenu:theMenu];
 }
+#endif TARGET_OS_IPHONE
 
-
-- (void)				applyTransform:(NSAffineTransform*) transform
+//- (void)				applyTransform:(NSAffineTransform*) transform
+- (void)				applyTransform:(DKAffineTransform*) transform
 {
 	[super applyTransform:transform];
 	mCentre = [transform transformPoint:mCentre];
@@ -1179,6 +1195,7 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 #pragma mark -
 #pragma mark As part of NSMenuValidation Protocol
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL	action = [item action];
@@ -1188,5 +1205,6 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 @end

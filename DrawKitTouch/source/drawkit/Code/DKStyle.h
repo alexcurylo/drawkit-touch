@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKStyle.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 13/08/2006.
 ///
@@ -10,7 +10,6 @@
 
 
 #import "DKRastGroup.h"
-
 
 @class	DKDrawableObject, DKUndoManager;
 
@@ -67,12 +66,16 @@ DKDerivedStyleOptions;
 
 // easy construction of other simple styles:
 
-+ (DKStyle*)			styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc;
-+ (DKStyle*)			styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc strokeWidth:(CGFloat) sw;
-+ (DKStyle*)			styleFromPasteboard:(NSPasteboard*) pb;
+//+ (DKStyle*)			styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc;
+//+ (DKStyle*)			styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc strokeWidth:(CGFloat) sw;
+//+ (DKStyle*)			styleFromPasteboard:(NSPasteboard*) pb;
++ (DKStyle*)			styleWithFillColour:(DKColor*) fc strokeColour:(DKColor*) sc;
++ (DKStyle*)			styleWithFillColour:(DKColor*) fc strokeColour:(DKColor*) sc strokeWidth:(CGFloat) sw;
++ (DKStyle*)			styleFromPasteboard:(DKPasteboard*) pb;
 
 + (NSArray*)			stylePasteboardTypes;
-+ (BOOL)				canInitWithPasteboard:(NSPasteboard*) pb;
+//+ (BOOL)				canInitWithPasteboard:(NSPasteboard*) pb;
++ (BOOL)				canInitWithPasteboard:(DKPasteboard*) pb;
 
 // pasted styles - separate non-persistent registry
 
@@ -86,7 +89,8 @@ DKDerivedStyleOptions;
 
 // shadows:
 
-+ (NSShadow*)			defaultShadow;
+//+ (NSShadow*)			defaultShadow;
++ (DKShadow*)			defaultShadow;
 + (BOOL)				setWillDrawShadows:(BOOL) drawShadows;
 + (BOOL)				willDrawShadows;
 
@@ -142,14 +146,18 @@ DKDerivedStyleOptions;
 - (void)				scaleStrokeWidthsBy:(CGFloat) scale withoutInformingClients:(BOOL) quiet;
 - (CGFloat)				maxStrokeWidth;
 - (CGFloat)				maxStrokeWidthDifference;
-- (void)				applyStrokeAttributesToPath:(NSBezierPath*) path;
+//- (void)				applyStrokeAttributesToPath:(NSBezierPath*) path;
+- (void)				applyStrokeAttributesToPath:(DKBezierPath*) path;
 - (NSUInteger)			countOfStrokes;
 
 // clipboard:
 
-- (BOOL)				copyToPasteboard:(NSPasteboard*) pb;
-- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb;
-- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb withOptions:(DKDerivedStyleOptions) options;
+//- (BOOL)				copyToPasteboard:(NSPasteboard*) pb;
+//- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb;
+//- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb withOptions:(DKDerivedStyleOptions) options;
+- (BOOL)				copyToPasteboard:(DKPasteboard*) pb;
+- (DKStyle*)			derivedStyleWithPasteboard:(DKPasteboard*) pb;
+- (DKStyle*)			derivedStyleWithPasteboard:(DKPasteboard*) pb withOptions:(DKDerivedStyleOptions) options;
 
 // query methods:
 
@@ -161,10 +169,14 @@ DKDerivedStyleOptions;
 
 // swatch images:
 
-- (NSImage*)			styleSwatchWithSize:(NSSize) size type:(DKStyleSwatchType) type;
-- (NSImage*)			standardStyleSwatch;
-- (NSImage*)			image;
-- (NSImage*)			imageToFitSize:(NSSize) aSize;
+//- (NSImage*)			styleSwatchWithSize:(NSSize) size type:(DKStyleSwatchType) type;
+//- (NSImage*)			standardStyleSwatch;
+//- (NSImage*)			image;
+//- (NSImage*)			imageToFitSize:(NSSize) aSize;
+- (DKImage*)			styleSwatchWithSize:(NSSize) size type:(DKStyleSwatchType) type;
+- (DKImage*)			standardStyleSwatch;
+- (DKImage*)			image;
+- (DKImage*)			imageToFitSize:(NSSize) aSize;
 - (NSString*)			swatchCacheKeyForSize:(NSSize) size type:(DKStyleSwatchType) type;
 
 // currently rendering client (may be queried by renderers)

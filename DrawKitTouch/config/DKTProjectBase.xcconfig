@@ -1,5 +1,5 @@
 //
-//  TWProjectBase.xcconfig
+//  DKTProjectBase.xcconfig
 //
 //  Copyright 2010 Trollwerks Inc. All rights reserved.
 //
@@ -120,7 +120,7 @@ GCC_WARN_PROTOTYPE_CONVERSION = NO // may catch implicit casts, but lots of nois
 GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = NO
 GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = NO // freaks on Cocoa
 GCC_WARN_STRICT_SELECTOR_MATCH = NO // freaks on Cocoa, -objectForKey: specifically
-GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO // 4.0b4 SDK warns on every -stringWithFormat:
+GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO // 4.0GM SDK warns on every -stringWithFormat:
 
 // merge flag settings with possible previous configuration file flag settings
 

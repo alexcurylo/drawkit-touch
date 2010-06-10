@@ -147,7 +147,9 @@ static NSString* sDelimiter = DEFAULT_DELIMITER_STRING;
 	NSMutableAttributedString* str = [[self masterString] mutableCopy];
 	[str beginEditing];
 	[str setAttributes:attrs range:range];
+#ifndef TARGET_OS_IPHONE
 	[str fixAttributesInRange:range];
+#endif TARGET_OS_IPHONE
 	[str endEditing];
 	[self setMasterString:str];
 	[str release];

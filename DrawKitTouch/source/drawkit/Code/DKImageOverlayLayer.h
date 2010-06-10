@@ -1,6 +1,6 @@
 //
 //  DKImageOverlayLayer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by graham on 28/08/2006.
 ///
@@ -28,16 +28,20 @@ DKImageCoverageFlags;
 
 @interface DKImageOverlayLayer : DKLayer <NSCoding>
 {
-	NSImage*				m_image;
+	//NSImage*				m_image;
+	DKImage*				m_image;
 	CGFloat					m_opacity;
 	DKImageCoverageFlags	m_coverageMethod;
 }
 
-- (id)						initWithImage:(NSImage*) image;
+//- (id)						initWithImage:(NSImage*) image;
+- (id)						initWithImage:(DKImage*) image;
 - (id)						initWithContentsOfFile:(NSString*) imagefile;
 
-- (void)					setImage:(NSImage*) image;
-- (NSImage*)				image;
+//- (void)					setImage:(NSImage*) image;
+//- (NSImage*)				image;
+- (void)					setImage:(DKImage*) image;
+- (DKImage*)				image;
 
 - (void)					setOpacity:(CGFloat) op;
 - (CGFloat)					opacity;

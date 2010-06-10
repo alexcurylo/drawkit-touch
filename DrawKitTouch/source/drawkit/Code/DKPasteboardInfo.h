@@ -20,7 +20,8 @@
 
 + (DKPasteboardInfo*)	pasteboardInfoForObjects:(NSArray*) objects;
 + (DKPasteboardInfo*)	pasteboardInfoWithData:(NSData*) data;
-+ (DKPasteboardInfo*)	pasteboardInfoWithPasteboard:(NSPasteboard*) pb;
+//+ (DKPasteboardInfo*)	pasteboardInfoWithPasteboard:(NSPasteboard*) pb;
++ (DKPasteboardInfo*)	pasteboardInfoWithPasteboard:(DKPasteboard*) pb;
 
 - (id)					initWithObjectsInArray:(NSArray*) objects;
 - (NSUInteger)			count;
@@ -32,7 +33,8 @@
 - (NSString*)			keyOfOriginatingLayer;
 
 - (NSData*)				data;
-- (BOOL)				writeToPasteboard:(NSPasteboard*) pb;
+//- (BOOL)				writeToPasteboard:(NSPasteboard*) pb;
+- (BOOL)				writeToPasteboard:(DKPasteboard*) pb;
 
 @end
 

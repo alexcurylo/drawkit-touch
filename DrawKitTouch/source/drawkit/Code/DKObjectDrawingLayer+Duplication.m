@@ -171,11 +171,13 @@
 	
 	// how many fit in a circle?
 	
-	NSInteger number = (NSInteger)((2 * pi) / incAngle) + 1;
+	//NSInteger number = (NSInteger)((2 * pi) / incAngle) + 1;
+	NSInteger number = (NSInteger)((2 * M_PI) / incAngle) + 1;
 	
 	// to fit this many exactly will require a small increase in radius
 	
-	incAngle = ( 2 * pi ) / (CGFloat)number;
+	//incAngle = ( 2 * pi ) / (CGFloat)number;
+	incAngle = ( 2 * M_PI ) / (CGFloat)number;
 	radius = r / tanf( incAngle * 0.5f );
 	
 	// set the duplication master at this radius from centre

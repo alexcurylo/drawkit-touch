@@ -93,7 +93,8 @@ static struct pointInfo getLinePoint(const NSPoint *a, CGFloat position) {
     };
 }
 
-@implementation NSBezierPath (OAExtensions)
+//@implementation NSBezierPath (OAExtensions)
+@implementation DKBezierPath (OAExtensions)
 
 - (NSPoint)currentpointForSegment:(NSInteger)i
 {
@@ -124,7 +125,8 @@ static struct pointInfo getLinePoint(const NSPoint *a, CGFloat position) {
     return (NSPoint){ nanf(""), nanf("") };
 }
 
-- (BOOL)strokesSimilarlyIgnoringEndcapsToPath:(NSBezierPath *)otherPath;
+//- (BOOL)strokesSimilarlyIgnoringEndcapsToPath:(NSBezierPath *)otherPath;
+- (BOOL)strokesSimilarlyIgnoringEndcapsToPath:(DKBezierPath *)otherPath;
 {
     return [[self countedSetOfEncodedStrokeSegments] isEqual:[otherPath countedSetOfEncodedStrokeSegments]];
 }
@@ -400,7 +402,8 @@ static BOOL subsequent(struct OABezierPathIntersectionHalf *one, struct OABezier
 }
 #endif
 
-- (struct OABezierPathIntersectionList)allIntersectionsWithPath:(NSBezierPath *)other
+//- (struct OABezierPathIntersectionList)allIntersectionsWithPath:(NSBezierPath *)other
+- (struct OABezierPathIntersectionList)allIntersectionsWithPath:(DKBezierPath *)other
 {
     NSUInteger intersectionCount, listSize;
     OABezierPathIntersection *intersections;
@@ -1355,7 +1358,8 @@ static NSInteger compareFloat(const void *a_, const void *b_)
 
 // NSObject overrides
 
-- (BOOL)isEqual:(NSBezierPath *)otherBezierPath;
+//- (BOOL)isEqual:(NSBezierPath *)otherBezierPath;
+- (BOOL)isEqual:(DKBezierPath *)otherBezierPath;
 {
     NSUInteger elementIndex, elementCount = [self elementCount];
 
@@ -1463,7 +1467,8 @@ static inline NSUInteger _threeBitsForPoint(NSPoint point)
 
 
 
-@implementation NSBezierPath (PrivateOAExtensions)
+//@implementation NSBezierPath (PrivateOAExtensions)
+@implementation DKBezierPath (PrivateOAExtensions)
 
 // Some utility functions.
 // We make heavy use of ranges specified using a pair of doubles as a start and a length. Here are a few functions which manipulate them.
@@ -2849,7 +2854,8 @@ NSInteger intersectionsBetweenCurveAndCurve(const NSPoint *c1coefficients, const
     return NO;
 }
 
-BOOL initializeSubpathWalkingState( subpathWalkingState *s, NSBezierPath *p, NSInteger startIndex, BOOL implicitClosepath)
+//BOOL initializeSubpathWalkingState( subpathWalkingState *s, NSBezierPath *p, NSInteger startIndex, BOOL implicitClosepath)
+BOOL initializeSubpathWalkingState( subpathWalkingState *s, DKBezierPath *p, NSInteger startIndex, BOOL implicitClosepath)
 {
     NSInteger pathElementCount = [p elementCount];
     

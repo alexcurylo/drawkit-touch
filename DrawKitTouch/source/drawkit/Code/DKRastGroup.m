@@ -830,7 +830,8 @@
 ///
 ///********************************************************************************************************************
 
-- (void)		renderPath:(NSBezierPath*) path
+//- (void)		renderPath:(NSBezierPath*) path
+- (void)		renderPath:(DKBezierPath*) path
 {
 	if(! [self enabled])
 		return;

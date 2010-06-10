@@ -60,8 +60,10 @@ DKMetadataSchema;
 - (void)		setString:(NSString*) string forKey:(NSString*) key;
 - (NSString*)	stringForKey:(NSString*) key;
 
-- (void)		setColour:(NSColor*) colour forKey:(NSString*) key;
-- (NSColor*)	colourForKey:(NSString*) key;
+//- (void)		setColour:(NSColor*) colour forKey:(NSString*) key;
+//- (NSColor*)	colourForKey:(NSString*) key;
+- (void)		setColour:(DKColor*) colour forKey:(NSString*) key;
+- (DKColor*)	colourForKey:(NSString*) key;
 
 - (void)		setSize:(NSSize) size forKey:(NSString*) key;
 - (NSSize)		sizeForKey:(NSString*) key;

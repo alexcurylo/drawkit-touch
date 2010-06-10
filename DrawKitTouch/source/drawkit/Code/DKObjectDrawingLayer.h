@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKObjectDrawingLayer.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 11/08/2006.
 ///
@@ -85,7 +85,8 @@
 - (void)				removeObjectFromSelection:(DKDrawableObject*) obj;
 - (void)				removeObjectsFromSelectionInArray:(NSArray*) objs;
 - (BOOL)				exchangeSelectionWithObjectsFromArray:(NSArray*) sel;
-- (void)				scrollToSelectionInView:(NSView*) aView;
+//- (void)				scrollToSelectionInView:(NSView*) aView;
+- (void)				scrollToSelectionInView:(DKDrawingView*) aView;
 
 // style operations on multiple items:
 
@@ -114,12 +115,14 @@
 - (void)				drawSelectedObjects;
 - (void)				drawSelectedObjectsWithSelectionState:(BOOL) selected;
 
-- (NSImage*)			imageOfSelectedObjects;
+//- (NSImage*)			imageOfSelectedObjects;
+- (DKImage*)			imageOfSelectedObjects;
 - (NSData*)				pdfDataOfSelectedObjects;
 
 // clipboard ops:
 
-- (void)				copySelectionToPasteboard:(NSPasteboard*) pb;
+//- (void)				copySelectionToPasteboard:(NSPasteboard*) pb;
+- (void)				copySelectionToPasteboard:(DKPasteboard*) pb;
 
 // options:
 
@@ -131,13 +134,18 @@
 - (BOOL)				selectionVisible;
 - (void)				setMultipleSelectionAutoForwarding:(BOOL) autoForward;
 - (BOOL)				multipleSelectionAutoForwarding;
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				multipleSelectionValidatedMenuItem:(NSMenuItem*) item;
+#endif TARGET_OS_IPHONE
 
 // drag + drop:
 
 - (void)				setDragExclusionRect:(NSRect) aRect;
 - (NSRect)				dragExclusionRect;
-- (void)				beginDragOfSelectedObjectsWithEvent:(NSEvent*) event inView:(NSView*) view;
+#ifndef TARGET_OS_IPHONE
+//- (void)				beginDragOfSelectedObjectsWithEvent:(NSEvent*) event inView:(NSView*) view;
+- (void)				beginDragOfSelectedObjectsWithEvent:(NSEvent*) event inView:(DKDrawingView*) view;
+#endif TARGET_OS_IPHONE
 - (void)				drawingSizeChanged:(NSNotification*) note;
 
 // grouping & ungrouping operations:
@@ -179,7 +187,9 @@
 
 - (IBAction)			selectMatchingStyle:(id) sender;
 - (IBAction)			joinPaths:(id) sender;
+#ifndef TARGET_OS_IPHONE
 - (IBAction)			applyStyle:(id) sender;
+#endif TARGET_OS_IPHONE
 
 @end
 

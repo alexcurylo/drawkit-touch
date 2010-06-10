@@ -1,12 +1,16 @@
 ///**********************************************************************************************************************************
 ///  DKDrawingView+Drop.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by jason on 1/11/2007.
 ///
 ///	 This software is released subject to licensing conditions as detailed in DRAWKIT-LICENSING.TXT, which must accompany this source file. 
 ///
 ///**********************************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+#error DKDrawingView is NSView-based; use DKTDrawingView in iPhone SDK
+#endif TARGET_OS_IPHONE
 
 #import "DKDrawingView+Drop.h"
 #import "DKObjectOwnerLayer.h"

@@ -1,6 +1,6 @@
 //
 //  DKFillPattern.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by graham on 26/09/2006.
 ///
@@ -26,13 +26,15 @@
 }
 
 + (DKFillPattern*)	defaultPattern;
-+ (DKFillPattern*)	fillPatternWithImage:(NSImage*) image;
+//+ (DKFillPattern*)	fillPatternWithImage:(NSImage*) image;
++ (DKFillPattern*)	fillPatternWithImage:(DKImage*) image;
 
 - (void)			setPatternAlternateOffset:(NSSize) altOffset;
 - (NSSize)			patternAlternateOffset;
 
 - (void)			fillRect:(NSRect) rect;
-- (void)			drawPatternInPath:(NSBezierPath*) aPath;
+//- (void)			drawPatternInPath:(NSBezierPath*) aPath;
+- (void)			drawPatternInPath:(DKBezierPath*) aPath;
 
 - (void)			setAngle:(CGFloat) radians;
 - (CGFloat)			angle;

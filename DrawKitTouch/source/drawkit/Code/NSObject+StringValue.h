@@ -26,7 +26,8 @@
 @end
 
 
-@interface NSColor (StringValue)
+//@interface NSColor (StringValue)
+@interface DKColor (StringValue)
 
 - (NSString*)	stringValue;
 

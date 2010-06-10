@@ -27,7 +27,8 @@
 + (DKGradient*)			sourceListSelectedGradient;
 + (DKGradient*)			sourceListUnselectedGradient;
 
-+ (void)				drawShinyGradientInRect:(NSRect) aRect withColour:(NSColor*) colour;
+//+ (void)				drawShinyGradientInRect:(NSRect) aRect withColour:(NSColor*) colour;
++ (void)				drawShinyGradientInRect:(NSRect) aRect withColour:(DKColor*) colour;
 
 @end
 

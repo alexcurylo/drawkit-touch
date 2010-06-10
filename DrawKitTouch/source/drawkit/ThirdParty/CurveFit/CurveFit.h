@@ -21,8 +21,10 @@ extern "C"
 
 // curve fit vector paths using bezier curve fitting:
 
-NSBezierPath*		curveFitPath(NSBezierPath* inPath, float epsilon);
-NSBezierPath*		smartCurveFitPath( NSBezierPath* inPath, float epsilon, float cornerAngleThreshold );
+//NSBezierPath*		curveFitPath(NSBezierPath* inPath, float epsilon);
+//NSBezierPath*		smartCurveFitPath( NSBezierPath* inPath, float epsilon, float cornerAngleThreshold );
+DKBezierPath*		curveFitPath(DKBezierPath* inPath, float epsilon);
+DKBezierPath*		smartCurveFitPath( DKBezierPath* inPath, float epsilon, float cornerAngleThreshold );
 
 #ifdef __cplusplus
 }
@@ -36,6 +38,7 @@ NSBezierPath*		smartCurveFitPath( NSBezierPath* inPath, float epsilon, float cor
 #endif
 
 
-#define kDKDefaultCornerThreshold		(pi / 6)
+//#define kDKDefaultCornerThreshold		(pi / 6)
+#define kDKDefaultCornerThreshold		(M_PI / 6)
 
 #endif /* defined(qUseCurveFit) */

@@ -18,20 +18,25 @@
 }
 
 
-+ (NSBezierPath*)		pathWithSize:(NSSize) size
+//+ (NSBezierPath*)		pathWithSize:(NSSize) size
++ (DKBezierPath*)		pathWithSize:(NSSize) size
 {
-	return [NSBezierPath bezierPathWithOvalInRect:NSMakeRect( 0, 0, size.width, size.height )];
+	//return [NSBezierPath bezierPathWithOvalInRect:NSMakeRect( 0, 0, size.width, size.height )];
+	return [DKBezierPath bezierPathWithOvalInRect:NSMakeRect( 0, 0, size.width, size.height )];
 }
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor orangeColor];
+	//return [NSColor orangeColor];
+	return [DKColor orangeColor];
 }
 
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
 	return nil;
 }
@@ -59,15 +64,19 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor whiteColor];
+	//return [NSColor whiteColor];
+	return [DKColor whiteColor];
 }
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor grayColor];
+	//return [NSColor grayColor];
+	return [DKColor grayColor];
 }
 
 
@@ -87,15 +96,19 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor lightGrayColor];
+	//return [NSColor lightGrayColor];
+	return [DKColor lightGrayColor];
 }
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor grayColor];
+	//return [NSColor grayColor];
+	return [DKColor grayColor];
 }
 
 @end
@@ -114,9 +127,11 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor cyanColor];
+	//return [NSColor cyanColor];
+	return [DKColor cyanColor];
 }
 
 
@@ -136,9 +151,11 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor lightGrayColor];
+	//return [NSColor lightGrayColor];
+	return [DKColor lightGrayColor];
 }
 
 
@@ -157,15 +174,19 @@
 
 
 
-+ (NSColor*)			fillColour
+//+ (NSColor*)			fillColour
++ (DKColor*)			fillColour
 {
-	return [NSColor lightGrayColor];
+	//return [NSColor lightGrayColor];
+	return [DKColor lightGrayColor];
 }
 
 
-+ (NSColor*)			strokeColour
+//+ (NSColor*)			strokeColour
++ (DKColor*)			strokeColour
 {
-	return [NSColor grayColor];
+	//return [NSColor grayColor];
+	return [DKColor grayColor];
 }
 
 @end

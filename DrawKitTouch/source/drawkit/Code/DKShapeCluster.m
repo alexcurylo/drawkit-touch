@@ -153,7 +153,8 @@
 	[super setDragAnchorToPart:part];
 	
 	NSPoint p = [[self masterObject] knobPoint:part];
-	NSAffineTransform* ti = [self transformIncludingParent];
+	//NSAffineTransform* ti = [self transformIncludingParent];
+	DKAffineTransform* ti = [self transformIncludingParent];
 	[ti invert];
 	
 	p = [ti transformPoint:p];

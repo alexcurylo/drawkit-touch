@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKShapeGroup.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 28/10/2006.
 ///
@@ -33,7 +33,8 @@ DKGroupCacheOption;
 	NSRect				mBounds;				// overall bounding rect of the group
 	BOOL				m_transformVisually;	// if YES, group transform is visual only (like SVG) otherwise it's genuine
 	CGLayerRef			mContentCache;			// used to cache content
-	NSPDFImageRep*		mPDFContentCache;		// used to cache content at higher quality
+	// not actually referenced anywhere?? ...alex
+   //NSPDFImageRep*		mPDFContentCache;		// used to cache content at higher quality
 	DKGroupCacheOption	mCacheOption;			// caching options
 	BOOL				mIsWritingToCache;		// YES when building cache - modifies transforms
 	BOOL				mClipContentToPath;		// YES to clip group content to the group's path
@@ -61,8 +62,10 @@ DKGroupCacheOption;
 
 // drawing the group:
 
-- (NSAffineTransform*)	contentTransform;
-- (NSAffineTransform*)	renderingTransform;
+//- (NSAffineTransform*)	contentTransform;
+//- (NSAffineTransform*)	renderingTransform;
+- (DKAffineTransform*)	contentTransform;
+- (DKAffineTransform*)	renderingTransform;
 - (NSPoint)				convertPointFromContainer:(NSPoint) p; 
 - (NSPoint)				convertPointToContainer:(NSPoint) p; 
 - (void)				drawGroupContent;

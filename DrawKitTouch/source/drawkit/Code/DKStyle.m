@@ -17,7 +17,11 @@
 #import "DKTextAdornment.h"
 #import "DKGradient.h"
 #import "LogEvent.h"
+#if TARGET_OS_IPHONE
+#import "UIColor+DKTAdditions.h"
+#else
 #import "NSColor+DKAdditions.h"
+#endif TARGET_OS_IPHONE
 #import "NSDictionary+DeepCopy.h"
 #import "DKUndoManager.h"
 #import "DKUniqueID.h"
@@ -90,7 +94,8 @@ static BOOL					sSubstitute = NO;
 
 	if ( basic == nil )
 	{
-		basic = [self styleWithFillColour:[NSColor veryLightGrey] strokeColour:[NSColor blackColor]];
+		//basic = [self styleWithFillColour:[NSColor veryLightGrey] strokeColour:[NSColor blackColor]];
+		basic = [self styleWithFillColour:[DKColor veryLightGrey] strokeColour:[DKColor blackColor]];
 		[basic setName:NSLocalizedString(@"Basic", @"default name for basic style")];
 		
 		// because this is a framework default, its unique key must always be recreated the same. This is not something any client
@@ -125,8 +130,10 @@ static BOOL					sSubstitute = NO;
 	
 	if ( deftrack == nil )
 	{
-		deftrack = [DKStyle styleWithFillColour:nil strokeColour:[NSColor blackColor] strokeWidth:8.0];
-		[deftrack addRenderer:[DKStroke strokeWithWidth:5.6 colour:[NSColor veryLightGrey]]];
+		//deftrack = [DKStyle styleWithFillColour:nil strokeColour:[NSColor blackColor] strokeWidth:8.0];
+		//[deftrack addRenderer:[DKStroke strokeWithWidth:5.6 colour:[NSColor veryLightGrey]]];
+		deftrack = [DKStyle styleWithFillColour:nil strokeColour:[DKColor blackColor] strokeWidth:8.0];
+		[deftrack addRenderer:[DKStroke strokeWithWidth:5.6 colour:[DKColor veryLightGrey]]];
 		
 		[deftrack setName:NSLocalizedString(@"Basic Track", @"default name for basic track style")];
 		
@@ -161,7 +168,8 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-+ (DKStyle*)		styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc
+//+ (DKStyle*)		styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc
++ (DKStyle*)		styleWithFillColour:(DKColor*) fc strokeColour:(DKColor*) sc
 {
 	return [self styleWithFillColour:fc strokeColour:sc strokeWidth:1.0];
 }
@@ -184,12 +192,14 @@ static BOOL					sSubstitute = NO;
 ///					is an error.
 ///
 ///********************************************************************************************************************
-+ (DKStyle*)		styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc strokeWidth:(CGFloat) sw
+//+ (DKStyle*)		styleWithFillColour:(NSColor*) fc strokeColour:(NSColor*) sc strokeWidth:(CGFloat) sw
++ (DKStyle*)		styleWithFillColour:(DKColor*) fc strokeColour:(DKColor*) sc strokeWidth:(CGFloat) sw
 {
 	if( fc == nil && sc == nil )
 	{
 		NSLog(@"DKStyle was passed nil for both colour arguments - will substitute a light gray fill (please fix)");
-		fc = [NSColor lightGrayColor];
+		//fc = [NSColor lightGrayColor];
+		fc = [DKColor lightGrayColor];
 	}
 	
 	DKStyle* style = [[DKStyle alloc] init];
@@ -224,16 +234,22 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-+ (DKStyle*)		styleFromPasteboard:(NSPasteboard*) pb
+//+ (DKStyle*)		styleFromPasteboard:(NSPasteboard*) pb
++ (DKStyle*)		styleFromPasteboard:(DKPasteboard*) pb
 {
+#if TARGET_OS_IPHONE
+	NSString*		sname = [pb valueForPasteboardType:kDKStyleKeyPasteboardType];
+#else
 	NSString*		sname = [pb stringForType:kDKStyleKeyPasteboardType];
+#endif TARGET_OS_IPHONE
 	DKStyle*	style = [self styleWithPasteboardName:sname];
 	
 	if ( style == nil )
 	{
 		// the name isn't known, so fall back on using the archived style data
 		
-		NSData* sd = [pb dataForType:kDKStylePasteboardType];
+		//NSData* sd = [pb dataForType:kDKStylePasteboardType];
+		NSData* sd = [pb dataForPasteboardType:kDKStylePasteboardType];
 		
 		if ( sd )
 			style = [NSKeyedUnarchiver unarchiveObjectWithData:sd];
@@ -282,9 +298,14 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-+ (BOOL)			canInitWithPasteboard:(NSPasteboard*) pb
+//+ (BOOL)			canInitWithPasteboard:(NSPasteboard*) pb
++ (BOOL)			canInitWithPasteboard:(DKPasteboard*) pb
 {
+#if TARGET_OS_IPHONE
+   return [pb containsPasteboardTypes:[self stylePasteboardTypes]];
+#else
 	return ([pb availableTypeFromArray:[self stylePasteboardTypes]] != nil );
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -379,11 +400,14 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-+ (NSShadow*)			defaultShadow
+//+ (NSShadow*)			defaultShadow
++ (DKShadow*)			defaultShadow
 {
-	NSShadow* shadw = [[NSShadow alloc] init];
+	//NSShadow* shadw = [[NSShadow alloc] init];
+	DKShadow* shadw = [[DKShadow alloc] init];
 		
-	[shadw setShadowColor:[NSColor rgbGrey:0.0 withAlpha:0.5]];
+	//[shadw setShadowColor:[NSColor rgbGrey:0.0 withAlpha:0.5]];
+	[shadw setShadowColor:[DKColor rgbGrey:0.0 withAlpha:0.5]];
 	[shadw setShadowBlurRadius:10.0];
 	[shadw setShadowOffset:NSMakeSize( 6, 6 )];
 	
@@ -1202,7 +1226,8 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-- (void)				applyStrokeAttributesToPath:(NSBezierPath*) path
+//- (void)				applyStrokeAttributesToPath:(NSBezierPath*) path
+- (void)				applyStrokeAttributesToPath:(DKBezierPath*) path
 {
 	NSAssert( path != nil, @"nil path in applyStrokeAttributesToPath:");
 	
@@ -1254,7 +1279,8 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-- (BOOL)				copyToPasteboard:(NSPasteboard*) pb
+//- (BOOL)				copyToPasteboard:(NSPasteboard*) pb
+- (BOOL)				copyToPasteboard:(DKPasteboard*) pb
 {
 	BOOL		registered = [self isStyleRegistered];
 	NSString*	key = [self uniqueKey];
@@ -1276,13 +1302,24 @@ static BOOL					sSubstitute = NO;
 	else
 		types = [NSArray arrayWithObject:kDKStylePasteboardType];
 		
+#ifndef TARGET_OS_IPHONE
 	[pb addTypes:types owner:self];
+#endif TARGET_OS_IPHONE
 
 	if ( registered )
-		[pb setString:key forType:kDKStyleKeyPasteboardType];
+#if TARGET_OS_IPHONE
+      [pb setValue:key forPasteboardType:kDKStyleKeyPasteboardType];
+#else
+      [pb setString:key forPasteboardType:kDKStyleKeyPasteboardType];
+#endif TARGET_OS_IPHONE
 
 	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:self];
-	return [pb setData:data forType:kDKStylePasteboardType];
+#if TARGET_OS_IPHONE
+	[pb setData:data forPasteboardType:kDKStylePasteboardType];
+   return YES;
+#else
+	return [pb setData:data forPasteboardType:kDKStylePasteboardType];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -1311,7 +1348,8 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb
+//- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb
+- (DKStyle*)			derivedStyleWithPasteboard:(DKPasteboard*) pb
 {
 	return [self derivedStyleWithPasteboard:pb withOptions:kDKDerivedStyleDefault];
 }
@@ -1334,10 +1372,15 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb withOptions:(DKDerivedStyleOptions) options
+//- (DKStyle*)			derivedStyleWithPasteboard:(NSPasteboard*) pb withOptions:(DKDerivedStyleOptions) options
+- (DKStyle*)			derivedStyleWithPasteboard:(DKPasteboard*) pb withOptions:(DKDerivedStyleOptions) options
 {
 	DKStyle*	style = [self mutableCopy];
+#if TARGET_OS_IPHONE
+	UIColor*	colour = pb.color;
+#else
 	NSColor*	colour = [NSColor colorFromPasteboard:pb];
+#endif TARGET_OS_IPHONE
 	BOOL		wasMutated = NO;
 	
 	if ( colour != nil )
@@ -1369,14 +1412,22 @@ static BOOL					sSubstitute = NO;
 	// if there's an image on the pasteboard, work out what to do with it - first see if any existing renderers can
 	// use an image - if so, apply the image there. If not, add an image adornment.
 	
+#if TARGET_OS_IPHONE
+	if (pb.image)
+#else
 	if([NSImage canInitWithPasteboard:pb])
+#endif TARGET_OS_IPHONE
 	{
 		// yes there's an image - what can we do with it? Rasterizers that take an image include DKFillPattern, DKPathDecorator
 		// and DKImageAdornment. If the style has any of these, apply it to the frontmost one. If it doesn't, create an image
 		// adornment and add it to the front.
 		
-		NSImage* image = [[NSImage alloc] initWithPasteboard:pb];
-		
+#if TARGET_OS_IPHONE
+		UIImage* image = pb.image;
+#else
+      NSImage* image = [[NSImage alloc] initWithPasteboard:pb];
+#endif TARGET_OS_IPHONE
+            
 		if ( image != nil )
 		{
 			NSEnumerator*	iter = [[style renderList] reverseObjectEnumerator];
@@ -1415,7 +1466,11 @@ static BOOL					sSubstitute = NO;
 	
 	// text - if there is text on the pasteboard, set the text of an appropriate renderer, or add a text adornment
 	
+#if TARGET_OS_IPHONE
+	NSString* pbString = pb.string;
+#else
 	NSString* pbString = [pb stringForType:NSStringPboardType];
+#endif TARGET_OS_IPHONE
 	
 	if ( pbString != nil )
 	{
@@ -1443,7 +1498,11 @@ static BOOL					sSubstitute = NO;
 			if( options == kDKDerivedStyleForPathHint )
 			{
 				[tr setLayoutMode:kDKTextLayoutAlongPath];
+#if TARGET_OS_IPHONE
+				[tr setAlignment:UITextAlignmentLeft];
+#else
 				[tr setAlignment:NSJustifiedTextAlignment];
+#endif TARGET_OS_IPHONE
 				[tr setVerticalAlignment:kDKTextShapeVerticalAlignmentTop];
 			}
 			
@@ -1584,7 +1643,8 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)			styleSwatchWithSize:(NSSize) size type:(DKStyleSwatchType) type
+//- (NSImage*)			styleSwatchWithSize:(NSSize) size type:(DKStyleSwatchType) type
+- (DKImage*)			styleSwatchWithSize:(NSSize) size type:(DKStyleSwatchType) type
 {
 	// return the cached swatch if possible - i.e. size and type are the same and there is a cached swatch. Changes to the
 	// style attributes etc should discard the cached swatch
@@ -1598,8 +1658,13 @@ static BOOL					sSubstitute = NO;
 
 	// construct the image
 	
+#if TARGET_OS_IPHONE
+   UIGraphicsBeginImageContext(size);
+#else
 	NSImage*		image = [[NSImage alloc] initWithSize:size];
-	NSBezierPath*	path;
+#endif TARGET_OS_IPHONE
+	//NSBezierPath*	path;
+	DKBezierPath*	path;
 	NSRect			r, br = NSMakeRect( 0, 0, size.width, size.height );
 	
 	// note that because we know that the path drawn will be a rectangle, we can ignore the mitre limit and get more space.
@@ -1617,7 +1682,9 @@ static BOOL					sSubstitute = NO;
 	if ( r.size.height < 10 )
 		r.size.height = 10;
 
+#ifndef TARGET_OS_IPHONE
 	[image setFlipped:YES];
+#endif TARGET_OS_IPHONE
 	
 	if( type == kDKStyleSwatchAutomatic )
 	{
@@ -1631,7 +1698,8 @@ static BOOL					sSubstitute = NO;
 	{
 		// draw a small curved segment
 		
-		path = [NSBezierPath bezierPath];
+		//path = [NSBezierPath bezierPath];
+		path = [DKBezierPath bezierPath];
 		[path moveToPoint:NSMakePoint(NSMinX(r), NSMaxY(r))];
 		
 		NSPoint		ep, cp1, cp2;
@@ -1643,13 +1711,16 @@ static BOOL					sSubstitute = NO;
 		[path curveToPoint:ep controlPoint1:cp1 controlPoint2:cp2];
 	}
 	else
-		path = [NSBezierPath bezierPathWithRect:r];
+		//path = [NSBezierPath bezierPathWithRect:r];
+		path = [DKBezierPath bezierPathWithRect:r];
 		
 	// create a temporary shape that will render using this style and the calculated path
 	
 	DKDrawableShape* od = [DKDrawableShape drawableShapeWithBezierPath:path withStyle:self];
 	
+#ifndef TARGET_OS_IPHONE
 	[image lockFocus];
+#endif TARGET_OS_IPHONE
 	
 	//[[NSColor clearColor] set];
 	//NSRectFill( br );
@@ -1672,7 +1743,12 @@ static BOOL					sSubstitute = NO;
 		//[example drawInRect:r withAttributes:[self textAttributes]];
 	}
 	
+#if TARGET_OS_IPHONE
+   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+   UIGraphicsEndImageContext();
+#else
 	[image unlockFocus];
+#endif TARGET_OS_IPHONE
 	
 	// cache the swatch - the image will only be rebuilt if the size or type requested changes,
 	// or if the style itself is modified. The cache remembers all previously requested sizes until invalidated. The
@@ -1700,18 +1776,21 @@ static BOOL					sSubstitute = NO;
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)			standardStyleSwatch
+//- (NSImage*)			standardStyleSwatch
+- (DKImage*)			standardStyleSwatch
 {
 	return [self styleSwatchWithSize:STYLE_SWATCH_SIZE type:kDKStyleSwatchAutomatic];
 }
 
 
-- (NSImage*)			imageToFitSize:(NSSize) aSize
+//- (NSImage*)			imageToFitSize:(NSSize) aSize
+- (DKImage*)			imageToFitSize:(NSSize) aSize
 {
 	//NSLog(@"request for image, size = %@", NSStringFromSize( aSize ));
 	
 	NSString*	cacheKey = [self swatchCacheKeyForSize:aSize type:kDKStyleSwatchAutomatic];
-	NSImage*	swatch;
+	//NSImage*	swatch;
+	DKImage*	swatch;
 	
 	swatch = [mSwatchCache objectForKey:cacheKey];
 	
@@ -1726,7 +1805,8 @@ static BOOL					sSubstitute = NO;
 	{
 		// scale down if necessary keeping the same aspect ratio. If image is smaller than icon, just centre it.
 		
-		NSImage* iconImage = [NSImage imageFromImage:swatch withSize:aSize];
+		//NSImage* iconImage = [NSImage imageFromImage:swatch withSize:aSize];
+		DKImage* iconImage = [DKImage imageFromImage:swatch withSize:aSize];
 		[mSwatchCache setObject:iconImage forKey:cacheKey];
 		
 		return iconImage;
@@ -1736,7 +1816,8 @@ static BOOL					sSubstitute = NO;
 }
 
 
-- (NSImage*)			image
+//- (NSImage*)			image
+- (DKImage*)			image
 {
 	return [self imageToFitSize:NSMakeSize( 128, 128 )];
 }
@@ -2106,11 +2187,19 @@ static BOOL					sSubstitute = NO;
 	{
 		NSAutoreleasePool* pool = [NSAutoreleasePool new];
 		
+#if TARGET_OS_IPHONE
+		if( ![[self class] shouldAntialias] )
+      {
+         CGContextSetShouldAntialias(UIGraphicsGetCurrentContext(), NO);
+         CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationNone);
+      }
+#else
 		if( ![[self class] shouldAntialias] && [NSGraphicsContext currentContextDrawingToScreen])
 		{
 			[[NSGraphicsContext currentContext] setShouldAntialias:NO];
 			[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
 		}
+#endif TARGET_OS_IPHONE
 		
 		m_renderClientRef = object;
 		

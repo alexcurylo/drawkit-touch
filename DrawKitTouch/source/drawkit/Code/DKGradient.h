@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKGradient.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 2/03/05.
 ///
@@ -61,17 +61,21 @@ DKGradientInterpolation;
 // simple gradient convenience methods
 
 + (DKGradient*)			defaultGradient;
-+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2;
-+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2 type:(NSInteger) gt angle:(CGFloat) degrees;
+//+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2;
+//+ (DKGradient*)			gradientWithStartingColor:(NSColor*) c1 endingColor:(NSColor*) c2 type:(NSInteger) gt angle:(CGFloat) degrees;
++ (DKGradient*)			gradientWithStartingColor:(DKColor*) c1 endingColor:(DKColor*) c2;
++ (DKGradient*)			gradientWithStartingColor:(DKColor*) c1 endingColor:(DKColor*) c2 type:(NSInteger) gt angle:(CGFloat) degrees;
 
 // modified copies:
 
-- (DKGradient*)			gradientByColorizingWithColor:(NSColor*) color;
+//- (DKGradient*)			gradientByColorizingWithColor:(NSColor*) color;
+- (DKGradient*)			gradientByColorizingWithColor:(DKColor*) color;
 - (DKGradient*)			gradientWithAlpha:(CGFloat) alpha;
 
 // setting up the Color stops
 
-- (DKColorStop*)		addColor:(NSColor*) Color at:(CGFloat) pos;
+//- (DKColorStop*)		addColor:(NSColor*) Color at:(CGFloat) pos;
+- (DKColorStop*)		addColor:(DKColor*) Color at:(CGFloat) pos;
 - (void)				addColorStop:(DKColorStop*) stop;
 - (void)				removeLastColor;
 - (void)				removeColorStop:(DKColorStop*) stop;
@@ -92,15 +96,19 @@ DKGradientInterpolation;
 // a variety of ways to fill a path
 
 - (void)				fillRect:(NSRect)rect;
-- (void)				fillPath:(NSBezierPath*) path;
-- (void)				fillPath:(NSBezierPath*) path centreOffset:(NSPoint) co;
-- (void)				fillPath:(NSBezierPath*) path startingAtPoint:(NSPoint) sp
+//- (void)				fillPath:(NSBezierPath*) path;
+//- (void)				fillPath:(NSBezierPath*) path centreOffset:(NSPoint) co;
+//- (void)				fillPath:(NSBezierPath*) path startingAtPoint:(NSPoint) sp
+- (void)				fillPath:(DKBezierPath*) path;
+- (void)				fillPath:(DKBezierPath*) path centreOffset:(NSPoint) co;
+- (void)				fillPath:(DKBezierPath*) path startingAtPoint:(NSPoint) sp
 								startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er;
 
 - (void)				fillContext:(CGContextRef) context startingAtPoint:(NSPoint) sp
 								startRadius:(CGFloat) sr endingAtPoint:(NSPoint) ep endRadius:(CGFloat) er;
 
-- (NSColor*)			colorAtValue:(CGFloat) val;
+//- (NSColor*)			colorAtValue:(CGFloat) val;
+- (DKColor*)			colorAtValue:(CGFloat) val;
 
 // setting the angle
 
@@ -123,8 +131,10 @@ DKGradientInterpolation;
 
 // swatch images
 
-- (NSImage*)			swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder;
-- (NSImage*)			standardSwatchImage;
+//- (NSImage*)			swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder;
+//- (NSImage*)			standardSwatchImage;
+- (DKImage*)			swatchImageWithSize:(NSSize) size withBorder:(BOOL) showBorder;
+- (DKImage*)			standardSwatchImage;
 
 @end
 
@@ -135,17 +145,21 @@ DKGradientInterpolation;
 
 @interface DKColorStop : NSObject <NSCoding, NSCopying>
 {
-	NSColor*			mColor;
+	//NSColor*			mColor;
+	DKColor*			mColor;
 	CGFloat				position;
 	DKGradient*			m_ownerRef;
 @public
 	CGFloat				components[4];  // cached rgba values
 }
 
-- (id)					initWithColor:(NSColor*) aColor at:(CGFloat) pos;
+//- (id)					initWithColor:(NSColor*) aColor at:(CGFloat) pos;
+- (id)					initWithColor:(DKColor*) aColor at:(CGFloat) pos;
 
-- (NSColor*)			color;
-- (void)				setColor:(NSColor*) aColor;
+//- (NSColor*)			color;
+//- (void)				setColor:(NSColor*) aColor;
+- (DKColor*)			color;
+- (void)				setColor:(DKColor*) aColor;
 - (void)				setAlpha:(CGFloat) alpha;
 
 - (CGFloat)				position;

@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKRasterizer.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 23/11/2006.
 ///
@@ -21,18 +21,24 @@ NSString*	kDKRasterizerChangedPropertyKey = @"kDKRasterizerChangedPropertyKey";
 @implementation DKRasterizer
 #pragma mark As a DKRasterizer
 
-+ (DKRasterizer*)		rasterizerFromPasteboard:(NSPasteboard*) pb
+//+ (DKRasterizer*)		rasterizerFromPasteboard:(NSPasteboard*) pb
++ (DKRasterizer*)		rasterizerFromPasteboard:(DKPasteboard*) pb
 {
 	// creates a renderer from the pasteboard if possible. Returns the renderer, or nil.
 	
 	NSAssert( pb != nil, @"expected a non-nil pasteboard");
 	
 	DKRasterizer* rend = nil;
+#if TARGET_OS_IPHONE
+   NSString* typeString = [pb containsPasteboardTypes:[NSArray arrayWithObject:kDKRasterizerPasteboardType]] ? kDKRasterizerPasteboardType : nil;
+#else
 	NSString* typeString = [pb availableTypeFromArray:[NSArray arrayWithObject:kDKRasterizerPasteboardType]];
+#endif TARGET_OS_IPHONE
 	
 	if ( typeString != nil )
 	{
-		NSData* data = [pb dataForType:typeString];
+		//NSData* data = [pb dataForType:typeString];
+		NSData* data = [pb dataForPasteboardType:typeString];
 		
 		if ( data != nil )
 			rend = [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -301,13 +307,15 @@ NSString*	kDKRasterizerChangedPropertyKey = @"kDKRasterizerChangedPropertyKey";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)	renderingPathForObject:(id<DKRenderable>) object
+//- (NSBezierPath*)	renderingPathForObject:(id<DKRenderable>) object
+- (DKBezierPath*)	renderingPathForObject:(id<DKRenderable>) object
 {
 	return [object renderingPath];
 }
 
 
-- (BOOL)			copyToPasteboard:(NSPasteboard*) pb
+//- (BOOL)			copyToPasteboard:(NSPasteboard*) pb
+- (BOOL)			copyToPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"expected pasteboard to be non-nil");
 	
@@ -315,8 +323,13 @@ NSString*	kDKRasterizerChangedPropertyKey = @"kDKRasterizerChangedPropertyKey";
 
 	if ( data != nil )
 	{
+#if TARGET_OS_IPHONE
+		[pb setData:data forPasteboardType:kDKRasterizerPasteboardType];
+      return YES;
+#else
 		[pb declareTypes:[NSArray arrayWithObject:kDKRasterizerPasteboardType] owner:self];
-		return [pb setData:data forType:kDKRasterizerPasteboardType];
+		return [pb setData:data forPasteboardType:kDKRasterizerPasteboardType];
+#endif TARGET_OS_IPHONE
 	}
 	
 	return NO;
@@ -411,7 +424,8 @@ NSString*	kDKRasterizerChangedPropertyKey = @"kDKRasterizerChangedPropertyKey";
 	
 	if ([self enabled])
 	{
-		NSBezierPath* path = [self renderingPathForObject:object];
+		//NSBezierPath* path = [self renderingPathForObject:object];
+		DKBezierPath* path = [self renderingPathForObject:object];
 		SAVE_GRAPHICS_CONTEXT	//[NSGraphicsContext saveGraphicsState];
 		
 		switch([self clipping])
@@ -450,7 +464,8 @@ NSString*	kDKRasterizerChangedPropertyKey = @"kDKRasterizerChangedPropertyKey";
 ///
 ///********************************************************************************************************************
 
-- (void)		renderPath:(NSBezierPath*) path
+//- (void)		renderPath:(NSBezierPath*) path
+- (void)		renderPath:(DKBezierPath*) path
 {
 	#pragma unused(path)
 	
@@ -583,7 +598,8 @@ NSString*	kDKRasterizerChangedPropertyKey = @"kDKRasterizerChangedPropertyKey";
 #pragma mark -
 @implementation NSObject (DKRendererDelegate)
 #pragma mark Renderer Delegate
-- (NSBezierPath*)	renderer:(DKRasterizer*) aRenderer willRenderPath:(NSBezierPath*) aPath
+//- (NSBezierPath*)	renderer:(DKRasterizer*) aRenderer willRenderPath:(NSBezierPath*) aPath
+- (DKBezierPath*)	renderer:(DKRasterizer*) aRenderer willRenderPath:(DKBezierPath*) aPath
 {
 	#pragma unused(aRenderer)
 	

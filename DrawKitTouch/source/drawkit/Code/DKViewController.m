@@ -11,8 +11,12 @@
 
 
 #import "DKViewController.h"
-#import	"DKDrawing.h"
+#import "DKDrawing.h"
+#if TARGET_OS_IPHONE
+#import "DKTDrawingView.h"
+#else
 #import "DKDrawingView.h"
+#endif TARGET_OS_IPHONE
 #import "DKGuideLayer.h"
 #import "LogEvent.h"
 
@@ -39,7 +43,8 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
-- (id)					initWithView:(NSView*) aView
+//- (id)					initWithView:(NSView*) aView
+- (id)					initWithView:(DKDrawingView*) aView
 {
 	NSAssert( aView != nil, @"can't initialize a controller for nil view");
 	
@@ -48,7 +53,9 @@ static NSTimer* s_autoscrollTimer = nil;
 	{
 		[self setView:aView];
 		[self setActivatesLayersAutomatically:YES];
+#ifndef TARGET_OS_IPHONE
 		[self setContextualMenusEnabled:YES];
+#endif TARGET_OS_IPHONE
 	}
 	
 	return self;
@@ -73,7 +80,8 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
-- (NSView*)				view
+//- (NSView*)				view
+- (DKDrawingView*)				view
 {
 	return mViewRef;
 }
@@ -189,7 +197,11 @@ static NSTimer* s_autoscrollTimer = nil;
 
 - (void)				scrollViewToRect:(NSValue*) rectValue
 {
+#if TARGET_OS_IPHONE
+	[[self view] scrollRectToVisible:[rectValue rectValue] animated:YES];
+#else
 	[[self view] scrollRectToVisible:[rectValue rectValue]];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -268,6 +280,10 @@ static NSTimer* s_autoscrollTimer = nil;
 
 - (void)				synchronizeViewRulersWithUnits:(NSString*) unitString
 {
+#if TARGET_OS_IPHONE
+   (void)unitString;
+   twlog("implement synchronizeViewRulersWithUnits");
+#else
 	id grid = [[self drawing] gridLayer];
 	
 	if( grid != nil )
@@ -290,6 +306,7 @@ static NSTimer* s_autoscrollTimer = nil;
 			[ruler setNeedsDisplay:YES];
 		}
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -309,7 +326,9 @@ static NSTimer* s_autoscrollTimer = nil;
 
 - (void)				invalidateCursors
 {
+#ifndef TARGET_OS_IPHONE
 	[[[self view] window] invalidateCursorRectsForView:[self view]];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -394,7 +413,7 @@ static NSTimer* s_autoscrollTimer = nil;
 ///					startAutoscrolling on mouseDown.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDown:(NSEvent*) event
 {
 	// if set to activate layers automatically, find the hit layer and activate it
@@ -412,6 +431,7 @@ static NSTimer* s_autoscrollTimer = nil;
 		[[self activeLayer] mouseDown:event inView:[self view]];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 
@@ -428,12 +448,13 @@ static NSTimer* s_autoscrollTimer = nil;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseDragged:(NSEvent*) event
 {
 	if (![[self activeLayer] lockedOrHidden])
 		[[self activeLayer] mouseDragged:event inView:[self view]];
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -450,7 +471,7 @@ static NSTimer* s_autoscrollTimer = nil;
 ///					scrolling works as intended.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseUp:(NSEvent*) event
 {
 	if (![[self activeLayer] lockedOrHidden])
@@ -460,7 +481,7 @@ static NSTimer* s_autoscrollTimer = nil;
 	
 	[self stopAutoscrolling];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -476,11 +497,12 @@ static NSTimer* s_autoscrollTimer = nil;
 ///					by default but other view types may not.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				mouseMoved:(NSEvent*) event
 {
 	#pragma unused(event)
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -496,13 +518,13 @@ static NSTimer* s_autoscrollTimer = nil;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				flagsChanged:(NSEvent*) event
 {
 	if ([[self activeLayer] respondsToSelector:@selector(flagsChanged:)])
 		[[self activeLayer] flagsChanged:event];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -520,7 +542,7 @@ static NSTimer* s_autoscrollTimer = nil;
 ///					the guide layer's mouseDown/dragged/up methods directly.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (void)				rulerView:(NSRulerView*) aRulerView handleMouseDown:(NSEvent*) event
 {
 	// this is our cue to create a new guide, if the drawing has a guide layer.
@@ -571,6 +593,7 @@ static NSTimer* s_autoscrollTimer = nil;
 		[DKDrawingView pop];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 
@@ -587,12 +610,12 @@ static NSTimer* s_autoscrollTimer = nil;
 /// notes:			
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSCursor*)			cursor
 {
 	return [[self activeLayer] cursor];
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -608,11 +631,12 @@ static NSTimer* s_autoscrollTimer = nil;
 ///					displayed.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSRect)				activeCursorRect
 {
 	return [[self activeLayer] activeCursorRect];
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark - contextual menu support
@@ -632,11 +656,12 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				setContextualMenusEnabled:(BOOL) enable
 {
 	mEnableDKMenus = enable;
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -652,11 +677,12 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				contextualMenusEnabled
 {
 	return mEnableDKMenus;
 }
-
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -672,7 +698,7 @@ static NSTimer* s_autoscrollTimer = nil;
 ///					still receive this message - individual items may be sensitive to the lock state.
 ///
 ///********************************************************************************************************************
-
+#ifndef TARGET_OS_IPHONE
 - (NSMenu *)			menuForEvent:(NSEvent*) event
 {
 	if ([self contextualMenusEnabled] && [[self activeLayer] visible])
@@ -680,7 +706,7 @@ static NSTimer* s_autoscrollTimer = nil;
 	else
 		return nil;
 }
-
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -714,7 +740,9 @@ static NSTimer* s_autoscrollTimer = nil;
 								repeats:YES];
 	
 	[[NSRunLoop currentRunLoop] addTimer:s_autoscrollTimer forMode:NSDefaultRunLoopMode];
+#ifndef TARGET_OS_IPHONE
 	[[NSRunLoop currentRunLoop] addTimer:s_autoscrollTimer forMode:NSEventTrackingRunLoopMode];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -758,6 +786,9 @@ static NSTimer* s_autoscrollTimer = nil;
 	#pragma unused(timer)
 	// this invokes autoscrolling on the source view based on the current mouse point 
 	
+#if TARGET_OS_IPHONE
+   twlog("implement autoscrollTimerCallback");
+#else
 	NSEvent* event = (mDragEvent? mDragEvent : [NSApp currentEvent]);
 	
 	//NSLog(@"autoscroll, event = %@", event );
@@ -772,6 +803,7 @@ static NSTimer* s_autoscrollTimer = nil;
 			[self mouseDragged:event];
 		}
 	}
+#endif TARGET_OS_IPHONE
 }
 
 #pragma mark -
@@ -917,12 +949,17 @@ static NSTimer* s_autoscrollTimer = nil;
 	// See DKDrawingView+Drop for how the drags are forwarded to the layer - the controller doesn't
 	// currently handle that part.
 
+#if TARGET_OS_IPHONE
+   (void)aLayer;
+   twlog("implement activeLayerDidChangeToLayer drag types");
+#else
 	NSArray* types = [aLayer pasteboardTypesForOperation:kDKReadableTypesForDrag];
 	
 	[[self view] unregisterDraggedTypes];
 	
 	if ( types != nil && [types count] > 0 )
 		[[self view] registerForDraggedTypes:types];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -939,6 +976,7 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				autoActivateLayerWithEvent:(NSEvent*) event
 {
 	if ([self activatesLayersAutomatically])
@@ -957,6 +995,7 @@ static NSTimer* s_autoscrollTimer = nil;
 
 	return NO;
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 #pragma mark - user actions for layer stacking
@@ -1209,7 +1248,8 @@ static NSTimer* s_autoscrollTimer = nil;
 	
 	BOOL saveClip = [[self drawing] clipsDrawingToInterior];
 	[[self drawing] setClipsDrawingToInterior:YES];
-	[[self drawing] writePDFDataToPasteboard:[NSPasteboard generalPasteboard]];
+//	[[self drawing] writePDFDataToPasteboard:[NSPasteboard generalPasteboard]];
+	[[self drawing] writePDFDataToPasteboard:[DKPasteboard generalPasteboard]];
 	[[self drawing] setClipsDrawingToInterior:saveClip];
 }
 
@@ -1270,7 +1310,8 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
-- (void)				setView:(NSView*) aView
+//- (void)				setView:(NSView*) aView
+- (void)				setView:(DKDrawingView*) aView
 {
 	mViewRef = aView;
 	
@@ -1413,6 +1454,7 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				validateMenuItem:(NSMenuItem*) item
 {
 	SEL		action = [item action];
@@ -1484,5 +1526,6 @@ static NSTimer* s_autoscrollTimer = nil;
 	
 	return [[self activeLayer] validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 @end

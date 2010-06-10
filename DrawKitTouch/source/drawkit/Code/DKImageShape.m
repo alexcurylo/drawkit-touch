@@ -29,8 +29,10 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 
 @interface DKImageShape (Private)
 
-- (NSAffineTransform*)		imageTransformWithoutLocation;
-- (NSAffineTransform*)		imageTransform;
+//- (NSAffineTransform*)		imageTransformWithoutLocation;
+//- (NSAffineTransform*)		imageTransform;
+- (DKAffineTransform*)		imageTransformWithoutLocation;
+- (DKAffineTransform*)		imageTransform;
 - (void)					drawImage;
 
 
@@ -42,7 +44,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 
 + (DKStyle*)				imageShapeDefaultStyle
 {
-	return [DKStyle styleWithFillColour:[NSColor clearColor] strokeColour:nil];
+	//return [DKStyle styleWithFillColour:[NSColor clearColor] strokeColour:nil];
+	return [DKStyle styleWithFillColour:[DKColor clearColor] strokeColour:nil];
 }
 
 ///*********************************************************************************************************************
@@ -59,13 +62,18 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (id)						initWithPasteboard:(NSPasteboard*) pboard;
+//- (id)						initWithPasteboard:(NSPasteboard*) pboard;
+- (id)						initWithPasteboard:(DKPasteboard*) pboard
 {
+#if TARGET_OS_IPHONE
+   UIImage *image = pboard.image;
+#else
 	NSImage*		image = nil;
 	if ([NSImage canInitWithPasteboard:pboard])
 	{
 		image = [[[NSImage alloc] initWithPasteboard:pboard] autorelease];
 	}
+#endif TARGET_OS_IPHONE
 	if (image == nil)
 	{
 		[self autorelease];
@@ -76,6 +84,17 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		
 		if ( self != nil )
 		{
+#if TARGET_OS_IPHONE
+			if (pboard.URL)
+         {
+				NSString* path = pboard.URL.absoluteString;
+				
+				// add this info to the metadata for the object
+				
+				[self setString:path forKey:kDKOriginalFileMetadataKey];
+				[self setString:[[path lastPathComponent] stringByDeletingPathExtension] forKey:kDKOriginalNameMetadataKey];
+         }
+#else
 			NSString* urlType = [pboard availableTypeFromArray:[NSArray arrayWithObject:NSFilenamesPboardType]];
 			
 			if ( urlType != nil )
@@ -91,6 +110,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 				[self setString:path forKey:kDKOriginalFileMetadataKey];
 				[self setString:[[path lastPathComponent] stringByDeletingPathExtension] forKey:kDKOriginalNameMetadataKey];
 			}
+#endif TARGET_OS_IPHONE
 		}
 	}
 	return self;
@@ -113,7 +133,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (id)						initWithImage:(NSImage*) anImage
+//- (id)						initWithImage:(NSImage*) anImage
+- (id)						initWithImage:(DKImage*) anImage
 {
 	NSAssert( anImage != nil, @"cannot init with a nil image");
 	
@@ -128,7 +149,11 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		m_imageScale = 1.0;
 
 		[self setImageDrawsOnTop:NO];
+#if TARGET_OS_IPHONE
+		[self setCompositingOperation:kCGBlendModeNormal];
+#else
 		[self setCompositingOperation:NSCompositeSourceOver];
+#endif TARGET_OS_IPHONE
 		[self setImageCroppingOptions:kDKImageScaleToPath];
 		
 		DKHotspot* hs = [[DKHotspot alloc] initHotspotWithOwner:self partcode:0 delegate:self];
@@ -167,7 +192,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 {
 	NSAssert( imageData != nil, @"cannot initialise with nil data");
 	
-	NSImage* image = [[NSImage alloc] initWithData:imageData];
+	//NSImage* image = [[NSImage alloc] initWithData:imageData];
+	DKImage* image = [[DKImage alloc] initWithData:imageData];
 	
 	if( image )
 	{
@@ -204,7 +230,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 
 - (id)						initWithImageNamed:(NSString*) imageName
 {
-	[self initWithImage:[NSImage imageNamed:imageName]];
+	//[self initWithImage:[NSImage imageNamed:imageName]];
+	[self initWithImage:[DKImage imageNamed:imageName]];
 	[self setString:imageName forKey:kDKOriginalNameMetadataKey];
 	
 	return self;
@@ -266,7 +293,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (void)					setImage:(NSImage*) anImage
+//- (void)					setImage:(NSImage*) anImage
+- (void)					setImage:(DKImage*) anImage
 {
 	NSAssert( anImage != nil, @"can't set a nil image");
 	
@@ -278,9 +306,11 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		[m_image release];
 		m_image = anImage;
 		
+#ifndef TARGET_OS_IPHONE
 		[m_image setCacheMode:NSImageCacheNever];
 		[m_image recache];
 		[m_image setScalesWhenResized:YES];
+#endif TARGET_OS_IPHONE
 		[self notifyVisualChange];
 		
 		// setting the image nils the key. Callers that know there is a key should use setImageWithKey:coder: instead.
@@ -309,7 +339,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)				image
+//- (NSImage*)				image
+- (DKImage*)				image
 {
 	return m_image;
 }
@@ -329,28 +360,41 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (NSImage*)				imageAtRenderedSize
+//- (NSImage*)				imageAtRenderedSize
+- (DKImage*)				imageAtRenderedSize
 {
+#if TARGET_OS_IPHONE
+	CGBlendMode savedOp = [self compositingOperation];
+#else
 	NSCompositingOperation savedOp = [self compositingOperation];
+#endif TARGET_OS_IPHONE
 	NSSize	 niSize = [self logicalBounds].size;
-	NSImage* newImage = [[NSImage alloc] initWithSize:niSize];
+	//NSImage* newImage = [[NSImage alloc] initWithSize:niSize];
+	DKImage* newImage = [[DKImage alloc] initWithSize:niSize];
 	
 	if( newImage != nil )
 	{
+#if TARGET_OS_IPHONE
+		[self setCompositingOperation:kCGBlendModeCopy];
+#else
 		[self setCompositingOperation:NSCompositeCopy];
 		[newImage lockFocus];
+#endif TARGET_OS_IPHONE
 		
 		CGFloat dx, dy;
 		
 		dx = niSize.width * 0.5f;
 		dy = niSize.height * 0.5f;
 		
-		NSAffineTransform* tfm = [NSAffineTransform transform];
+		//NSAffineTransform* tfm = [NSAffineTransform transform];
+		DKAffineTransform* tfm = [DKAffineTransform transform];
 		[tfm translateXBy:-([self location].x - dx) yBy:-([self location].y - dy)];
 		[tfm concat];
 		
 		[self drawImage];
+#ifndef TARGET_OS_IPHONE
 		[newImage unlockFocus];
+#endif TARGET_OS_IPHONE
 	}
 	
 	[self setCompositingOperation:savedOp];
@@ -393,7 +437,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		{
 			NSLog(@"image shape %@ loading image from image manager, key = %@", self, key );
 			
-			NSImage* image = [dm makeImageForKey:key];
+			//NSImage* image = [dm makeImageForKey:key];
+			DKImage* image = [dm makeImageForKey:key];
 			
 			if( image )
 			{
@@ -536,7 +581,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	// if there is no image manager, create an image anyway, retain the data but don't create a key.
 	
 	DKImageDataManager* imgMgr = [[self container] imageManager];
-	NSImage* image;
+	//NSImage* image;
+	DKImage* image;
 	
 	if( imgMgr )
 	{
@@ -548,7 +594,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	}
 	else
 	{
-		image = [[NSImage alloc] initWithData:data];
+		//image = [[NSImage alloc] initWithData:data];
+		image = [[DKImage alloc] initWithData:data];
 		[self setImage:image];
 		[image release];
 	}
@@ -595,7 +642,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (BOOL)					setImageWithPasteboard:(NSPasteboard*) pb
+//- (BOOL)					setImageWithPasteboard:(NSPasteboard*) pb
+- (BOOL)					setImageWithPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"pasteboard is nil");
 	
@@ -604,12 +652,15 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	if( dm )
 	{
 		NSString* newKey = nil;
-		NSImage* image = [dm makeImageWithPasteboard:pb key:&newKey];
+		//NSImage* image = [dm makeImageWithPasteboard:pb key:&newKey];
+		DKImage* image = [dm makeImageWithPasteboard:pb key:&newKey];
 		
 		if( image )
 		{
+#ifndef TARGET_OS_IPHONE
 			[image setScalesWhenResized:YES];
 			[image setCacheMode:NSImageCacheNever];
+#endif TARGET_OS_IPHONE
 			
 			// keep a local reference to the data if possible
 			
@@ -625,7 +676,14 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		}
 	}
 	
-	if([NSImage canInitWithPasteboard:pb])
+#if TARGET_OS_IPHONE
+	if (pb.image)
+   {
+      [self setImage:pb.image];
+      return YES;
+   }
+#else
+   if([NSImage canInitWithPasteboard:pb])
 	{
 		NSImage* image = [[NSImage alloc] initWithPasteboard:pb];
 		
@@ -637,6 +695,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 			return YES;
 		}
 	}
+#endif TARGET_OS_IPHONE
 	
 	return NO;
 }
@@ -658,15 +717,21 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (BOOL)					writeImageToPasteboard:(NSPasteboard*) pb
+//- (BOOL)					writeImageToPasteboard:(NSPasteboard*) pb
+- (BOOL)					writeImageToPasteboard:(DKPasteboard*) pb
 {
 	NSAssert( pb != nil, @"cannot write to nil pasteboard");
 	
+#if TARGET_OS_IPHONE
+   pb.image = self.image;
+   return YES;
+#else
 	BOOL result = NO;
 	
+   NSData* imgData = nil;
 	[pb declareTypes:[NSArray arrayWithObjects:NSFileContentsPboardType, NSTIFFPboardType, NSPDFPboardType, nil] owner:self];
 	
-	NSData* imgData = [self imageData];
+	imgData = [self imageData];
 	if( imgData )
 		result = [pb setData:imgData forType:NSFileContentsPboardType];
 	
@@ -693,6 +758,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	}
 	
 	return result;
+#endif TARGET_OS_IPHONE
 }
 
 #pragma mark -
@@ -799,7 +865,11 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)					setCompositingOperation:(CGBlendMode) op
+#else
 - (void)					setCompositingOperation:(NSCompositingOperation) op
+#endif TARGET_OS_IPHONE
 {
 	if ( op != m_op )
 	{
@@ -824,7 +894,11 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (CGBlendMode)	compositingOperation
+#else
 - (NSCompositingOperation)	compositingOperation
+#endif TARGET_OS_IPHONE
 {
 	return m_op;
 }
@@ -995,11 +1069,13 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	
 	SAVE_GRAPHICS_CONTEXT		//[NSGraphicsContext saveGraphicsState];
 	
-	NSAffineTransform*	xt = [self containerTransform];
+	//NSAffineTransform*	xt = [self containerTransform];
+	DKAffineTransform*	xt = [self containerTransform];
 	
 	[[self transformedPath] addClip];
 	
-	NSAffineTransform*  tx = [self imageTransform];
+	//NSAffineTransform*  tx = [self imageTransform];
+	DKAffineTransform*  tx = [self imageTransform];
 	[tx appendTransform:xt];
 	[tx concat];
 	
@@ -1020,13 +1096,18 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	
 	// render at high quality
 	
+#if TARGET_OS_IPHONE
+   CGContextSetInterpolationQuality(UIGraphicsGetCurrentContext(), kCGInterpolationHigh);
+   [[self image] drawInRect:ir blendMode:[self compositingOperation] alpha:[self imageOpacity]];
+#else
 	[[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
 	[[self image] setFlipped:[[NSGraphicsContext currentContext] isFlipped]];
 	
 	[[self image]	drawInRect:ir
-					fromRect:NSZeroRect
-					operation:[self compositingOperation]
-					fraction:[self imageOpacity]];
+                   fromRect:NSZeroRect
+                  operation:[self compositingOperation]
+                   fraction:[self imageOpacity]];
+#endif TARGET_OS_IPHONE
 	
 	RESTORE_GRAPHICS_CONTEXT	//[NSGraphicsContext restoreGraphicsState];
 }
@@ -1049,10 +1130,13 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
-- (NSAffineTransform*)		imageTransform
+//- (NSAffineTransform*)		imageTransform
+- (DKAffineTransform*)		imageTransform
 {
-	NSAffineTransform*	tfm = [NSAffineTransform transform];
-	NSAffineTransform*	twl = [self imageTransformWithoutLocation];
+	//NSAffineTransform*	tfm = [NSAffineTransform transform];
+	//NSAffineTransform*	twl = [self imageTransformWithoutLocation];
+	DKAffineTransform*	tfm = [DKAffineTransform transform];
+	DKAffineTransform*	twl = [self imageTransformWithoutLocation];
 	NSPoint				loc;
 	
 	if([self imageCroppingOptions] == kDKImageScaleToPath)
@@ -1066,13 +1150,15 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 }
 
 
-- (NSAffineTransform*)		imageTransformWithoutLocation
+//- (NSAffineTransform*)		imageTransformWithoutLocation
+- (DKAffineTransform*)		imageTransformWithoutLocation
 {
 	NSSize	si = [[self image] size];
 	NSSize	sc = [self size];
 	CGFloat	sx, sy;
 
-	NSAffineTransform* xform = [NSAffineTransform transform];
+	//NSAffineTransform* xform = [NSAffineTransform transform];
+	DKAffineTransform* xform = [DKAffineTransform transform];
 	
 	if([self imageCroppingOptions] == kDKImageScaleToPath)
 	{
@@ -1180,7 +1266,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 {
 #pragma unused(sender)
 	
-	[self writeImageToPasteboard:[NSPasteboard generalPasteboard]];
+	//[self writeImageToPasteboard:[NSPasteboard generalPasteboard]];
+	[self writeImageToPasteboard:[DKPasteboard generalPasteboard]];
 }
 
 
@@ -1202,7 +1289,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 {
 	#pragma unused(sender)
 	
-	NSPasteboard* pb = [NSPasteboard generalPasteboard];
+	//NSPasteboard* pb = [NSPasteboard generalPasteboard];
+	DKPasteboard* pb = [DKPasteboard generalPasteboard];
 	if([self setImageWithPasteboard:pb])
 	{
 		[[self undoManager] setActionName:NSLocalizedString(@"Paste Image Into Shape", @"undo string for paste image into shape")];
@@ -1245,7 +1333,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	{
 		// where is the top, left corner of the image?
 		
-		NSAffineTransform* tfm = [self imageTransform];
+		//NSAffineTransform* tfm = [self imageTransform];
+		DKAffineTransform* tfm = [self imageTransform];
 		NSPoint p = [self imageOffset];
 		
 		p = [tfm transformPoint:p];
@@ -1291,7 +1380,8 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 {
 	if([self isBeingHitTested])
 	{
-		[[NSColor grayColor] set];
+		//[[NSColor grayColor] set];
+		[[DKColor grayColor] set];
 		[[self renderingPath] fill];
 	}
 	else
@@ -1322,6 +1412,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)					populateContextualMenu:(NSMenu*) theMenu
 {
 	[super populateContextualMenu:theMenu];
@@ -1336,6 +1427,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		
 	return YES;
 }
+#endif TARGET_OS_IPHONE
 
 
 - (NSString*)			undoActionNameForPartCode:(NSInteger) pc
@@ -1405,6 +1497,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				hotspot:(DKHotspot*) hs willBeginTrackingWithEvent:(NSEvent*) event inView:(NSView*) view
 {
 	#pragma unused(hs)
@@ -1420,6 +1513,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		[[NSCursor openHandCursor] set];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1438,13 +1532,16 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				hotspot:(DKHotspot*) hs isTrackingWithEvent:(NSEvent*) event inView:(NSView*) view
 {
 	NSInteger pc = [hs partcode];
 	
 	if ( pc == mImageOffsetPartcode )
 	{
+#ifndef TARGET_OS_IPHONE
 		[[NSCursor closedHandCursor] set];
+#endif TARGET_OS_IPHONE
 		
 		NSPoint p = [view convertPoint:[event locationInWindow] fromView:nil];
 		
@@ -1462,6 +1559,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 		[self setImageOffset:offset];
 	}
 }
+#endif TARGET_OS_IPHONE
 
 
 ///*********************************************************************************************************************
@@ -1480,6 +1578,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (void)				hotspot:(DKHotspot*) hs didEndTrackingWithEvent:(NSEvent*) event inView:(NSView*) view
 {
 	#pragma unused(hs)
@@ -1488,6 +1587,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	
 	[NSCursor pop];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1507,6 +1607,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)				performDragOperation:(id <NSDraggingInfo>) sender
 {
 	NSPasteboard* pb = [sender draggingPasteboard];
@@ -1516,6 +1617,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 	else
 		return [super performDragOperation:sender];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -1677,6 +1779,7 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 ///
 ///********************************************************************************************************************
 
+#ifndef TARGET_OS_IPHONE
 - (BOOL)			validateMenuItem:(NSMenuItem*) item
 {
 	if ([item action] == @selector(vectorize:) ||
@@ -1707,5 +1810,6 @@ NSString*	kDKOriginalNameMetadataKey				= @"dk_original_name";
 
 	return [super validateMenuItem:item];
 }
+#endif TARGET_OS_IPHONE
 
 @end

@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKStroke.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 09/11/2006.
 ///
@@ -17,9 +17,11 @@
 @interface DKStroke : DKRasterizer <NSCoding, NSCopying>
 {
 @private
-	NSColor*			m_colour;
+	//NSColor*			m_colour;
+	DKColor*			m_colour;
 	DKStrokeDash*		m_dash;
-	NSShadow*			m_shadow;
+	//NSShadow*			m_shadow;
+	DKShadow*			m_shadow;
 	NSLineCapStyle		m_cap;
 	NSLineJoinStyle		m_join;
 	CGFloat				m_mitreLimit;
@@ -30,12 +32,16 @@
 }
 
 + (DKStroke*)			defaultStroke;
-+ (DKStroke*)			strokeWithWidth:(CGFloat) width colour:(NSColor*) colour;
+//+ (DKStroke*)			strokeWithWidth:(CGFloat) width colour:(NSColor*) colour;
++ (DKStroke*)			strokeWithWidth:(CGFloat) width colour:(DKColor*) colour;
 
-- (id)					initWithWidth:(CGFloat) width colour:(NSColor*) colour;
+//- (id)					initWithWidth:(CGFloat) width colour:(NSColor*) colour;
+- (id)					initWithWidth:(CGFloat) width colour:(DKColor*) colour;
 
-- (void)				setColour:(NSColor*) colour;
-- (NSColor*)			colour;
+//- (void)				setColour:(NSColor*) colour;
+//- (NSColor*)			colour;
+- (void)				setColour:(DKColor*) colour;
+- (DKColor*)			colour;
 
 - (void)				setWidth:(CGFloat) width;
 - (CGFloat)				width;
@@ -49,11 +55,14 @@
 - (void)				setLateralOffset:(CGFloat) offset;
 - (CGFloat)				lateralOffset;
 
-- (void)				setShadow:(NSShadow*) shadow;
-- (NSShadow*)			shadow;
+//- (void)				setShadow:(NSShadow*) shadow;
+//- (NSShadow*)			shadow;
+- (void)				setShadow:(DKShadow*) shadow;
+- (DKShadow*)			shadow;
 
 - (void)				strokeRect:(NSRect) rect;
-- (void)				applyAttributesToPath:(NSBezierPath*) path;
+//- (void)				applyAttributesToPath:(NSBezierPath*) path;
+- (void)				applyAttributesToPath:(DKBezierPath*) path;
 
 - (void)				setLineCapStyle:(NSLineCapStyle) lcs;
 - (NSLineCapStyle)		lineCapStyle;

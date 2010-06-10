@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKObjectDrawingLayer+Alignment.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 18/09/2006.
 ///
@@ -69,7 +69,9 @@ enum
 
 - (BOOL)		distributeObjects:(NSArray*) objects withAlignment:(NSInteger) align;
 
+#ifndef TARGET_OS_IPHONE
 - (NSUInteger)	alignmentMenuItemRequiredObjects:(id<NSValidatedUserInterfaceItem>) item;
+#endif TARGET_OS_IPHONE
 
 // user actions:
 

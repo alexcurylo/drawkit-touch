@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKStroke.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 09/11/2006.
 ///
@@ -25,7 +25,8 @@
 }
 
 
-+ (DKStroke*)	strokeWithWidth:(CGFloat) width colour:(NSColor*) colour
+//+ (DKStroke*)	strokeWithWidth:(CGFloat) width colour:(NSColor*) colour
++ (DKStroke*)	strokeWithWidth:(CGFloat) width colour:(DKColor*) colour
 {
 	DKStroke*	stroke = [[self alloc] init];
 	
@@ -37,7 +38,8 @@
 
 
 #pragma mark -
-- (id)			initWithWidth:(CGFloat) width colour:(NSColor*) colour
+//- (id)			initWithWidth:(CGFloat) width colour:(NSColor*) colour
+- (id)			initWithWidth:(CGFloat) width colour:(DKColor*) colour
 {
 	self = [super init];
 	if (self != nil)
@@ -61,7 +63,8 @@
 
 
 #pragma mark -
-- (void)		setColour:(NSColor*) colour
+//- (void)		setColour:(NSColor*) colour
+- (void)		setColour:(DKColor*) colour
 {
 	//LogEvent_(kReactiveEvent, @"stroke setting colour: %@", colour);
 	
@@ -71,7 +74,8 @@
 }
 
 
-- (NSColor*)	colour
+//- (NSColor*)	colour
+- (DKColor*)	colour
 {
 	return m_colour;
 }
@@ -181,7 +185,8 @@
 
 
 #pragma mark -
-- (void)		setShadow:(NSShadow*) shadw
+//- (void)		setShadow:(NSShadow*) shadw
+- (void)		setShadow:(DKShadow*) shadw
 {
 	[shadw retain];
 	[m_shadow release];
@@ -189,7 +194,8 @@
 }
 
 
-- (NSShadow*)	shadow
+//- (NSShadow*)	shadow
+- (DKShadow*)	shadow
 {
 	return m_shadow;
 }
@@ -198,11 +204,13 @@
 #pragma mark -
 - (void)		strokeRect:(NSRect) rect
 {
-	[self renderPath:[NSBezierPath bezierPathWithRect:rect]];
+	//[self renderPath:[NSBezierPath bezierPathWithRect:rect]];
+	[self renderPath:[DKBezierPath bezierPathWithRect:rect]];
 }
 
 
-- (void)				applyAttributesToPath:(NSBezierPath*) path
+//- (void)				applyAttributesToPath:(NSBezierPath*) path
+- (void)				applyAttributesToPath:(DKBezierPath*) path
 {
 	// applies the stroke's width, cap, join, mitre limit and dash to the path
 	
@@ -341,7 +349,8 @@
 
 - (id)			init
 {
-	return [self initWithWidth:1.0 colour:[NSColor blackColor]];
+	//return [self initWithWidth:1.0 colour:[NSColor blackColor]];
+	return [self initWithWidth:1.0 colour:[DKColor blackColor]];
 }
 
 
@@ -376,11 +385,13 @@
 }
 
 
-- (void)		renderPath:(NSBezierPath*) path
+//- (void)		renderPath:(NSBezierPath*) path
+- (void)		renderPath:(DKBezierPath*) path
 {
 	// copy path as we are about to change many of its properties
 	
-	NSBezierPath* pc;
+	//NSBezierPath* pc;
+	DKBezierPath* pc;
 	
 	if ([self trimLength] > 0.0 )
 		pc = [path bezierPathByTrimmingFromBothEnds:[self trimLength]];
@@ -390,11 +401,14 @@
 	if( mLateralOffset != 0.0 )
 	{
 		// make a parallel copy of the path
-		CGFloat savedFlatness = [NSBezierPath defaultFlatness];
-		[NSBezierPath setDefaultFlatness:0.05];
+		//CGFloat savedFlatness = [NSBezierPath defaultFlatness];
+		CGFloat savedFlatness = [DKBezierPath defaultFlatness];
+		//[NSBezierPath setDefaultFlatness:0.05];
+		[DKBezierPath setDefaultFlatness:0.05];
 		[pc setLineJoinStyle:[self lineJoinStyle]];
 		pc = [pc paralleloidPathWithOffset22:[self lateralOffset]];
-		[NSBezierPath setDefaultFlatness:savedFlatness];
+		//[NSBezierPath setDefaultFlatness:savedFlatness];
+		[DKBezierPath setDefaultFlatness:savedFlatness];
 	}
 		
 	[[self colour] setStroke];
@@ -500,7 +514,8 @@
 	[cp setDash:dashCopy];
 	[dashCopy release];
 	
-	NSShadow* shcopy = [[self shadow] copyWithZone:zone];
+	//NSShadow* shcopy = [[self shadow] copyWithZone:zone];
+	DKShadow* shcopy = [[self shadow] copyWithZone:zone];
 	[cp setShadow:shcopy];
 	[shcopy release];
 	

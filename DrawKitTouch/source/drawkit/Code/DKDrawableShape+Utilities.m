@@ -26,10 +26,13 @@
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)			pathWithRelativeRect:(NSRect) relRect
+//- (NSBezierPath*)			pathWithRelativeRect:(NSRect) relRect
+- (DKBezierPath*)			pathWithRelativeRect:(NSRect) relRect
 {
-	NSBezierPath* path = [NSBezierPath bezierPathWithRect:relRect];
-	NSAffineTransform* transform = [self transformIncludingParent];
+	//NSBezierPath* path = [NSBezierPath bezierPathWithRect:relRect];
+	//NSAffineTransform* transform = [self transformIncludingParent];
+	DKBezierPath* path = [DKBezierPath bezierPathWithRect:relRect];
+	DKAffineTransform* transform = [self transformIncludingParent];
 	[path transformUsingAffineTransform:transform];
 	
 	return path;
@@ -52,7 +55,8 @@
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)			pathWithRelativePosition:(NSPoint) relLoc finalSize:(NSSize) size
+//- (NSBezierPath*)			pathWithRelativePosition:(NSPoint) relLoc finalSize:(NSSize) size
+- (DKBezierPath*)			pathWithRelativePosition:(NSPoint) relLoc finalSize:(NSSize) size
 {
 	// work out a fully relative rect
 	
@@ -85,14 +89,16 @@
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)			pathWithFinalSize:(NSSize) size offsetBy:(NSPoint) offset fromPartcode:(NSInteger) pc
+//- (NSBezierPath*)			pathWithFinalSize:(NSSize) size offsetBy:(NSPoint) offset fromPartcode:(NSInteger) pc
+- (DKBezierPath*)			pathWithFinalSize:(NSSize) size offsetBy:(NSPoint) offset fromPartcode:(NSInteger) pc
 {
 	NSSize ss = [self size];
 	
 	if( ss.width > 0.0 && ss.height > 0.0 )
 	{
 		NSPoint	p = [self pointForPartcode:pc];
-		NSAffineTransform* transform = [self transformIncludingParent];
+		//NSAffineTransform* transform = [self transformIncludingParent];
+		DKAffineTransform* transform = [self transformIncludingParent];
 		[transform invert];
 		p = [transform transformPoint:p];
 		
@@ -126,7 +132,8 @@
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)			path:(NSBezierPath*) inPath withFinalSize:(NSSize) size offsetBy:(NSPoint) offset fromPartcode:(NSInteger) pc
+//- (NSBezierPath*)			path:(NSBezierPath*) inPath withFinalSize:(NSSize) size offsetBy:(NSPoint) offset fromPartcode:(NSInteger) pc
+- (DKBezierPath*)			path:(DKBezierPath*) inPath withFinalSize:(NSSize) size offsetBy:(NSPoint) offset fromPartcode:(NSInteger) pc
 {
 	NSAssert( inPath != nil, @"can't do this with a nil path");
 	
@@ -137,7 +144,8 @@
 	if( ss.width > 0 && ss.height > 0 )
 	{
 		NSPoint	p = [self pointForPartcode:pc];
-		NSAffineTransform* transform = [self transformIncludingParent];
+		//NSAffineTransform* transform = [self transformIncludingParent];
+		DKAffineTransform* transform = [self transformIncludingParent];
 		[transform invert];
 		p = [transform transformPoint:p];
 		
@@ -146,12 +154,14 @@
 
 		NSRect pr = [inPath bounds];
 		
-		NSAffineTransform* tfm = [NSAffineTransform transform];
+		//NSAffineTransform* tfm = [NSAffineTransform transform];
+		DKAffineTransform* tfm = [DKAffineTransform transform];
 		[tfm translateXBy:p.x yBy:p.y];
 		[tfm scaleXBy:size.width / (pr.size.width * ss.width) yBy:size.height / (pr.size.height * ss.height)];
 		[tfm translateXBy:-pr.origin.x yBy:-pr.origin.y];
 		
-		NSBezierPath* newPath = [tfm transformBezierPath:inPath];
+		//NSBezierPath* newPath = [tfm transformBezierPath:inPath];
+		DKBezierPath* newPath = [tfm transformBezierPath:inPath];
 	
 		[newPath transformUsingAffineTransform:[self transformIncludingParent]];
 		
@@ -179,7 +189,8 @@
 
 - (NSPoint)					pointForRelativeLocation:(NSPoint) relLoc
 {
-	NSAffineTransform* transform = [self transformIncludingParent];
+	//NSAffineTransform* transform = [self transformIncludingParent];
+	DKAffineTransform* transform = [self transformIncludingParent];
 	return [transform transformPoint:relLoc];
 }
 

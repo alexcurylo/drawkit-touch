@@ -20,7 +20,8 @@
 - (id)			initWithExpression:(DKExpression*) expr;
 - (void)		setValue:(id) val forNumericParameter:(NSInteger) pnum;
 
-- (NSImage*)	imageResourceNamed:(NSString*) name;
+//- (NSImage*)	imageResourceNamed:(NSString*) name;
+- (DKImage*)	imageResourceNamed:(NSString*) name;
 
 
 @end

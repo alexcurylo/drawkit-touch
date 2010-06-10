@@ -10,9 +10,12 @@
 //#import <Cocoa/Cocoa.h>
 
 
-@interface NSImage (DKAdditions)
+//@interface NSImage (DKAdditions)
+@interface DKImage (DKAdditions)
 
-+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size;
-+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size fraction:(CGFloat) opacity allowScaleUp:(BOOL) scaleUp;
+//+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size;
+//+ (NSImage*)	imageFromImage:(NSImage*) srcImage withSize:(NSSize) size fraction:(CGFloat) opacity allowScaleUp:(BOOL) scaleUp;
++ (DKImage*)	imageFromImage:(DKImage*) srcImage withSize:(NSSize) size;
++ (DKImage*)	imageFromImage:(DKImage*) srcImage withSize:(NSSize) size fraction:(CGFloat) opacity allowScaleUp:(BOOL) scaleUp;
 
 @end

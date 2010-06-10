@@ -8,8 +8,6 @@
 ///
 ///**********************************************************************************************************************************
 
-// not in iPhone SDK, should be left to .pch ...alex
-//#import <Cocoa/Cocoa.h>
 
 typedef enum
 {
@@ -19,7 +17,8 @@ typedef enum
 DKShadowDrawingOperation;
 
 
-@interface NSShadow (DKAdditions)
+//@interface NSShadow (DKAdditions)
+@interface DKShadow (DKAdditions)
 
 - (void)		setAbsolute;
 - (void)		setAbsoluteFlipped:(BOOL) flipped;
@@ -40,7 +39,8 @@ DKShadowDrawingOperation;
 - (CGFloat)		distance;
 - (CGFloat)		extraSpace;
 
-- (void)		drawApproximateShadowWithPath:(NSBezierPath*) path operation:(DKShadowDrawingOperation) op strokeWidth:(NSInteger) sw;
+//- (void)		drawApproximateShadowWithPath:(NSBezierPath*) path operation:(DKShadowDrawingOperation) op strokeWidth:(NSInteger) sw;
+- (void)		drawApproximateShadowWithPath:(DKBezierPath*) path operation:(DKShadowDrawingOperation) op strokeWidth:(NSInteger) sw;
 
 @end
 

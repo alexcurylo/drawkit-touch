@@ -17,6 +17,7 @@
 
 + (NSRect)			rectOfUnitSize;
 
+/*
 + (NSBezierPath*)	rect;
 + (NSBezierPath*)	oval;
 + (NSBezierPath*)	roundRect;
@@ -52,11 +53,56 @@
 
 + (NSBezierPath*)	roundEndedRect:(NSRect) rect;
 
+#ifndef TARGET_OS_IPHONE
 + (NSBezierPath*)	pathFromGlyph:(NSString*) glyph inFontWithName:(NSString*) fontName;
+#endif TARGET_OS_IPHONE
 
 - (NSBezierPath*)	roundRectInRect:(NSRect) bounds objParam:(id) param;
 - (NSBezierPath*)	roundEndedRect:(NSRect) rect objParam:(id) param;
 - (NSBezierPath*)	speechBalloonInRect:(NSRect) rect objParam:(id) param;
+*/
++ (DKBezierPath*)	rect;
++ (DKBezierPath*)	oval;
++ (DKBezierPath*)	roundRect;
++ (DKBezierPath*)	roundRectWithCornerRadius:(CGFloat) radius;
++ (DKBezierPath*)	roundRectInRect:(NSRect) rect andCornerRadius:(CGFloat) radius;
+
++ (DKBezierPath*)	regularPolygon:(NSInteger) numberOfSides;
+
++ (DKBezierPath*)	equilateralTriangle;
++ (DKBezierPath*)	rightTriangle;
+
++ (DKBezierPath*)	pentagon;
++ (DKBezierPath*)	hexagon;
++ (DKBezierPath*)	heptagon;
++ (DKBezierPath*)	octagon;
+
++ (DKBezierPath*)	star:(NSInteger) numberOfPoints innerDiameter:(CGFloat) diam;
++ (DKBezierPath*)	regularStar:(NSInteger) numberOfPoints;
+
++ (DKBezierPath*)	cross;
++ (DKBezierPath*)	diagonalCross;
+
++ (DKBezierPath*)	ring:(CGFloat) innerDiameter;
+
++ (DKBezierPath*)	roundRectSpeechBalloon:(NSInteger) sbParams cornerRadius:(CGFloat) cr;
++ (DKBezierPath*)	roundRectSpeechBalloonInRect:(NSRect) rect params:(NSInteger) sbParams cornerRadius:(CGFloat) cr;
++ (DKBezierPath*)	ovalSpeechBalloon:(NSInteger) sbParams;
+
++ (DKBezierPath*)	arrowhead;
++ (DKBezierPath*)	arrowTailFeather;
++ (DKBezierPath*)	arrowTailFeatherWithRake:(CGFloat) rakeFactor;
++ (DKBezierPath*)	inflectedArrowhead;
+
++ (DKBezierPath*)	roundEndedRect:(NSRect) rect;
+
+#ifndef TARGET_OS_IPHONE
++ (DKBezierPath*)	pathFromGlyph:(NSString*) glyph inFontWithName:(NSString*) fontName;
+#endif TARGET_OS_IPHONE
+
+- (DKBezierPath*)	roundRectInRect:(NSRect) bounds objParam:(id) param;
+- (DKBezierPath*)	roundEndedRect:(NSRect) rect objParam:(id) param;
+- (DKBezierPath*)	speechBalloonInRect:(NSRect) rect objParam:(id) param;
 
 @end
 

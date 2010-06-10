@@ -99,7 +99,12 @@
 {
 #pragma unused(timer)
 	mTimer = nil;
+   
+#if TARGET_OS_IPHONE
+	[[UIApplication sharedApplication] sendAction:[self action] to:[self target] from:self forEvent:nil];
+#else
 	[NSApp sendAction:[self action] to:[self target] from:self];
+#endif TARGET_OS_IPHONE
 }
 
 

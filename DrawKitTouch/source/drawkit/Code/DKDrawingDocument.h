@@ -8,12 +8,11 @@
 ///
 ///**********************************************************************************************************************************
 
-// not in iPhone SDK, should be left to .pch ...alex
-//#import <Cocoa/Cocoa.h>
+#if TARGET_OS_IPHONE
+#error there is no NSDocument equivalent in iPhone SDK
+#endif TARGET_OS_IPHONE
 
-
-@class DKDrawing, DKDrawingView, DKViewController, DKDrawingTool, DKPrintDrawingView;
-
+@class DKDrawing, DKDrawingView, DKViewController, DKDrawingTool;
 
 @interface DKDrawingDocument : NSDocument
 {
@@ -33,7 +32,8 @@
 - (void)				setDrawing:(DKDrawing*) drwg;
 - (DKDrawing*)			drawing;
 - (DKDrawingView*)		mainView;
-- (DKViewController*)	makeControllerForView:(NSView*) aView;
+//- (DKViewController*)	makeControllerForView:(NSView*) aView;
+- (DKViewController*)	makeControllerForView:(DKDrawingView*) aView;
 - (DKDrawing*)			makeDefaultDrawing;
 - (Class)				classOfDefaultDrawingLayer;
 - (BOOL)				wantsInfoLayer;

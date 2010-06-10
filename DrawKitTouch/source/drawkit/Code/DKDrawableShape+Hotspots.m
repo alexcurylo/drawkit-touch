@@ -107,7 +107,8 @@
 - (void)				drawHotspotAtPoint:(NSPoint) hp inState:(DKHotspotState) state
 {
 #pragma unused(state)
-	NSColor* hc = [NSColor yellowColor];
+	//NSColor* hc = [NSColor yellowColor];
+	DKColor* hc = [DKColor yellowColor];
 	
 	//if( state == kDKHotspotStateOn )
 	//	hc = [hc shadowWithLevel:0.5];
@@ -224,6 +225,7 @@
 
 
 #pragma mark -
+#ifndef TARGET_OS_IPHONE
 - (void)				startMouseTracking:(NSEvent*) event inView:(NSView*) view
 {
 	LogEvent_(kReactiveEvent, @"hotspot started tracking, partcode = %d", m_partcode );
@@ -231,8 +233,10 @@
 	if([self delegate] && [[self delegate] respondsToSelector:@selector(hotspot:willBeginTrackingWithEvent:inView:)])
 		[[self delegate] hotspot:self willBeginTrackingWithEvent:event inView:view];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				continueMouseTracking:(NSEvent*) event inView:(NSView*) view
 {
 //	LogEvent_(kReactiveEvent, @"hotspot continued tracking, partcode = %d", m_partcode );
@@ -240,8 +244,10 @@
 	if([self delegate] && [[self delegate] respondsToSelector:@selector(hotspot:isTrackingWithEvent:inView:)])
 		[[self delegate] hotspot:self isTrackingWithEvent:event inView:view];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (void)				endMouseTracking:(NSEvent*) event inView:(NSView*) view
 {
 	LogEvent_(kReactiveEvent, @"hotspot stopped tracking, partcode = %d", m_partcode );
@@ -249,6 +255,7 @@
 	if([self delegate] && [[self delegate] respondsToSelector:@selector(hotspot:didEndTrackingWithEvent:inView:)])
 		[[self delegate] hotspot:self didEndTrackingWithEvent:event inView:view];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -

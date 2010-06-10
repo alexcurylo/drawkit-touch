@@ -1297,11 +1297,16 @@ NSString*		kDKLayerGroupDidReorderLayers			= @"kDKLayerGroupDidReorderLayers";
 		SAVE_GRAPHICS_CONTEXT			//[NSGraphicsContext saveGraphicsState];
 
 		if ([self clipsDrawingToInterior])
-			[NSBezierPath clipRect:[[self drawing] interior]];
+			//[NSBezierPath clipRect:[[self drawing] interior]];
+			[DKBezierPath clipRect:[[self drawing] interior]];
 
 		NSUInteger	bottom;
 		NSInteger			n;
+#if TARGET_OS_IPHONE
+		BOOL		printing = NO;
+#else
 		BOOL		printing = ![NSGraphicsContext currentContextDrawingToScreen];
+#endif TARGET_OS_IPHONE
 		DKLayer*	layer;
 		
 		bottom = [self indexOfHighestOpaqueLayer];
@@ -1314,10 +1319,15 @@ NSString*		kDKLayerGroupDidReorderLayers			= @"kDKLayerGroupDidReorderLayers";
 			{
 				@try
 				{
+#if TARGET_OS_IPHONE
+               CGContextSaveGState(UIGraphicsGetCurrentContext());
+#else
 					[NSGraphicsContext saveGraphicsState];
-				
+#endif TARGET_OS_IPHONE
+               
 					if ([layer clipsDrawingToInterior])
-						[NSBezierPath clipRect:[[self drawing] interior]];
+						//[NSBezierPath clipRect:[[self drawing] interior]];
+						[DKBezierPath clipRect:[[self drawing] interior]];
 					
 					[layer beginDrawing];
 					[layer drawRect:rect inView:aView];
@@ -1329,7 +1339,11 @@ NSString*		kDKLayerGroupDidReorderLayers			= @"kDKLayerGroupDidReorderLayers";
 				}
 				@finally
 				{
+#if TARGET_OS_IPHONE
+               CGContextRestoreGState(UIGraphicsGetCurrentContext());
+#else
 					[NSGraphicsContext restoreGraphicsState];
+#endif TARGET_OS_IPHONE
 				}
 			}
 		}

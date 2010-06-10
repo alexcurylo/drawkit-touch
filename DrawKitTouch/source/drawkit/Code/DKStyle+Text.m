@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKStyle-Text.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 21/09/2006.
 ///
@@ -43,11 +43,13 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 	
 	if ( dts == nil )
 	{
-		NSFont* font = [NSFont fontWithName:@"Helvetica" size:14];
+		//NSFont* font = [NSFont fontWithName:@"Helvetica" size:14];
+		DKFont* font = [DKFont fontWithName:@"Helvetica" size:14];
 		
 		dts = [[DKStyle alloc] init];
 		[dts setFont:font];
-		[dts setAlignment:NSCenterTextAlignment];
+		//[dts setAlignment:NSCenterTextAlignment];
+		[dts setAlignment:DKCenterTextAlignment];
 		[dts setName:[self styleNameForFont:font]];
 		
 		// because this is a framework default, its unique key must always be recreated the same. This is not something any client
@@ -77,13 +79,18 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 ///
 ///***************************************************************************************************************
 
-+ (DKStyle*)		textStyleWithFont:(NSFont*) font
+//+ (DKStyle*)		textStyleWithFont:(NSFont*) font
++ (DKStyle*)		textStyleWithFont:(DKFont*) font
 {
 	NSAssert( font != nil, @"cannot create a style with a nil font");
 	
 	DKStyle*	ts = [[DKStyle defaultTextStyle] mutableCopy];
 	[ts setFont:font];
+#if TARGET_OS_IPHONE
+	[ts setAlignment:UITextAlignmentLeft];
+#else
 	[ts setAlignment:NSNaturalTextAlignment];
+#endif TARGET_OS_IPHONE
 	[ts setName:[self styleNameForFont:font]];
 	
 	return [ts autorelease];
@@ -104,28 +111,43 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 ///
 ///***************************************************************************************************************
 
-+ (NSString*)			styleNameForFont:(NSFont*) font
+//+ (NSString*)			styleNameForFont:(NSFont*) font
++ (NSString*)			styleNameForFont:(DKFont*) font
 {
+#if TARGET_OS_IPHONE
+	return [NSString stringWithFormat:@"%@ %.1fpt", font.fontName, [font pointSize]];
+#else
 	return [NSString stringWithFormat:@"%@ %.1fpt", [font displayName], [font pointSize]];
+#endif TARGET_OS_IPHONE
 }
 
 
 #pragma mark -
+
+#ifndef TARGET_OS_IPHONE
 - (void)				setParagraphStyle:(NSParagraphStyle*) style
 {
 	[self changeTextAttribute:NSParagraphStyleAttributeName toValue:style];
 }
+#endif TARGET_OS_IPHONE
 
 
+#ifndef TARGET_OS_IPHONE
 - (NSParagraphStyle*)	paragraphStyle
 {
 	return [[self textAttributes] objectForKey:NSParagraphStyleAttributeName];
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
-- (void)				setAlignment:(NSTextAlignment) align
+//- (void)				setAlignment:(NSTextAlignment) align
+- (void)				setAlignment:(DKTextAlignment) align
 {
+#if TARGET_OS_IPHONE
+   (void)align;
+   twlog("implement setAlignment");
+#else
 	if(![self locked])
 	{
 		NSMutableParagraphStyle* mps = [[self paragraphStyle] mutableCopy];
@@ -142,31 +164,43 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 		switch( align )
 		{
 			default:
-			case NSLeftTextAlignment:
+			//case NSLeftTextAlignment:
+			case DKLeftTextAlignment:
 				actionName = NSLocalizedString(@"Align Left", @"undo string for align text left");
 				break;
 				
-			case NSRightTextAlignment:
+			//case NSRightTextAlignment:
+			case DKRightTextAlignment:
 				actionName = NSLocalizedString(@"Align Right", @"undo string for align text right");
 				break;
 				
-			case NSCenterTextAlignment:
+			//case NSCenterTextAlignment:
+			case DKCenterTextAlignment:
 				actionName = NSLocalizedString(@"Align Center", @"undo string for align text centre");
 				break;
 				
+#ifndef TARGET_OS_IPHONE
 			case NSJustifiedTextAlignment:
 				actionName = NSLocalizedString(@"Justify Text", @"undo string for align justify");
 				break;
+#endif TARGET_OS_IPHONE
 		}
 		
 		[[self undoManager] setActionName:actionName];
 	}
+#endif TARGET_OS_IPHONE
 }
 
 
-- (NSTextAlignment)		alignment
+//- (NSTextAlignment)		alignment
+- (DKTextAlignment)		alignment
 {
+#if TARGET_OS_IPHONE
+   twlog("implement alignment");
+   return UITextAlignmentLeft;
+#else
 	return [[self paragraphStyle] alignment];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -201,6 +235,11 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 {
 	// returns the undo action name for a particular text attribute
 	
+#if TARGET_OS_IPHONE
+   (void)attribute;
+   twlog("implement actionNameForTextAttribute");
+   return nil;
+#else
 	NSString* raw;
 	
 	if ([attribute isEqualToString:NSFontAttributeName])
@@ -213,24 +252,37 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 		raw = @"Text Attributes";
 		
 	return NSLocalizedString( raw, @"style text attribute undo string" );
+#endif TARGET_OS_IPHONE
 }
 
 
 
 #pragma mark -
-- (void)				setFont:(NSFont*) font
+//- (void)				setFont:(NSFont*) font
+- (void)				setFont:(DKFont*) font
 {
 	if(![self locked])
 	{
+#if TARGET_OS_IPHONE
+      (void)font;
+      twlog("implement setFont");
+#else
 		[self changeTextAttribute:NSFontAttributeName toValue:font];
 		[[self undoManager] setActionName:[self actionNameForTextAttribute:NSFontAttributeName]];
+#endif TARGET_OS_IPHONE
 	}
 }
 
 
-- (NSFont*)				font
+//- (NSFont*)				font
+- (DKFont*)				font
 {
+#if TARGET_OS_IPHONE
+   twlog("implement font");
+   return nil;
+#else
 	return [[self textAttributes] objectForKey:NSFontAttributeName];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -238,8 +290,12 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 {
 	if(![self locked])
 	{
+#if TARGET_OS_IPHONE
+		UIFont* newFont = [self.font fontWithSize:size];
+#else
 		NSFontManager* fm = [NSFontManager sharedFontManager];
 		NSFont* newFont = [fm convertFont:[self font] toSize:size];
+#endif TARGET_OS_IPHONE
 		[self setFont:newFont];
 		[[self undoManager] setActionName:NSLocalizedString(@"Font Size", @"undo string for font size change")];
 	}
@@ -252,19 +308,31 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 }
 
 
-- (void)				setTextColour:(NSColor*) aColour
+//- (void)				setTextColour:(NSColor*) aColour
+- (void)				setTextColour:(DKColor*) aColour
 {
 	if( ![self locked])
 	{
+#if TARGET_OS_IPHONE
+      (void)aColour;
+      twlog("implement setTextColour");
+#else
 		[self changeTextAttribute:NSForegroundColorAttributeName toValue:aColour];
+#endif TARGET_OS_IPHONE
 		[[self undoManager] setActionName:NSLocalizedString(@"Text Colour", @"undo string for text colour change")];
 	}
 }
 
 
-- (NSColor*)			textColour
+//- (NSColor*)			textColour
+- (DKColor*)			textColour
 {
+#if TARGET_OS_IPHONE
+   twlog("implement textColour");
+   return nil;
+#else
 	return [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -273,7 +341,12 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 {
 	if(![self locked])
 	{
+#if TARGET_OS_IPHONE
+      (void)uval;
+      twlog("implement setUnderlined");
+#else
 		[self changeTextAttribute:NSUnderlineStyleAttributeName  toValue:[NSNumber numberWithInteger:uval]];
+#endif TARGET_OS_IPHONE
 		[[self undoManager] setActionName:NSLocalizedString(@"Underline", @"undo string for underline text")];
 	}
 }
@@ -281,7 +354,12 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 
 - (NSInteger)					underlined
 {
+#if TARGET_OS_IPHONE
+   twlog("implement underlined");
+   return 0;
+#else
 	return [[[self textAttributes] objectForKey:NSUnderlineStyleAttributeName] integerValue];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -302,7 +380,9 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 	//LogEvent_(kReactiveEvent, @"applying text style; text = '%@'",[text string]);
 	
 	[text setAttributes:[self textAttributes] range:rng];
+#ifndef TARGET_OS_IPHONE
 	[text fixAttributesInRange:rng];
+#endif TARGET_OS_IPHONE
 }
 
 
@@ -321,19 +401,26 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 #pragma mark -
 - (DKStyle*)			drawingStyleFromTextAttributes
 {
+#if TARGET_OS_IPHONE
+   twlog("implement drawingStyleFromTextAttributes");
+   return nil;
+#else
 	// returns a drawing style whose fill colour and shadow are set from the text atrributes of the receiver.
 	// This is useful when converting text to a path or shape, since the appearance of the result is then consistent.
 	
 	DKStyle*		styl = [[DKStyle alloc] init];
 	DKFill*			fill;
-	NSColor*		fc = [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
+	//NSColor*		fc = [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
+	DKColor*		fc = [[self textAttributes] objectForKey:NSForegroundColorAttributeName];
 	
 	if ( fc )
 		fill = [DKFill fillWithColour:fc];
 	else
-		fill = [DKFill fillWithColour:[NSColor blackColor]];
+		//fill = [DKFill fillWithColour:[NSColor blackColor]];
+		fill = [DKFill fillWithColour:[DKColor blackColor]];
 		
-	NSShadow*		shad = [[[self textAttributes] objectForKey:NSShadowAttributeName] copy];
+	//NSShadow*		shad = [[[self textAttributes] objectForKey:NSShadowAttributeName] copy];
+	DKShadow*		shad = [[[self textAttributes] objectForKey:NSShadowAttributeName] copy];
 
 	if ( shad )
 	{
@@ -357,6 +444,7 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 	}
 
 	return [styl autorelease];
+#endif TARGET_OS_IPHONE
 }
 
 

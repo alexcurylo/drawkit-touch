@@ -12,7 +12,8 @@
 //#import <Cocoa/Cocoa.h>
 
 
-@interface NSBezierPath (DKEditing)
+//@interface NSBezierPath (DKEditing)
+@interface DKBezierPath (DKEditing)
 
 + (void)				setConstraintAngle:(CGFloat) radians;
 + (NSPoint)				colinearPointForPoint:(NSPoint) p centrePoint:(NSPoint) q;
@@ -21,9 +22,12 @@
 + (NSInteger)			point:(NSPoint) p inNSPointArray:(NSPoint*) array count:(NSInteger) count tolerance:(CGFloat) t reverse:(BOOL) reverse;
 + (void)				colineariseVertex:(NSPoint[3]) inPoints cpA:(NSPoint*) outCPA cpB:(NSPoint*) outCPB;
 
-- (NSBezierPath*)		bezierPathByRemovingTrailingElements:(NSInteger) numToRemove;
-- (NSBezierPath*)		bezierPathByStrippingRedundantElements;
-- (NSBezierPath*)		bezierPathByRemovingElementAtIndex:(NSInteger) indx;
+//- (NSBezierPath*)		bezierPathByRemovingTrailingElements:(NSInteger) numToRemove;
+//- (NSBezierPath*)		bezierPathByStrippingRedundantElements;
+//- (NSBezierPath*)		bezierPathByRemovingElementAtIndex:(NSInteger) indx;
+- (DKBezierPath*)		bezierPathByRemovingTrailingElements:(NSInteger) numToRemove;
+- (DKBezierPath*)		bezierPathByStrippingRedundantElements;
+- (DKBezierPath*)		bezierPathByRemovingElementAtIndex:(NSInteger) indx;
 
 - (void)				getPathMoveToCount:(NSInteger*) mtc lineToCount:(NSInteger*) ltc curveToCount:(NSInteger*) ctc closePathCount:(NSInteger*) cpc;
 
@@ -52,8 +56,10 @@
 // adding and deleting points from a path:
 // note that all of these methods return a new path since NSBezierPath doesn't support deletion/insertion except by reconstructing a path.
 
-- (NSBezierPath*)		deleteControlPointForPartcode:(NSInteger) pc;
-- (NSBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(CGFloat) tol type:(NSInteger) controlPointType;
+//- (NSBezierPath*)		deleteControlPointForPartcode:(NSInteger) pc;
+//- (NSBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(CGFloat) tol type:(NSInteger) controlPointType;
+- (DKBezierPath*)		deleteControlPointForPartcode:(NSInteger) pc;
+- (DKBezierPath*)		insertControlPointAtPoint:(NSPoint) p tolerance:(CGFloat) tol type:(NSInteger) controlPointType;
 
 - (NSPoint)				nearestPointToPoint:(NSPoint) p tolerance:(CGFloat) tol;
 

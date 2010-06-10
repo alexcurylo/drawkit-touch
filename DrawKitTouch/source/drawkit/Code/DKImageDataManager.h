@@ -26,10 +26,14 @@
 - (NSArray*)		allKeys;
 - (void)			removeKey:(NSString*) key;
 
-- (NSImage*)		makeImageWithData:(NSData*) imageData key:(NSString**) key;
-- (NSImage*)		makeImageWithPasteboard:(NSPasteboard*) pb key:(NSString**) key;
-- (NSImage*)		makeImageWithContentsOfURL:(NSURL*) url key:(NSString**) key;
-- (NSImage*)		makeImageForKey:(NSString*) key;
+//- (NSImage*)		makeImageWithData:(NSData*) imageData key:(NSString**) key;
+//- (NSImage*)		makeImageWithPasteboard:(NSPasteboard*) pb key:(NSString**) key;
+//- (NSImage*)		makeImageWithContentsOfURL:(NSURL*) url key:(NSString**) key;
+//- (NSImage*)		makeImageForKey:(NSString*) key;
+- (DKImage*)		makeImageWithData:(NSData*) imageData key:(NSString**) key;
+- (DKImage*)		makeImageWithPasteboard:(DKPasteboard*) pb key:(NSString**) key;
+- (DKImage*)		makeImageWithContentsOfURL:(NSURL*) url key:(NSString**) key;
+- (DKImage*)		makeImageForKey:(NSString*) key;
 
 - (void)			setKey:(NSString*) key isInUse:(BOOL) inUse;
 - (BOOL)			keyIsInUse:(NSString*) key;

@@ -1,6 +1,6 @@
 //
 //  DKShapeFactory.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 //
 //  Created by graham on 20/08/2006.
 ///
@@ -39,19 +39,24 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 #pragma mark -
-+ (NSBezierPath*)	rect
+//+ (NSBezierPath*)	rect
++ (DKBezierPath*)	rect
 {
-	return [NSBezierPath bezierPathWithRect:[self rectOfUnitSize]];
+	//return [NSBezierPath bezierPathWithRect:[self rectOfUnitSize]];
+	return [DKBezierPath bezierPathWithRect:[self rectOfUnitSize]];
 }
 
 
-+ (NSBezierPath*)	oval
+//+ (NSBezierPath*)	oval
++ (DKBezierPath*)	oval
 {
-	return [NSBezierPath bezierPathWithOvalInRect:[self rectOfUnitSize]];
+	//return [NSBezierPath bezierPathWithOvalInRect:[self rectOfUnitSize]];
+	return [DKBezierPath bezierPathWithOvalInRect:[self rectOfUnitSize]];
 }
 
 
-+ (NSBezierPath*)	roundRect
+//+ (NSBezierPath*)	roundRect
++ (DKBezierPath*)	roundRect
 {
 	// return a roundRect with default corner radius. Note that roundRects do not scale all that well - the corners get distorted
 	// if the scale isn't square. In which case you may prefer to recalculate the path given the final size of the shape.
@@ -60,13 +65,15 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	roundRectWithCornerRadius:(CGFloat) radius
+//+ (NSBezierPath*)	roundRectWithCornerRadius:(CGFloat) radius
++ (DKBezierPath*)	roundRectWithCornerRadius:(CGFloat) radius
 {
 	return [self roundRectInRect:[self rectOfUnitSize] andCornerRadius:radius];
 }
 
 
-+ (NSBezierPath*)	roundRectInRect:(NSRect) rect andCornerRadius:(CGFloat) radius
+//+ (NSBezierPath*)	roundRectInRect:(NSRect) rect andCornerRadius:(CGFloat) radius
++ (DKBezierPath*)	roundRectInRect:(NSRect) rect andCornerRadius:(CGFloat) radius
 {
 	// return a roundRect with given corner radius. Note: this code based on Uli Kusterer's NSBezierpathRoundRects class with
 	// grateful thanks.
@@ -82,11 +89,13 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 	// Make sure silly values simply lead to un-rounded corners:
 
 	if( radius <= 0 || NSIsEmptyRect( rect ))
-		return [NSBezierPath bezierPathWithRect: rect];
+		//return [NSBezierPath bezierPathWithRect: rect];
+		return [DKBezierPath bezierPathWithRect: rect];
 
 	// Now draw our rectangle:
 	NSRect			innerRect = NSInsetRect( rect, radius, radius );	// Make rect with corners being centers of the corner circles.
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 
 	[path moveToPoint: NSMakePoint( rect.origin.x, rect.origin.y + radius)];
 
@@ -108,11 +117,13 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 
 #pragma mark -
-+ (NSBezierPath*)	regularPolygon:(NSInteger) numberOfSides
+//+ (NSBezierPath*)	regularPolygon:(NSInteger) numberOfSides
++ (DKBezierPath*)	regularPolygon:(NSInteger) numberOfSides
 {
 	CGFloat			angle, radius = 0.5;
 	NSInteger				i;
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 	NSPoint			p;
 	
 	p.x = 0.5;
@@ -122,7 +133,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 	
 	for( i = 0; i < numberOfSides; i++ )
 	{
-		angle = (( 2 * pi * i ) / numberOfSides );
+		//angle = (( 2 * pi * i ) / numberOfSides );
+		angle = (( 2 * M_PI * i ) / numberOfSides );
 		
 		p.x = radius * cosf( angle );
 		p.y = radius * sinf( angle );
@@ -142,15 +154,18 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 
 #pragma mark -
-+ (NSBezierPath*)	equilateralTriangle
+//+ (NSBezierPath*)	equilateralTriangle
++ (DKBezierPath*)	equilateralTriangle
 {
 	return [self regularPolygon:3];
 }
 
 
-+ (NSBezierPath*)	rightTriangle
+//+ (NSBezierPath*)	rightTriangle
++ (DKBezierPath*)	rightTriangle
 {
-	NSBezierPath* rtTrianglePath = [NSBezierPath bezierPath];
+	//NSBezierPath* rtTrianglePath = [NSBezierPath bezierPath];
+	DKBezierPath* rtTrianglePath = [DKBezierPath bezierPath];
 	
 	NSPoint p;
 	
@@ -171,36 +186,42 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 
 #pragma mark -
-+ (NSBezierPath*)	pentagon
+//+ (NSBezierPath*)	pentagon
++ (DKBezierPath*)	pentagon
 {
 	return [self regularPolygon:5];
 }
 
 
-+ (NSBezierPath*)	hexagon
+//+ (NSBezierPath*)	hexagon
++ (DKBezierPath*)	hexagon
 {
 	return [self regularPolygon:6];
 }
 
 
-+ (NSBezierPath*)	heptagon
+//+ (NSBezierPath*)	heptagon
++ (DKBezierPath*)	heptagon
 {
 	return [self regularPolygon:7];
 }
 
 
-+ (NSBezierPath*)	octagon
+//+ (NSBezierPath*)	octagon
++ (DKBezierPath*)	octagon
 {
 	return [self regularPolygon:8];
 }
 
 
 #pragma mark -
-+ (NSBezierPath*)	star:(NSInteger) numberOfPoints innerDiameter:(CGFloat) diam
+//+ (NSBezierPath*)	star:(NSInteger) numberOfPoints innerDiameter:(CGFloat) diam
++ (DKBezierPath*)	star:(NSInteger) numberOfPoints innerDiameter:(CGFloat) diam
 {
 	CGFloat			angle, radius = 0.5;
 	NSInteger				i;
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 	NSPoint			p;
 	
 	if ( diam > 1.0 )
@@ -213,7 +234,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 	
 	for( i = 0; i < ( numberOfPoints * 2 ); i++ )
 	{
-		angle = (( pi * i ) / numberOfPoints );
+		//angle = (( pi * i ) / numberOfPoints );
+		angle = (( M_PI * i ) / numberOfPoints );
 		
 		if (( i % 2 ) == 0 )
 		{
@@ -238,7 +260,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	regularStar:(NSInteger) numberOfPoints
+//+ (NSBezierPath*)	regularStar:(NSInteger) numberOfPoints
++ (DKBezierPath*)	regularStar:(NSInteger) numberOfPoints
 {
 	#pragma unused(numberOfPoints)
 	
@@ -250,9 +273,11 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	cross
+//+ (NSBezierPath*)	cross
++ (DKBezierPath*)	cross
 {
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	[path moveToPoint:NSMakePoint( 0, -0.5 )];
 	[path lineToPoint:NSMakePoint( 0, 0.5 )];
 	[path moveToPoint:NSMakePoint( -0.5, 0 )];
@@ -261,9 +286,11 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	diagonalCross
+//+ (NSBezierPath*)	diagonalCross
++ (DKBezierPath*)	diagonalCross
 {
-	NSBezierPath* path = [NSBezierPath bezierPath];
+	//NSBezierPath* path = [NSBezierPath bezierPath];
+	DKBezierPath* path = [DKBezierPath bezierPath];
 	[path moveToPoint:NSMakePoint( -0.5, -0.5 )];
 	[path lineToPoint:NSMakePoint( 0.5, 0.5 )];
 	[path moveToPoint:NSMakePoint( 0.5, -0.5 )];
@@ -274,9 +301,11 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 
 #pragma mark -
-+ (NSBezierPath*)	ring:(CGFloat) innerDiameter
+//+ (NSBezierPath*)	ring:(CGFloat) innerDiameter
++ (DKBezierPath*)	ring:(CGFloat) innerDiameter
 {
-	NSBezierPath* path = [NSBezierPath bezierPathWithOvalInRect:[self rectOfUnitSize]];
+	//NSBezierPath* path = [NSBezierPath bezierPathWithOvalInRect:[self rectOfUnitSize]];
+	DKBezierPath* path = [DKBezierPath bezierPathWithOvalInRect:[self rectOfUnitSize]];
 	
 	if ( innerDiameter > 1.0 )
 		innerDiameter = 1.0;
@@ -291,13 +320,15 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	roundRectSpeechBalloon:(NSInteger) sbParams cornerRadius:(CGFloat) cr
+//+ (NSBezierPath*)	roundRectSpeechBalloon:(NSInteger) sbParams cornerRadius:(CGFloat) cr
++ (DKBezierPath*)	roundRectSpeechBalloon:(NSInteger) sbParams cornerRadius:(CGFloat) cr
 {
 	return [self roundRectSpeechBalloonInRect:[self rectOfUnitSize] params:sbParams cornerRadius:cr];
 }
 
 
-+ (NSBezierPath*)	roundRectSpeechBalloonInRect:(NSRect) rect params:(NSInteger) sbParams cornerRadius:(CGFloat) cr
+//+ (NSBezierPath*)	roundRectSpeechBalloonInRect:(NSRect) rect params:(NSInteger) sbParams cornerRadius:(CGFloat) cr
++ (DKBezierPath*)	roundRectSpeechBalloonInRect:(NSRect) rect params:(NSInteger) sbParams cornerRadius:(CGFloat) cr
 {
 	// speech ballon is a round rect with a straight spur going to one corner. The spur occupies 1/4 of the height or width of the
 	// overall bounds rectangle. The params set on which edge and which way the spur points.
@@ -335,7 +366,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 	
 	// Now draw our rectangle:
 	NSRect			innerRect = NSInsetRect( mainRect, cr, cr );	// Make rect with corners being centers of the corner circles.
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 
 	[path moveToPoint: NSMakePoint( mainRect.origin.x, mainRect.origin.y + cr)];
 
@@ -433,7 +465,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	ovalSpeechBalloon:(NSInteger) sbParams
+//+ (NSBezierPath*)	ovalSpeechBalloon:(NSInteger) sbParams
++ (DKBezierPath*)	ovalSpeechBalloon:(NSInteger) sbParams
 {
 	#pragma unused(sbParams)
 	
@@ -443,12 +476,15 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	arrowhead
+//+ (NSBezierPath*)	arrowhead
++ (DKBezierPath*)	arrowhead
 {
-	NSBezierPath* sArrowhead = nil;
+	//NSBezierPath* sArrowhead = nil;
+	DKBezierPath* sArrowhead = nil;
 	
 	NSRect r = [self rectOfUnitSize];
-	sArrowhead = [NSBezierPath bezierPath];
+	//sArrowhead = [NSBezierPath bezierPath];
+	sArrowhead = [DKBezierPath bezierPath];
 
 	[sArrowhead moveToPoint:NSMakePoint( NSMinX( r ), NSMidY( r ))];
 	[sArrowhead lineToPoint:NSMakePoint( NSMaxX( r ), NSMinY( r ))];
@@ -459,19 +495,22 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	arrowTailFeather
+//+ (NSBezierPath*)	arrowTailFeather
++ (DKBezierPath*)	arrowTailFeather
 {
 	return [self arrowTailFeatherWithRake:0.5];
 }
 
 
-+ (NSBezierPath*)	arrowTailFeatherWithRake:(CGFloat) rakeFactor
+//+ (NSBezierPath*)	arrowTailFeatherWithRake:(CGFloat) rakeFactor
++ (DKBezierPath*)	arrowTailFeatherWithRake:(CGFloat) rakeFactor
 {
 	// the rakeFactor is how far back the feather is swept - can be a value from 0..1
 	
 	rakeFactor = LIMIT( rakeFactor, 0, 1 ) * 0.5f;
 
-	NSBezierPath*	feather = [NSBezierPath bezierPath];
+	//NSBezierPath*	feather = [NSBezierPath bezierPath];
+	DKBezierPath*	feather = [DKBezierPath bezierPath];
 	NSPoint			p = NSMakePoint( -0.5 + rakeFactor, 0 );
 	
 	[feather moveToPoint:p];
@@ -494,9 +533,11 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-+ (NSBezierPath*)	inflectedArrowhead
+//+ (NSBezierPath*)	inflectedArrowhead
++ (DKBezierPath*)	inflectedArrowhead
 {
-	NSBezierPath*	arrow = [NSBezierPath bezierPath];
+	//NSBezierPath*	arrow = [NSBezierPath bezierPath];
+	DKBezierPath*	arrow = [DKBezierPath bezierPath];
 	
 	[arrow moveToPoint:NSMakePoint( -0.5, 0 )];
 	[arrow lineToPoint:NSMakePoint( 0.5, -0.5 )];
@@ -509,13 +550,15 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 
 #pragma mark -
-+ (NSBezierPath*)	roundEndedRect:(NSRect) rect
+//+ (NSBezierPath*)	roundEndedRect:(NSRect) rect
++ (DKBezierPath*)	roundEndedRect:(NSRect) rect
 {
 	// returns a rect with rounded ends (half circles). If <rect> is square this returns a circle. The rounded ends are applied
 	// to the shorter sides.
 	
 	if ( rect.size.width == rect.size.height )
-		return [NSBezierPath bezierPathWithOvalInRect:rect];
+		//return [NSBezierPath bezierPathWithOvalInRect:rect];
+		return [DKBezierPath bezierPathWithOvalInRect:rect];
 	else
 	{
 		NSSize	rs = rect.size;
@@ -524,7 +567,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 		
 		radius /= 2.0;
 		
-		NSBezierPath* path = [NSBezierPath bezierPath];
+		//NSBezierPath* path = [NSBezierPath bezierPath];
+		DKBezierPath* path = [DKBezierPath bezierPath];
 		
 		if ( ! vertical )
 		{
@@ -547,13 +591,18 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 
 #pragma mark -
-+ (NSBezierPath*)	pathFromGlyph:(NSString*) glyph inFontWithName:(NSString*) fontName
+
+#ifndef TARGET_OS_IPHONE
+//+ (NSBezierPath*)	pathFromGlyph:(NSString*) glyph inFontWithName:(NSString*) fontName
++ (DKBezierPath*)	pathFromGlyph:(NSString*) glyph inFontWithName:(NSString*) fontName
 {
 	// returns a path at the origin representing the glyph of the letter passed. This may need some adjustment to use in a shape.
 	// the character will be drawn "upside down" in a DKDrawingView unless the object that owns this path creates an appropriate transform.
 	
-	NSFont*			font = [NSFont fontWithName:fontName size:1];
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSFont*			font = [NSFont fontWithName:fontName size:1];
+	DKFont*			font = [DKFont fontWithName:fontName size:1];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 	NSPoint			p = NSMakePoint( -0.5, -0.5 );
 	
 	[path moveToPoint:p];
@@ -561,16 +610,19 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 
 	return path;
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
-- (NSBezierPath*)	roundRectInRect:(NSRect) bounds objParam:(id) param
+//- (NSBezierPath*)	roundRectInRect:(NSRect) bounds objParam:(id) param
+- (DKBezierPath*)	roundRectInRect:(NSRect) bounds objParam:(id) param
 {
 	return [[self class] roundRectInRect:bounds andCornerRadius:[param doubleValue]];
 }
 
 
-- (NSBezierPath*)	roundEndedRect:(NSRect) rect objParam:(id) param
+//- (NSBezierPath*)	roundEndedRect:(NSRect) rect objParam:(id) param
+- (DKBezierPath*)	roundEndedRect:(NSRect) rect objParam:(id) param
 {
 	#pragma unused(param)
 	
@@ -580,7 +632,8 @@ NSString*	kDKSpeechBalloonCornerRadius = @"kDKSpeechBalloonCornerRadius";
 }
 
 
-- (NSBezierPath*)	speechBalloonInRect:(NSRect) rect objParam:(id) param
+//- (NSBezierPath*)	speechBalloonInRect:(NSRect) rect objParam:(id) param
+- (DKBezierPath*)	speechBalloonInRect:(NSRect) rect objParam:(id) param
 {
 	// param is a dictionary containing the following parameters:
 	// key = kDKSpeechBalloonType, value = type flags (NSNumber as integer)

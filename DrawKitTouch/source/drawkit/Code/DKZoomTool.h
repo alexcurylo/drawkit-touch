@@ -17,7 +17,9 @@
 {
 @private
 	BOOL		mMode;					// NO to zoom in, YES to zoom out
+#ifndef TARGET_OS_IPHONE
 	NSUInteger	mModeModifierMask;		// modifier mask used to flip mode in response to modifier
+#endif TARGET_OS_IPHONE
 	NSPoint		mAnchor;				// initial click pt
 	NSRect		mZoomRect;				// zoom rect when dragged
 }

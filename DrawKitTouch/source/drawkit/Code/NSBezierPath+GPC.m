@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  NSBezierPath+GPC.m
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 31/10/2006.
 ///
@@ -30,7 +30,8 @@ static void		logPoly( gpc_polygon* poly );
 NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 
 #pragma mark -
-@implementation NSBezierPath (GPC)
+//@implementation NSBezierPath (GPC)
+@implementation DKBezierPath (GPC)
 #pragma mark As a NSBezierPath
 
 ///*********************************************************************************************************************
@@ -47,11 +48,13 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-+ (NSBezierPath*)		bezierPathWithGPCPolygon:(gpc_polygon*) poly
+//+ (NSBezierPath*)		bezierPathWithGPCPolygon:(gpc_polygon*) poly
++ (DKBezierPath*)		bezierPathWithGPCPolygon:(gpc_polygon*) poly
 {
 	NSAssert( poly != NULL, @"attempt to create path from NULL poly");
 	
-	NSBezierPath*	path = [NSBezierPath bezierPath];
+	//NSBezierPath*	path = [NSBezierPath bezierPath];
+	DKBezierPath*	path = [DKBezierPath bezierPath];
 	NSPoint			p;
 	NSInteger				cont;
 	
@@ -163,7 +166,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 	
 	[[self class] setDefaultFlatness:flatness];
 	
-	NSBezierPath*			flat = [self bezierPathByFlatteningPath];
+	//NSBezierPath*			flat = [self bezierPathByFlatteningPath];
+	DKBezierPath*			flat = [self bezierPathByFlatteningPath];
 	NSBezierPathElement		elem;
 	NSPoint					ap[3];
 	NSInteger				i, ec = [flat elementCount];
@@ -328,7 +332,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (BOOL)				intersectsPath:(NSBezierPath*) path
+//- (BOOL)				intersectsPath:(NSBezierPath*) path
+- (BOOL)				intersectsPath:(DKBezierPath*) path
 {
 	NSRect		bbox = [path bounds];
 	
@@ -336,7 +341,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 	{
 		// bounds intersect, so it's a possibility - find the intersection and see if it's empty.
 	
-		NSBezierPath* ip = [self pathFromIntersectionWithPath:path];
+		//NSBezierPath* ip = [self pathFromIntersectionWithPath:path];
+		DKBezierPath* ip = [self pathFromIntersectionWithPath:path];
 		
 		return ![ip isEmpty];
 	}
@@ -362,7 +368,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op
+//- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op
+- (DKBezierPath*)		pathFromPath:(DKBezierPath*) otherPath usingBooleanOperation:(gpc_op) op
 {
 	BOOL simplify = NO;
 	
@@ -403,9 +410,11 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op unflattenResult:(BOOL) uf
+//- (NSBezierPath*)		pathFromPath:(NSBezierPath*) otherPath usingBooleanOperation:(gpc_op) op unflattenResult:(BOOL) uf
+- (DKBezierPath*)		pathFromPath:(DKBezierPath*) otherPath usingBooleanOperation:(gpc_op) op unflattenResult:(BOOL) uf
 {
-	NSBezierPath*	result;
+	//NSBezierPath*	result;
+	DKBezierPath*	result;
 	gpc_polygon		*a, *b, *c;
 	
 	a = [self gpcPolygon];
@@ -448,7 +457,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 		uf = NO;
 	}
 	else
-		result = [NSBezierPath bezierPathWithGPCPolygon:c];
+		//result = [NSBezierPath bezierPathWithGPCPolygon:c];
+		result = [DKBezierPath bezierPathWithGPCPolygon:c];
 	
 	gpc_free_polygon( a );
 	gpc_free_polygon( b );
@@ -476,7 +486,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		pathFromUnionWithPath:(NSBezierPath*) otherPath
+//- (NSBezierPath*)		pathFromUnionWithPath:(NSBezierPath*) otherPath
+- (DKBezierPath*)		pathFromUnionWithPath:(DKBezierPath*) otherPath
 {
 	// if the paths are disjoint, this can be accomplished using a simple concatentation of the paths, which
 	// is preferable to avoid losing original control points and needing to curve-fit.
@@ -517,7 +528,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		pathFromIntersectionWithPath:(NSBezierPath*) otherPath
+//- (NSBezierPath*)		pathFromIntersectionWithPath:(NSBezierPath*) otherPath
+- (DKBezierPath*)		pathFromIntersectionWithPath:(DKBezierPath*) otherPath
 {
 	if( ! NSIntersectsRect([self bounds], [otherPath bounds]))
 		return nil;
@@ -541,7 +553,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		pathFromDifferenceWithPath:(NSBezierPath*) otherPath
+//- (NSBezierPath*)		pathFromDifferenceWithPath:(NSBezierPath*) otherPath
+- (DKBezierPath*)		pathFromDifferenceWithPath:(DKBezierPath*) otherPath
 {
 	if( ! NSIntersectsRect([self bounds], [otherPath bounds]))
 		return self;
@@ -564,7 +577,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		pathFromExclusiveOrWithPath:(NSBezierPath*) otherPath
+//- (NSBezierPath*)		pathFromExclusiveOrWithPath:(NSBezierPath*) otherPath
+- (DKBezierPath*)		pathFromExclusiveOrWithPath:(DKBezierPath*) otherPath
 {
 	// if the paths are disjoint, this is equivalent to a union, or simple path concatenation
 	
@@ -593,7 +607,8 @@ NSString*	kDKCurveFittingPolicyDefaultsKey = @"DKCurveFittingPolicy";
 ///
 ///********************************************************************************************************************
 
-- (NSBezierPath*)		bezierPathByUnflatteningPath
+//- (NSBezierPath*)		bezierPathByUnflatteningPath
+- (DKBezierPath*)		bezierPathByUnflatteningPath
 {
 	if([self isEmpty])
 		return self;

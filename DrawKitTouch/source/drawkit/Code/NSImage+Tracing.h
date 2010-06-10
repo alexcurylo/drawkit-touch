@@ -29,13 +29,16 @@ DKColourQuantizationMethod;
 
 // category on NSImage returns lists of 'vector rep' objects (see below)
 
-@interface NSImage (Tracing)
+//@interface NSImage (Tracing)
+@interface DKImage (Tracing)
 
 - (NSArray*)			vectorizeToGrayscale:(NSInteger) levels;
 - (NSArray*)			vectorizeToColourWithPrecision:(NSInteger) prec quantizationMethod:(DKColourQuantizationMethod) qm;
 
+#ifndef TARGET_OS_IPHONE
 - (NSBitmapImageRep*)	eightBitImageRep;
 - (NSBitmapImageRep*)	twentyFourBitImageRep;
+#endif TARGET_OS_IPHONE
 
 @end
 
@@ -48,8 +51,10 @@ DKColourQuantizationMethod;
 	NSUInteger			mLevels;
 	NSUInteger			mPixelValue;
 	potrace_param_t*	mTraceParams;
-	NSBezierPath*		mVectorData;
-	NSColor*			mColour;
+	//NSBezierPath*		mVectorData;
+	//NSColor*			mColour;
+	DKBezierPath*		mVectorData;
+	DKColor*			mColour;
 }
 
 - (id)					initWithImageSize:(NSSize) isize pixelValue:(NSUInteger) pixv levels:(NSUInteger) lev;
@@ -58,12 +63,15 @@ DKColourQuantizationMethod;
 
 // get the traced path, performing the trace if needed
 
-- (NSBezierPath*)		vectorPath;
+//- (NSBezierPath*)		vectorPath;
+- (DKBezierPath*)		vectorPath;
 
 // colour from original image associated with this bitplane
 
-- (void)				setColour:(NSColor*) cin;
-- (NSColor*)			colour;
+//- (void)				setColour:(NSColor*) cin;
+//- (NSColor*)			colour;
+- (void)				setColour:(DKColor*) cin;
+- (DKColor*)			colour;
 
 // tracing parameters
 

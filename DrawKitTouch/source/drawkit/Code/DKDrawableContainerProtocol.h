@@ -19,7 +19,8 @@
 
 - (DKDrawing*)				drawing;
 - (DKLayer*)				layer;
-- (NSAffineTransform*)		renderingTransform;
+//- (NSAffineTransform*)		renderingTransform;
+- (DKAffineTransform*)		renderingTransform;
 - (DKImageDataManager*)		imageManager;
 - (NSUInteger)				indexOfObject:(DKDrawableObject*) obj;
 

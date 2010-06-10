@@ -35,8 +35,10 @@
 	CGFloat						mVerticalPosition;			// for proportional vertical text placement, this is the proportion 0..1 of the height
 	CGFloat						mTextKnockoutDistance;		// distance to extend path when drawing knockout; 0 = no knockout.
 	CGFloat						mTextKnockoutStrokeWidth;	// stroke width for text knockout, if any (0 = none)
-	NSColor*					mTextKnockoutColour;		// colour for text knockout, default = white
-	NSColor*					mTextKnockoutStrokeColour;	// colour for stroking the text knockout, default = black
+	//NSColor*					mTextKnockoutColour;		// colour for text knockout, default = white
+	//NSColor*					mTextKnockoutStrokeColour;	// colour for stroking the text knockout, default = black
+	DKColor*					mTextKnockoutColour;		// colour for text knockout, default = white
+	DKColor*					mTextKnockoutStrokeColour;	// colour for stroking the text knockout, default = black
 	NSMutableDictionary*		mTACache;					// private cache used for various text layout caching
 	NSDictionary*				mDefaultAttributes;			// saves default attributes for when text is deleted altogether
 }
@@ -58,8 +60,10 @@
 - (NSString*)					string;
 - (void)						setLabel:(id) anySortOfText;
 - (NSAttributedString*)			label;
+#ifndef TARGET_OS_IPHONE
 - (NSTextStorage*)				textToDraw:(id) object;
 - (NSTextStorage*)				textForEditing;
+#endif TARGET_OS_IPHONE
 
 // placeholder text - shown if the adornment would otherwise draw nothing
 
@@ -68,7 +72,8 @@
 
 // text conversions:
 
-- (NSBezierPath*)				textAsPathForObject:(id) object;
+//- (NSBezierPath*)				textAsPathForObject:(id) object;
+- (DKBezierPath*)				textAsPathForObject:(id) object;
 - (NSArray*)					textPathsForObject:(id) object usedSize:(NSSize*) aSize;
 - (DKStyle*)					styleFromTextAttributes;
 
@@ -110,10 +115,14 @@
 - (CGFloat)						textKnockoutDistance;
 - (void)						setTextKnockoutStrokeWidth:(CGFloat) width;
 - (CGFloat)						textKnockoutStrokeWidth;
-- (void)						setTextKnockoutColour:(NSColor*) colour;
-- (NSColor*)					textKnockoutColour;
-- (void)						setTextKnockoutStrokeColour:(NSColor*) colour;
-- (NSColor*)					textKnockoutStrokeColour;
+//- (void)						setTextKnockoutColour:(NSColor*) colour;
+//- (NSColor*)					textKnockoutColour;
+//- (void)						setTextKnockoutStrokeColour:(NSColor*) colour;
+//- (NSColor*)					textKnockoutStrokeColour;
+- (void)						setTextKnockoutColour:(DKColor*) colour;
+- (DKColor*)					textKnockoutColour;
+- (void)						setTextKnockoutStrokeColour:(DKColor*) colour;
+- (DKColor*)					textKnockoutStrokeColour;
 
 // modifying text when drawn:
 
@@ -125,18 +134,24 @@
 
 // text attributes:
 
+#ifndef TARGET_OS_IPHONE
 - (void)						changeFont:(id) sender;
 - (void)						changeAttributes:(id) sender;
+#endif TARGET_OS_IPHONE
 
-- (void)						setFont:(NSFont*) font;
-- (NSFont*)						font;
+//- (void)						setFont:(NSFont*) font;
+//- (NSFont*)						font;
+- (void)						setFont:(DKFont*) font;
+- (DKFont*)						font;
 
 - (void)						setFontSize:(CGFloat) fontSize;
 - (CGFloat)						fontSize;
 - (void)						scaleTextBy:(CGFloat) factor;
 
-- (void)						setColour:(NSColor*) colour;
-- (NSColor*)					colour;
+//- (void)						setColour:(NSColor*) colour;
+//- (NSColor*)					colour;
+- (void)						setColour:(DKColor*) colour;
+- (DKColor*)					colour;
 
 - (void)						setTextAttributes:(NSDictionary*) attrs;
 - (NSDictionary*)				textAttributes;
@@ -146,17 +161,25 @@
 
 // paragraph styles:
 
+#ifndef TARGET_OS_IPHONE
 - (void)						setParagraphStyle:(NSParagraphStyle*) style;
 - (NSParagraphStyle*)			paragraphStyle;
+#endif TARGET_OS_IPHONE
 
-- (void)						setAlignment:(NSTextAlignment) align;
-- (NSTextAlignment)				alignment;
+//- (void)						setAlignment:(NSTextAlignment) align;
+//- (NSTextAlignment)				alignment;
+- (void)						setAlignment:(DKTextAlignment) align;
+- (DKTextAlignment)				alignment;
 
-- (void)						setBackgroundColour:(NSColor*) colour;
-- (NSColor*)					backgroundColour;
+//- (void)						setBackgroundColour:(NSColor*) colour;
+//- (NSColor*)					backgroundColour;
+- (void)						setBackgroundColour:(DKColor*) colour;
+- (DKColor*)					backgroundColour;
 
-- (void)						setOutlineColour:(NSColor*) aColour;
-- (NSColor*)					outlineColour;
+//- (void)						setOutlineColour:(NSColor*) aColour;
+//- (NSColor*)					outlineColour;
+- (void)						setOutlineColour:(DKColor*) aColour;
+- (DKColor*)					outlineColour;
 
 - (void)						setOutlineWidth:(CGFloat) aWidth;
 - (CGFloat)						outlineWidth;

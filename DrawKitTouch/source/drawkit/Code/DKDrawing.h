@@ -1,6 +1,6 @@
 ///**********************************************************************************************************************************
 ///  DKDrawing.h
-///  DrawKit ©2005-2008 Apptree.net
+///  DrawKit ï¿½2005-2008 Apptree.net
 ///
 ///  Created by graham on 14/08/2006.
 ///
@@ -19,9 +19,14 @@
 @private
 	NSString*				m_units;				// user readable drawing units string, e.g. "millimetres"
 	DKLayer*				m_activeLayerRef;		// which one is active for editing, etc
-	NSColor*				m_paperColour;			// underlying colour of the "paper"
+	//NSColor*				m_paperColour;			// underlying colour of the "paper"
+	DKColor*				m_paperColour;			// underlying colour of the "paper"
 	DKUndoManager*			m_undoManager;			// undo manager to use for data changes
+#if TARGET_OS_IPHONE
+	CGColorSpaceRef		mColourSpace;			// the colour space of the drawing as a whole (nil means use default)
+#else
 	NSColorSpace*			mColourSpace;			// the colour space of the drawing as a whole (nil means use default)
+#endif TARGET_OS_IPHONE
 	NSSize					m_size;					// dimensions of the drawing
 	CGFloat					m_leftMargin;			// margins
 	CGFloat					m_rightMargin;
@@ -75,10 +80,14 @@
 
 - (void)					setDrawingSize:(NSSize) aSize;
 - (NSSize)					drawingSize;
+#ifndef TARGET_OS_IPHONE
 - (void)					setDrawingSizeWithPrintInfo:(NSPrintInfo*) printInfo;
+#endif TARGET_OS_IPHONE
 
 - (void)					setMarginsLeft:(CGFloat) l top:(CGFloat) t right:(CGFloat) r bottom:(CGFloat) b;
+#ifndef TARGET_OS_IPHONE
 - (void)					setMarginsWithPrintInfo:(NSPrintInfo*) printInfo;
+#endif TARGET_OS_IPHONE
 - (CGFloat)					leftMargin;
 - (CGFloat)					rightMargin;
 - (CGFloat)					topMargin;
@@ -89,8 +98,13 @@
 - (void)					setFlipped:(BOOL) flipped;
 - (BOOL)					isFlipped;
 
+#if TARGET_OS_IPHONE
+- (void)					setColourSpace:(CGColorSpaceRef) cSpace;
+- (CGColorSpaceRef)			colourSpace;
+#else
 - (void)					setColourSpace:(NSColorSpace*) cSpace;
 - (NSColorSpace*)			colourSpace;
+#endif TARGET_OS_IPHONE
 
 // setting the rulers to the grid:
 
@@ -145,8 +159,10 @@
 
 // rendering the drawing:
 
-- (void)					setPaperColour:(NSColor*) colour;
-- (NSColor*)				paperColour;
+//- (void)					setPaperColour:(NSColor*) colour;
+//- (NSColor*)				paperColour;
+- (void)					setPaperColour:(DKColor*) colour;
+- (DKColor*)				paperColour;
 - (void)					setPaperColourIsPrinted:(BOOL) printIt;
 - (BOOL)					paperColourIsPrinted;
 
@@ -255,12 +271,13 @@ extern NSString*		kDKDrawingUnitAbbreviationsUserDefault;	// NSDictionary
 
 
 // additional methods
-
+#ifndef TARGET_OS_IPHONE
 @interface DKDrawing (UISupport)
 
 - (NSWindow*)			windowForSheet;
 
 @end
+#endif TARGET_OS_IPHONE
 
 
 // deprecated methods
