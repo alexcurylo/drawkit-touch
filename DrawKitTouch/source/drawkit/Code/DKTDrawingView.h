@@ -53,13 +53,15 @@ DKCropMarkKind;
 /*
    BOOL				mPageBreaksVisible;		// YES if page breaks are drawn in the view
 	NSPrintInfo*		mPrintInfo;				// print info used to draw page breaks and paginate, etc
-*/
 	DKCropMarkKind		mCropMarkKind;			// what kind of crop marks to add to the printed output
+*/
 	DKViewController*	mControllerRef;			// the view's controller (weak ref)
 	DKDrawing*			mAutoDrawing;			// the drawing we created automatically (if we did so - typically nil for doc-based apps)
 	BOOL				m_didCreateDrawing;		// YES if the window built the back end itself
 	NSRect				mEditorFrame;			// tracks current frame of text editor
-	NSTimeInterval		mLastMouseDragTime;		// time of last mouseDragged: event
+/*
+ NSTimeInterval		mLastMouseDragTime;		// time of last mouseDragged: event
+*/
 	NSDictionary*		mRulerMarkersDict;		// tracks ruler markers
 }
 

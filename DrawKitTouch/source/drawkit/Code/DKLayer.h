@@ -36,7 +36,8 @@
 	DKLayerGroup*			m_groupRef;				// group we are contained by (or drawing)
 	BOOL					m_clipToInterior;		// YES to clip drawing to inside the interior region
 	NSMutableDictionary*	mUserInfo;				// metadata
-	NSUInteger				mReserved[3];			// unused
+	// not actually referenced anywhere?? ...alex
+	//NSUInteger				mReserved[3];			// unused
 	NSString*				mLayerUniqueKey;		// unique ID for the layer
 	CGFloat					mAlpha;					// alpha value applied to layer as a whole
 }

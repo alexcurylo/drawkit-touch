@@ -77,9 +77,10 @@ static NSUInteger euclid_hcf( NSUInteger a, NSUInteger b )
 	// multiple of the hcf. The returned dash has equal mark/space ratio and a phase of 0, which should permit it to be used to stroke the rectangle directly.
 	
 	NSUInteger a, b;
-	CGFloat	 hcf, rem, halfLen;
-	
-	halfLen = len * 0.5f;
+	CGFloat	 hcf, rem;
+   
+   CGFloat halfLen = len * 0.5f;
+   
 	//a = (NSUInteger)floor( fabs( aSize.width ));
 	//b = (NSUInteger)floor( fabs( aSize.height ));
 	//hcf = (CGFloat) euclid_hcf( a, b );
@@ -92,11 +93,14 @@ static NSUInteger euclid_hcf( NSUInteger a, NSUInteger b )
 	
 	NSLog(@"size = %@, hcf = %f, rem = %f, halfLen = %f", NSStringFromSize( aSize ), hcf, rem, halfLen );
 	
-	if ( rem > ( hcf * 0.5f ))
+	// not needed? ...alex
+	/*
+    if ( rem > ( hcf * 0.5f ))
 		halfLen += ( hcf - rem );
 	else
 		halfLen -= rem;
-	
+	*/
+   
 	CGFloat d[2];
 	
 	d[0] = d[1] = hcf;

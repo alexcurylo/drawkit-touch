@@ -673,7 +673,8 @@ function result is the final path length
 
 CGFloat	anneal( CGFloat x[], CGFloat y[], NSInteger iorder[], NSInteger ncity, NSInteger annealingSteps, const void* context ) 
 { 
-	NSInteger		ans, nover, nlimit, i1, i2; 
+	NSInteger		ans, nover, i1, i2; 
+   //NSInteger nlimit;
 	NSInteger		i, j, k, nsucc, nn, idec; 
 
 	static			NSInteger n[7]; 
@@ -686,7 +687,7 @@ CGFloat	anneal( CGFloat x[], CGFloat y[], NSInteger iorder[], NSInteger ncity, N
 	CGFloat			path, de, t, previousPath; 
 
 	nover	= 100 * ncity;	// Maximum number of paths tried at any temperature. 
-	nlimit	= 20 * ncity;	// Maximum number of successful path changes before continuing. 
+	//nlimit	= 20 * ncity;	// Maximum number of successful path changes before continuing. 
 	path	= 0.0; 
 	t		= 0.5; 
 	

@@ -37,7 +37,8 @@ DKLayerCacheOption;
 	BOOL					m_allowSnapToObjects;	// YES to let snapping look for other objects
 	DKDrawableObject*		mNewObjectPending;		// temporary object being created - is drawn and handled as a normal object but can be deleted without undo
 	DKLayerCacheOption		mLayerCachingOption;	// see constants defined above
-	NSRect					mCacheBounds;			// the bounds rect of the cached layer or PDF rep - used to accurately position the cache when drawn
+	// not actually referenced anywhere?? ...alex
+	//NSRect					mCacheBounds;			// the bounds rect of the cached layer or PDF rep - used to accurately position the cache when drawn
 	BOOL					m_inDragOp;				// YES if a drag is happening over the layer
 	NSSize					m_pasteOffset;			// distance to offset a pasted object
 	BOOL					m_recordPasteOffset;	// set to YES following a paste, and NO following a drag. When YES, paste offset is recorded.

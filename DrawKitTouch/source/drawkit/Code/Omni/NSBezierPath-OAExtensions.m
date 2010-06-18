@@ -540,8 +540,12 @@ static BOOL subsequent(struct OABezierPathIntersectionHalf *one, struct OABezier
     }
     
     if (listSize - intersectionCount > 8)
-        intersections = realloc(intersections, sizeof(*intersections) * (listSize = intersectionCount));
-
+    {
+       //intersections = realloc(intersections, sizeof(*intersections) * (listSize = intersectionCount));
+       // rearranged to mollify analyzer ...alex
+       listSize = intersectionCount;
+       intersections = realloc(intersections, sizeof(*intersections) * listSize);
+    }
     return (struct OABezierPathIntersectionList){ intersectionCount, intersections };
 }
 
@@ -3125,7 +3129,9 @@ static BOOL _curvedLineIntersectsRect(const NSPoint *c, NSRect rect, CGFloat tol
     // use newtons method to approach the minumum u.
     NSPoint a[4];     // our regular coefficients
     double c[7];  // a cubic squared gives us 7 coefficients
-    double u, bestU;
+   double u;
+   // not actually referenced anywhere?? ...alex
+   //double bestU;
 
     double tolerance = padding + [self lineWidth] / 2;
     double delta, minDelta;
@@ -3159,7 +3165,8 @@ static BOOL _curvedLineIntersectsRect(const NSPoint *c, NSRect rect, CGFloat tol
         u = point.x - endPoint.x;
     } else {
         u = point.x - startPoint.x;
-        delta = endPoint.x - startPoint.x;
+        // not actually referenced as delta is reassigned next line?? ...alex
+        //delta = endPoint.x - startPoint.x;
     }
     
     delta = fabs(startPoint.x - point.x) + fabs(endPoint.x - point.x);
@@ -3186,7 +3193,7 @@ static BOOL _curvedLineIntersectsRect(const NSPoint *c, NSRect rect, CGFloat tol
     // To get around this, we're keeping track of our best result, adding a few more iterations, and damping our approach.
     
 	minDelta = 100000;
-    bestU = u;
+    //bestU = u;
     
     for( i = 0; i < 12; ++i )
 	{
@@ -3394,7 +3401,7 @@ static BOOL _curvedLineIntersectsRect(const NSPoint *c, NSRect rect, CGFloat tol
         case NSCurveToBezierPathElement:
             return points[2];
         case NSClosePathBezierPathElement:
-            element = [self elementAtIndex:0 associatedPoints:points];
+            /*element =*/ [self elementAtIndex:0 associatedPoints:points];
         case NSMoveToBezierPathElement:
         case NSLineToBezierPathElement:
             return points[0];

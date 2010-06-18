@@ -42,7 +42,8 @@ DKGridMeasurementSystem;
 	CGFloat					m_divisionLineWidth;			// the line width to draw the divisions
 	CGFloat					m_majorLineWidth;				// the line width to draw the majors
 	NSUInteger				m_rulerStepUpCycle;				// the ruler step-up cycle to use
-	BOOL					m_cacheInLayer;					// YES if the grid is cache dusing a CGLayer
+	// not actually referenced anywhere?? ...alex
+	//BOOL					m_cacheInLayer;					// YES if the grid is cache dusing a CGLayer
 	CGLayerRef				m_cgl;							// the CGLayer when the grid is cached there
 	NSUInteger				mSpanCycle;						// span increment cycle (typically 1)
 	CGFloat					mDivsSupressionScale;			// scale below which divs are not drawn at all (default = 0.5)

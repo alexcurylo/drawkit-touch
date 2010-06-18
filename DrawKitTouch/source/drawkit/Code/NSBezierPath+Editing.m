@@ -1069,6 +1069,7 @@ static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
 	{
 		NSInteger						i, j, m = [self elementCount];
 		NSPoint					ap[3], lp[3];
+      ap[0] = ap[1] = ap[2] = lp[0] = lp[1] = lp[2] = NSZeroPoint;
 		BOOL					deletedFirstPoint = NO;
 		NSBezierPathElement		lm;
 		//NSBezierPath*			newPath = [NSBezierPath bezierPath];

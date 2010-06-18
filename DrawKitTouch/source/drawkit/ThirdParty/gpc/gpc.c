@@ -426,7 +426,7 @@ static edge_node *build_lmt(lmt_node **lmt, sb_tree **sbtree,
                             int *sbt_entries, gpc_polygon *p, int type,
                             gpc_op op)
 {
-  int          c, i, min, max, num_edges, v, num_vertices;
+   int          c, i, min, max, num_edges, v, num_vertices;
   int          total_vertices= 0, e_index=0;
   edge_node   *e, *edge_table;
 
@@ -436,7 +436,9 @@ static edge_node *build_lmt(lmt_node **lmt, sb_tree **sbtree,
   /* Create the entire input polygon edge table in one go */
   MALLOC(edge_table, total_vertices * sizeof(edge_node),
          "edge table creation", edge_node);
-
+   // to mollify analyzer ...alex
+   if (!edge_table) return NULL;
+      
   for (c= 0; c < p->num_contours; c++)
   {
     if (p->contour[c].num_vertices < 0)
@@ -929,6 +931,8 @@ static bbox *create_contour_bboxes(gpc_polygon *p)
   int   c, v;
 
   MALLOC(box, p->num_contours * sizeof(bbox), "Bounding box creation", bbox);
+   // to mollify analyzer ...alex
+   if (!box) return NULL;
 
   /* Construct contour bounding boxes */
   for (c= 0; c < p->num_contours; c++)
@@ -966,6 +970,8 @@ static void minimax_test(gpc_polygon *subj, gpc_polygon *clip, gpc_op op)
 
   MALLOC(o_table, subj->num_contours * clip->num_contours * sizeof(int),
          "overlap table creation", int);
+   // to mollify analyzer ...alex
+   if (!o_table) return;
 
   /* Check all subject contour bounding boxes against clip boxes */
   for (s= 0; s < subj->num_contours; s++)
@@ -1036,7 +1042,10 @@ void gpc_read_polygon(FILE *fp, int read_hole_flags, gpc_polygon *p)
          "hole flag array creation", int);
   MALLOC(p->contour, p->num_contours
          * sizeof(gpc_vertex_list), "contour creation", gpc_vertex_list);
-  for (c= 0; c < p->num_contours; c++)
+   // to mollify analyzer ...alex
+   if (!p->hole || !p->contour) return;
+
+   for (c= 0; c < p->num_contours; c++)
   {
     fscanf(fp, "%d", &(p->contour[c].num_vertices));
 
@@ -1086,6 +1095,8 @@ void gpc_add_contour(gpc_polygon *p, gpc_vertex_list *new_contour, int hole)
   /* Create an extended contour array */
   MALLOC(extended_contour, (p->num_contours + 1)
          * sizeof(gpc_vertex_list), "contour addition", gpc_vertex_list);
+   // to mollify analyzer ...alex
+   if (!extended_hole || !extended_contour) return;
 
   /* Copy the old contour and hole data into the extended arrays */
   for (c= 0; c < p->num_contours; c++)
@@ -1126,9 +1137,12 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
   vertex_node   *vtx, *nv;
   h_state        horiz[2];
   int            in[2], exists[2], parity[2]= {LEFT, LEFT};
-  int            c, v, contributing, search, scanbeam= 0, sbt_entries= 0;
-  int            vclass, bl, br, tl, tr;
-  double        *sbt= NULL, xb, px, yb, yt, dy, ix, iy;
+  //int            c, v, contributing, search, scanbeam= 0, sbt_entries= 0;
+   int            c, v, contributing = 0, search, scanbeam= 0, sbt_entries= 0;
+  //int            vclass, bl, br, tl, tr;
+   int            vclass, bl = 0, br = 0, tl = 0, tr = 0;
+  //double        *sbt= NULL, xb, px, yb, yt, dy, ix, iy;
+   double        *sbt= NULL, xb, px, yb, yt = 0, dy = 0, ix, iy;
 
   /* Test for trivial NULL result cases */
   if (((subj->num_contours == 0) && (clip->num_contours == 0))
@@ -1166,7 +1180,10 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
 
   /* Build scanbeam table from scanbeam tree */
   MALLOC(sbt, sbt_entries * sizeof(double), "sbt creation", double);
-  build_sbt(&scanbeam, sbt, sbtree);
+   // to mollify analyzer ...alex
+   if (!sbt) return;
+
+   build_sbt(&scanbeam, sbt, sbtree);
   scanbeam= 0;
   free_sbtree(&sbtree);
 
@@ -1212,8 +1229,11 @@ void gpc_polygon_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
     px= -DBL_MAX;
 
     /* Create bundles within AET */
+     // to mollify analyzer ...alex
+     if (!aet) return;
     e0= aet;
-    e1= aet;
+     // not actually referenced as e1 is reassigned before use?? ...alex
+    //e1= aet;
 
     /* Set up bundle fields of first edge */
     aet->bundle[ABOVE][ aet->type]= (aet->top.y != yb);
@@ -1780,17 +1800,24 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
   sb_tree       *sbtree= NULL;
   it_node       *it= NULL, *intersect;
   edge_node     *edge, *prev_edge, *next_edge, *succ_edge, *e0, *e1;
-  edge_node     *aet= NULL, *c_heap= NULL, *s_heap= NULL, *cf;
+  //edge_node     *aet= NULL, *c_heap= NULL, *s_heap= NULL, *cf;
+   edge_node     *aet= NULL, *c_heap= NULL, *s_heap= NULL, *cf = NULL;
   lmt_node      *lmt= NULL, *local_min;
   polygon_node  *tlist= NULL, *tn, *tnn, *p, *q;
   vertex_node   *lt, *ltn, *rt, *rtn;
   h_state        horiz[2];
-  vertex_type    cft;
+  //vertex_type    cft;
+   vertex_type    cft = NUL;
   int            in[2], exists[2], parity[2]= {LEFT, LEFT};
-  int            s, v, contributing, search, scanbeam= 0, sbt_entries= 0;
-  int            vclass, bl, br, tl, tr;
-  double        *sbt= NULL, xb, px, nx, yb, yt, dy, ix, iy;
-
+  //int            s, v, contributing, search, scanbeam= 0, sbt_entries= 0;
+   int            s, v, contributing = 0, search, scanbeam= 0, sbt_entries= 0;
+  //int            vclass, bl, br, tl, tr;
+   int            vclass, bl = 0, br = 0, tl = 0, tr = 0;
+  //double        *sbt= NULL, xb, px, nx, yb, yt, dy, ix, iy;
+   double        *sbt= NULL, xb, nx, yb, yt = 0, dy = 0, ix, iy;
+   // initialized here to quiet analyzer ...alex
+   double px= -DBL_MAX;
+   
   /* Test for trivial NULL result cases */
   if (((subj->num_contours == 0) && (clip->num_contours == 0))
    || ((subj->num_contours == 0) && ((op == GPC_INT) || (op == GPC_DIFF)))
@@ -1825,7 +1852,10 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
 
   /* Build scanbeam table from scanbeam tree */
   MALLOC(sbt, sbt_entries * sizeof(double), "sbt creation", double);
-  build_sbt(&scanbeam, sbt, sbtree);
+   // to mollify analyzer ...alex
+   if (!sbt) return;
+
+   build_sbt(&scanbeam, sbt, sbtree);
   scanbeam= 0;
   free_sbtree(&sbtree);
 
@@ -1862,11 +1892,15 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
     }
 
     /* Set dummy previous x value */
-    px= -DBL_MAX;
+     // done at declaration ...alex
+     //px= -DBL_MAX;
 
     /* Create bundles within AET */
+     // to mollify analyzer ...alex
+     if (!aet) return;
     e0= aet;
-    e1= aet;
+     // not actually referenced as e1 is reassigned before use?? ...alex
+    //e1= aet;
 
     /* Set up bundle fields of first edge */
     aet->bundle[ABOVE][ aet->type]= (aet->top.y != yb);
@@ -1999,7 +2033,9 @@ void gpc_tristrip_clip(gpc_op op, gpc_polygon *subj, gpc_polygon *clip,
             cf= edge;
             break;
           case EMX:
-            if (xb != cf->xb)
+             // to mollify analyzer ...alex
+            //if (xb != cf->xb)
+            if (cf && (xb != cf->xb))
               VERTEX(edge, BELOW, RIGHT, xb, yb);
             edge->outp[ABOVE]= NULL;
             cf= NULL;

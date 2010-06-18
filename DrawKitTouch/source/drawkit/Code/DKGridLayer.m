@@ -691,6 +691,9 @@ static DKColor*		sMajorColour = nil;
 	if ( units == nil || conversionFactor == 0.0 ||  m_rulerStepUpCycle <= 1 || [self divisions] <= 1 )
 		return;
 	
+#if TARGET_OS_IPHONE
+   twlog("implement synchronizeRulers");
+#else
 	NSString*	abbr = [[self drawing] abbreviatedDrawingUnits];
 	NSArray*	upCycle;		// > 1.0
 	NSArray*	downCycle;		// < 1.0
@@ -700,9 +703,6 @@ static DKColor*		sMajorColour = nil;
 	
 	LogEvent_( kReactiveEvent, @"registering ruler units '%@', abbr: '%@'", units, abbr);
 	
-#if TARGET_OS_IPHONE
-   twlog("implement synchronizeRulers");
-#else
 	[NSRulerView registerUnitWithName:units abbreviation:abbr
 					unitToPointsConversionFactor:conversionFactor
 					stepUpCycle:upCycle stepDownCycle:downCycle];

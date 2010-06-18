@@ -1696,6 +1696,7 @@ static id sDearchivingHelper = nil;
 		// manage the menus as required (will remove and add items to keep menu in synch. with array)
 		
 #if TARGET_OS_IPHONE
+      (void)movedOnly;
       twlog("need to implement addKey for iPhone?");
 #else
 		if( !movedOnly )

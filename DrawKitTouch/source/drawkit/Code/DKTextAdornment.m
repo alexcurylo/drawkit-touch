@@ -793,13 +793,14 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 //- (void)					setColour:(NSColor*) colour
 - (void)					setColour:(DKColor*) colour
 {
+#if TARGET_OS_IPHONE
+   (void)colour;
+   twlog("implement setColor");
+#else
 	if( colour == nil )
 		//colour = [NSColor blackColor];
 		colour = [DKColor blackColor];
 	
-#if TARGET_OS_IPHONE
-   twlog("implement setColor");
-#else
 	[self changeTextAttribute:NSForegroundColorAttributeName toValue:colour];
 #endif TARGET_OS_IPHONE
 }

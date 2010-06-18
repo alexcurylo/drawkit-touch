@@ -365,6 +365,12 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	// calculate the actual drawn font size based on the control size - this avoids huge numbers being drawn when the view
 	// is zoomed in
 	
+#if TARGET_OS_IPHONE
+   (void)code;
+   (void)fontSize;
+   (void)p;
+   twlog("implement drawPartcode");
+#else
 	CGFloat scale = [[self owner] knobsWantDrawingScale];	
 	
 	if ( scale == 0.0 )
@@ -375,11 +381,6 @@ static NSSize			sKnobSize = { 6.0, 6.0 };
 	if ( fontSize < 2.0 )
 		fontSize = 2.0;
 		
-#if TARGET_OS_IPHONE
-   (void)code;
-   (void)p;
-   twlog("implement drawPartcode");
-#else
 	//NSFont*		font = [NSFont fontWithName:@"Monaco" size:fontSize];
 	DKFont*		font = [DKFont fontWithName:@"Monaco" size:fontSize];
 	[attrs setObject:font forKey:NSFontAttributeName];

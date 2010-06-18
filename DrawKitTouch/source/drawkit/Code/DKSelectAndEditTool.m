@@ -1672,11 +1672,13 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 - (void)				toolControllerWillUnsetTool:(DKToolController*) aController
 {
 	if([self isValidTargetLayer:[aController activeLayer]])
+   {
 #if TARGET_OS_IPHONE
       twlog("implement saving event info for finishUsingToolInLayer");
 #else
       [self finishUsingToolInLayer:(DKObjectDrawingLayer*)[aController activeLayer] delegate:aController event:[NSApp currentEvent]];
 #endif TARGET_OS_IPHONE
+   }
 }
 
 

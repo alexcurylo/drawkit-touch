@@ -32,8 +32,8 @@ DKGroupCacheOption;
 	NSArray*			m_objects;				// objects in the group
 	NSRect				mBounds;				// overall bounding rect of the group
 	BOOL				m_transformVisually;	// if YES, group transform is visual only (like SVG) otherwise it's genuine
-	CGLayerRef			mContentCache;			// used to cache content
 	// not actually referenced anywhere?? ...alex
+	//CGLayerRef			mContentCache;			// used to cache content
    //NSPDFImageRep*		mPDFContentCache;		// used to cache content at higher quality
 	DKGroupCacheOption	mCacheOption;			// caching options
 	BOOL				mIsWritingToCache;		// YES when building cache - modifies transforms

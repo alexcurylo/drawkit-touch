@@ -42,7 +42,8 @@ DKKnobDrawingFlags;
 	DKColor*		mControlOnPathPointColour;	// colour of on-path control points
 	DKColor*		mControlOffPathPointColour;	// colour of off-path control points
 	DKColor*		mControlBarColour;			// colour of control bars
-	NSSize			mControlKnobSize;			// control knob size
+	// not actually referenced anywhere?? ...alex
+	//NSSize			mControlKnobSize;			// control knob size
 	CGFloat			mControlBarWidth;			// control bar width
 }
 

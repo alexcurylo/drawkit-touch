@@ -270,7 +270,7 @@
 	if( hex == nil || [hex length] < 7 )
 		return nil;
 	
-	CGFloat		rgb[3];
+	CGFloat		rgb[3] = { 0 };
 	const char* p = [[hex lowercaseString] cStringUsingEncoding:NSUTF8StringEncoding];
 	UIColor*	c = nil;
 	NSInteger	h, k = 0;
@@ -695,7 +695,7 @@
 {
 	//UIColor* rgb = [self colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
 	
-	CGFloat	r, g, b, a;
+	CGFloat	r, g, b; //, a;
 	NSInteger		hr, hb, hg;
 	
 	//[rgb getRed:&r green:&g blue:&b alpha:&a];
@@ -705,7 +705,7 @@
    r = components[0];
    g = (4 == numComponents) ? components[1] : components[0];
    b = (4 == numComponents) ? components[2] : components[0];
-   a = CGColorGetAlpha(self.CGColor);
+   //a = CGColorGetAlpha(self.CGColor);
 	
 	//hr = (NSInteger) floor( r * 255.0f );
 	//hg = (NSInteger) floor( g * 255.0f );
@@ -804,8 +804,10 @@
 - (CGFloat)redComponent
 {
    const CGFloat *components = CGColorGetComponents(self.CGColor);
+#if DEBUG
 	size_t numComponents = CGColorGetNumberOfComponents(self.CGColor);
    twcheck(2 == numComponents || 4 == numComponents);
+#endif DEBUG
    return components[0];
 }
 
@@ -842,7 +844,7 @@
    CGFloat max = MAX( red, MAX( green, blue ) );
    CGFloat min = MIN( red, MIN( green, blue ) );
    
-   CGFloat hue;
+   CGFloat hue = 0;
    
    if ( max == min ) {
       hue = 0.0f;
@@ -939,7 +941,7 @@
 - (UIColor *)colorUsingCalibratedRGBColorSpace
 {
    // perhaps use CGColorCreate?
-   return [self copy];
+   return [[self copy] autorelease];
 }
 
 - (void)drawSwatchInRect:(CGRect)rect

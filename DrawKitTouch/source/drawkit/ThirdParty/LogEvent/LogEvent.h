@@ -157,6 +157,7 @@ extern "C" {
 	//IBOutlet NSButton*	mKVOInfo;
 	//IBOutlet NSButton*	mUndoInfo;
 	
+	// not actually referenced anywhere?? ...alex
 	//IBOutlet NSButton*	mZombiesCheckbox;
 
 	IBOutlet DKButton*	mUserActions;
@@ -169,8 +170,6 @@ extern "C" {
 	IBOutlet DKButton*	mMiscInfo;
 	IBOutlet DKButton*	mKVOInfo;
 	IBOutlet DKButton*	mUndoInfo;
-	
-	IBOutlet DKButton*	mZombiesCheckbox;
 }
 
 + (LoggingController*)sharedLoggingController;

@@ -42,19 +42,27 @@ DKEditToolDragPhase;
 {
 @private
 	DKEditToolOperation		mOperationMode;				// what the tool is doing (selecting, editing or moving)
+#ifndef TARGET_OS_IPHONE
 	NSPoint					mAnchorPoint;				// the point of the initial mouse down
 	NSPoint					mLastPoint;					// last point seen
+#endif TARGET_OS_IPHONE
 	NSRect					mMarqueeRect;				// the selection rect, while selecting
 	DKStyle*				mMarqueeStyle;				// the appearance style of the marquee
+#ifndef TARGET_OS_IPHONE
 	NSInteger				mPartcode;					// current partcode
+#endif TARGET_OS_IPHONE
 	NSString*				mUndoAction;				// the most recently performed action name
 	BOOL					mHideSelectionOnDrag;		// YES to hide knobs and jhandles while dragging an object
 	BOOL					mAllowMultiObjectDrag;		// YES to allow all objects in the selection to be moved at once
 	BOOL					mAllowMultiObjectKnobDrag;	// YES to allow movement of all selected objects, even when dragging on a control point
+#ifndef TARGET_OS_IPHONE
 	BOOL					mPerformedUndoableTask;		// YES if the tool did anything undoable
+#endif TARGET_OS_IPHONE
 	BOOL					mAllowDirectCopying;		// YES if option-drag copies the objects directly
+#ifndef TARGET_OS_IPHONE
 	BOOL					mDidCopyDragObjects;		// YES if objects were copied when dragged
 	BOOL					mMouseMoved;				// YES if mouse was actually dragged, not just clicked
+#endif TARGET_OS_IPHONE
 	CGFloat					mViewScale;					// the view's current scale, valid for the renderingPath callback
 	NSUInteger				mProxyDragThreshold;		// number of objects in the selection where a proxy drag is used; 0 = never do a proxy drag
 	BOOL					mInProxyDrag;				// YES during a proxy drag
@@ -62,7 +70,9 @@ DKEditToolDragPhase;
 	DKImage*				mProxyDragImage;			// the proxy image being dragged
 	NSRect					mProxyDragDestRect;			// where it is drawn
 	NSArray*				mDraggedObjects;			// cache of objects being dragged
+#ifndef TARGET_OS_IPHONE
 	BOOL					mWasInLockedObject;			// YES if initial mouse down was in a locked object
+#endif TARGET_OS_IPHONE
 }
 
 + (DKStyle*)				defaultMarqueeStyle;

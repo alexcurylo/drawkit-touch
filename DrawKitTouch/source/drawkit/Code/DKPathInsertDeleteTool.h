@@ -30,8 +30,10 @@ DKPathToolMode;
 {
 @private
 	DKPathToolMode		m_mode;
+#ifndef TARGET_OS_IPHONE
 	BOOL				m_performedAction;
 	DKDrawablePath*		mTargetRef;
+#endif TARGET_OS_IPHONE
 }
 
 + (DKDrawingTool*)		pathDeletionTool;

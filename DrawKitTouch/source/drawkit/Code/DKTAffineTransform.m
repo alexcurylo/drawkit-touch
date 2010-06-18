@@ -86,7 +86,7 @@
 
 - (UIBezierPath *)transformBezierPath:(UIBezierPath *)aPath
 {
-   UIBezierPath *newPath = [aPath copy];
+   UIBezierPath *newPath = [[aPath copy] autorelease];
    [newPath applyTransform:transformStruct];
    return newPath;
 }

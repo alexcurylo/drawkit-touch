@@ -1295,6 +1295,7 @@ static BOOL					sSubstitute = NO;
 		registered = YES;
 	}
 	
+#ifndef TARGET_OS_IPHONE
 	NSArray* types;
 	
 	if ( registered )
@@ -1302,7 +1303,6 @@ static BOOL					sSubstitute = NO;
 	else
 		types = [NSArray arrayWithObject:kDKStylePasteboardType];
 		
-#ifndef TARGET_OS_IPHONE
 	[pb addTypes:types owner:self];
 #endif TARGET_OS_IPHONE
 

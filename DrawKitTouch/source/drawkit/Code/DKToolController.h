@@ -34,9 +34,13 @@ DKDrawingToolScope;
 @private
 	DKDrawingTool*		mTool;				// the current tool if stored locally
 	BOOL				mAutoRevert;		// YES to "spring" tool back to selection after each one completes
+#ifndef TARGET_OS_IPHONE
 	NSInteger			mPartcode;			// partcode to pass back during mouse ops
+#endif TARGET_OS_IPHONE
 	BOOL				mOpenedUndoGroup;	// YES if an undo group was requested by the tool at some point
+#ifndef TARGET_OS_IPHONE
 	BOOL				mAbortiveMouseDown;	// YES flagged after exception during mouse down - rejects drag and up events
+#endif TARGET_OS_IPHONE
 }
 
 + (void)				setDrawingToolOperatingScope:(DKDrawingToolScope) scope;

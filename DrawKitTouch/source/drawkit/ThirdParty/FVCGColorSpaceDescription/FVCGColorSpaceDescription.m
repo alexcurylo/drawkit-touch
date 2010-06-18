@@ -114,8 +114,10 @@ static inline bool __FVCGCanSaveIndexedSpaces(void)
     if (NULL != cspace)
         CGColorSpaceRelease(baseColorSpace);
     else
+    {
         twlog("Unable to recreate indexed color space; returning %@ instead", baseColorSpace);
-    return (cspace == NULL ? baseColorSpace : cspace);
+    }
+   return (cspace == NULL ? baseColorSpace : cspace);
 }
 
 - (CGColorSpaceRef)newColorSpace;

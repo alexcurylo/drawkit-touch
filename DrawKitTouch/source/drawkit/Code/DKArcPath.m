@@ -385,7 +385,9 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 	if([self locked])
 		kt = kDKKnobIsDisabledFlag;
 	
-	rp = kp = [self pointForPartcode:kDKArcPathRadiusPart];
+   // not actually referenced as kp is reassigned before any use?? ...alex
+	//rp = kp = [self pointForPartcode:kDKArcPathRadiusPart];
+	rp = [self pointForPartcode:kDKArcPathRadiusPart];
 	
 	if([self isTrackingMouse])
 	{

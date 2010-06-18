@@ -102,14 +102,14 @@
 {
    twlog("implement bezierPathByReversingPath");
    // CGPathApply of use here?
-   return [self copy];
+   return [[self copy] autorelease];
 }
 
 - (UIBezierPath *)bezierPathByFlatteningPath
 {
    twlog("implement bezierPathByReversingPath");
    // CGPathApply of use here?
-   return [self copy];
+   return [[self copy] autorelease];
 }
 
 - (NSBezierPathElement)elementAtIndex:(NSInteger)elementIndex associatedPoints:(CGPoint *)points

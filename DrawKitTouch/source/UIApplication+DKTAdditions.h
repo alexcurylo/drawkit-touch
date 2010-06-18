@@ -8,7 +8,12 @@
 
 - (NSString *)dktVersion;
 
-// do we need to do something with this to emulate performSelector: ovverride in DKTDrawingView?
-//- (BOOL)sendAction:(SEL)action to:(id)target from:(id)sender forEvent:(UIEvent *)event;
-
 @end
+
+// If a UIApplication category is available at runtime,
+// then linking has gone as well as can be expected
+
+CG_INLINE BOOL DKTDrawKitTouchAvailable(void)
+{
+   return [[UIApplication sharedApplication] respondsToSelector:@selector(dktVersion)];
+}

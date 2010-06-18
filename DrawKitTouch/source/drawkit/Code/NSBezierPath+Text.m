@@ -1804,8 +1804,10 @@ static NSInteger				SortPointsHorizontally( NSValue* value1, NSValue* value2, vo
 	NSMutableArray*		result = [NSMutableArray array];
 	NSInteger					i, m = [flatpath elementCount];
 	NSBezierPathElement	lm;
-	NSPoint				fp, lp, ap, ip;
-	fp = lp = ap = ip = NSZeroPoint;
+	//NSPoint				fp, lp, ap, ip;
+	//fp = lp = ap = ip = NSZeroPoint;
+   // rearranged to mollify analyzer ...alex
+	NSPoint				fp = NSZeroPoint, lp = NSZeroPoint, ap = NSZeroPoint, ip = NSZeroPoint;
 	
 	for( i = 0; i < m; ++i )
 	{

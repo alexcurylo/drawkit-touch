@@ -65,7 +65,7 @@
    self.versionLabel.text = version;
 
    NSString *sdkVersion = @"DrawKitTouch not linked!";
-   if ([[UIApplication sharedApplication] respondsToSelector:@selector(dktVersion)])
+   if (DKTDrawKitTouchAvailable())
       sdkVersion = [[UIApplication sharedApplication] dktVersion];
    self.frameworkLabel.text = sdkVersion;
 

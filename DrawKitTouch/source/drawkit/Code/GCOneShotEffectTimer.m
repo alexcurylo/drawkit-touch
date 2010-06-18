@@ -12,6 +12,8 @@
 
 #import "LogEvent.h"
 
+// to quiet analyzer upset about non-standard memory management ...alex
+static GCOneShotEffectTimer *sLastTimer = nil;
 
 @interface GCOneShotEffectTimer (Private)
 
@@ -31,6 +33,9 @@
 	
 	// unlike the usual case, this is returned retained (by self, effectively). The one-shot releases
 	// itself when it's complete
+   
+   // to quiet analyzer upset about non-standard memory management ...alex
+  sLastTimer = ft;
 	
 	return ft;
 }

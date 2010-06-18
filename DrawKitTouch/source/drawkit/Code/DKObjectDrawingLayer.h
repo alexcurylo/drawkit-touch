@@ -28,7 +28,9 @@
 	BOOL				mMultipleAutoForwarding;	// YES to automatically forward actions to all objects in the selection that can respond
 	BOOL				mBufferSelectionChanges;	// YES to buffer a series of selection changes during a multiple forwarding invocation
 	NSUInteger			mUndoCount;					// records undo count when the selection state is recorded
+#ifndef TARGET_OS_IPHONE
 	NSArray*			m_objectsPendingDrag;		// temporary list of objects being dragged from the layer
+#endif TARGET_OS_IPHONE
 	DKDrawableObject*	mKeyAlignmentObject;		// the master object to which others can be aligned
 	NSRect				mSelBoundsCached;			// cached value of the selection bounds
 }

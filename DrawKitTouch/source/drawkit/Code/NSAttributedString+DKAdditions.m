@@ -195,13 +195,14 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 	NSAssert( layoutPath != nil, @"invalid layout path for text layout");
 	NSAssert(![layoutPath isEmpty], @"empty layout path for text layout");
 	
-	vPos = LIMIT( vPos, 0, 1 );
-	
 #if TARGET_OS_IPHONE
    (void)radians;
    (void)vAlign;
+   (void)vPos;
    twlog("implement drawInRect");
 #else
+	vPos = LIMIT( vPos, 0, 1 );
+	
 	NSTextStorage *contents = [[NSTextStorage alloc] initWithAttributedString:self];
 
 	if ([contents length] > 0)
@@ -370,13 +371,14 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
-	NSDictionary*   attributes;
+	// not actually referenced anywhere?? ...alex
+	//NSDictionary*   attributes;
 	
 	[self beginEditing];
 	
 	while( rangeLimit.length > 0 )
 	{
-		attributes = [self attributesAtIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
+		/*attributes =*/ [self attributesAtIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
 		
 		NSString* str = [[[self string] substringWithRange:effectiveRange] uppercaseString];
 		[self replaceCharactersInRange:effectiveRange withString:str];
@@ -397,13 +399,14 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
-	NSDictionary*   attributes;
+	// not actually referenced anywhere?? ...alex
+	//NSDictionary*   attributes;
 	
 	[self beginEditing];
 	
 	while( rangeLimit.length > 0 )
 	{
-		attributes = [self attributesAtIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
+		/*attributes =*/ [self attributesAtIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
 		
 		NSString* str = [[[self string] substringWithRange:effectiveRange] lowercaseString];
 		[self replaceCharactersInRange:effectiveRange withString:str];
@@ -422,13 +425,14 @@ NSLayoutManager*		sharedCaptureLayoutManager( void )
 {
 	NSRange			effectiveRange = NSMakeRange( 0, 0 );
 	NSRange			rangeLimit = NSMakeRange( 0, [self length]);
-	NSDictionary*   attributes;
+	// not actually referenced anywhere?? ...alex
+	//NSDictionary*   attributes;
 	
 	[self beginEditing];
 
 	while( rangeLimit.length > 0 )
 	{
-		attributes = [self attributesAtIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
+		/*attributes =*/ [self attributesAtIndex:rangeLimit.location longestEffectiveRange:&effectiveRange inRange:rangeLimit];
 		
 		NSString* str = [[[self string] substringWithRange:effectiveRange] capitalizedString];
 		[self replaceCharactersInRange:effectiveRange withString:str];

@@ -168,13 +168,15 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 	NSInteger				i, pc;
 	//NSBezierPath*	path = [NSBezierPath bezierPath];
 	DKBezierPath*	path = [DKBezierPath bezierPath];
-	NSPoint			p, fp, pp;
+	//NSPoint			p, fp, pp;
+	//p = fp = pp = NSZeroPoint;
+   // rearranged to mollify analyzer, fp never used? ...alex
+	NSPoint			p = NSZeroPoint, pp = NSZeroPoint;
 	BOOL			hadFirstPoint = NO, isStar = NO;
 	CGFloat			pa, lpa, tip, valley, halfPi;
 	
 	//halfPi = pi * 0.5f;
 	halfPi = M_PI_2;
-	p = fp = pp = NSZeroPoint;
 	lpa = 0;
 	
 	// distance of control points from on-path point - may be zero.
@@ -245,7 +247,9 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 		{
 			[path moveToPoint:p];
 			hadFirstPoint = YES;
-			fp = pp = p;
+         // fp not actually referenced?? ...alex
+			//fp = pp = p;
+			pp = p;
 			lpa = pa;
 		}
 	}
