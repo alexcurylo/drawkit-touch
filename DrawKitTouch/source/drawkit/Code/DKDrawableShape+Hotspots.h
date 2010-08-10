@@ -76,7 +76,11 @@ enum
 - (void)				setDelegate:(id) delegate;
 - (id)					delegate;
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (void)				startTouchTracking:(NSSet*) touches event:(UIEvent*) event inView:(UIView*) view;
+- (void)				continueTouchTracking:(NSSet*) touches event:(UIEvent*) event inView:(UIView*) view;
+- (void)				endTouchTracking:(NSSet*) touches event:(UIEvent*) event inView:(UIView*) view;
+#else
 - (void)				startMouseTracking:(NSEvent*) event inView:(NSView*) view;
 - (void)				continueMouseTracking:(NSEvent*) event inView:(NSView*) view;
 - (void)				endMouseTracking:(NSEvent*) event inView:(NSView*) view;

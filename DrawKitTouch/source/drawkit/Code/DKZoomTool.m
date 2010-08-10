@@ -82,6 +82,31 @@
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (NSInteger)		touchesBeganAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKZoomTool touchesBeganAtPoint!
+   twlog("implement DKZoomTool touchesBeganAtPoint!");
+   (void)p;
+   (void)obj;
+   (void)layer;
+   (void)touches;
+   (void)event;
+
+   #pragma unused(obj)
+	#pragma unused(layer)
+	#pragma unused(aDel)
+	/*
+	if([self modeModifierMask] != 0)
+		mMode = (([event modifierFlags] & [self modeModifierMask]) != 0 );
+	
+	mAnchor = p;
+	mZoomRect = NSZeroRect;
+    */
+	return 0;
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -117,6 +142,33 @@
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)		touchesMovedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKZoomTool touchesMovedToPoint!
+   twlog("implement DKZoomTool touchesMovedToPoint!");
+   (void)p;
+   (void)pc;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   (void)aDel;
+   
+/*
+   #pragma unused(pc)
+	#pragma unused(event)
+	#pragma unused(aDel)
+	
+	if ( !mMode )
+	{
+		[layer setNeedsDisplayInRect:mZoomRect];
+		mZoomRect = NSRectFromTwoPoints( mAnchor, p );
+		[layer setNeedsDisplayInRect:mZoomRect];
+	}
+ */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -151,6 +203,51 @@
 /// notes:			
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (BOOL)		touchesEndedAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKSelectAndEditTool touchesEndedAtPoint!
+   twlog("implement DKSelectAndEditTool touchesEndedAtPoint!");
+   (void)p;
+   (void)pc;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   (void)aDel;
+   return NO;
+   
+	/*
+    #pragma unused(pc)
+	#pragma unused(event)
+	#pragma unused(aDel)
+	
+	DKDrawingView* zv = (DKDrawingView*)[layer currentView];
+
+	if ( !mMode )
+	{
+		NSRect temp = mZoomRect;
+		mZoomRect = NSZeroRect;
+		
+		[layer setNeedsDisplayInRect:temp];
+		temp = NSRectFromTwoPoints( mAnchor, p );
+		[layer setNeedsDisplayInRect:temp];
+		
+		// if dragged area < 4 pixels, treat as click
+		
+		if ( NSIsEmptyRect( NSInsetRect( temp, 2.0, 2.0 )))
+			[zv zoomViewByFactor:2.0 andCentrePoint:p];
+		else
+			[zv zoomViewToRect:temp];
+	}
+	else
+		[zv zoomViewByFactor:0.5 andCentrePoint:p];
+	
+	mZoomRect = NSZeroRect;
+	return NO;
+    */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel

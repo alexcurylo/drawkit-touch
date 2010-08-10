@@ -474,6 +474,49 @@ NSString*	kDKDrawingInfoTextLabelAttributes = @"kDKDrawingInfoTextLabelAttribute
 	}
 }
 
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+#warning implement DKDrawingInfoLayer touchesBegan!
+   twlog("implement DKDrawingInfoLayer touchesBegan!");
+   
+   /*
+    // if we are not locked, we can edit the drawing info. This is handled by the view's text editing utility methods which
+	// can be used by any object as required.
+	
+	if( ![self locked])
+	{
+		NSPoint		p = [view convertPoint:[event locationInWindow] fromView:nil];
+		NSString*	key = [self keyForEditableRegionUnderMouse:p];
+		
+		if ( key != nil )
+		{
+			NSDictionary*	di = [[self drawing] drawingInfo];
+			NSRect			fr = [self layoutRectForDrawingInfoItem:key inRect:[self infoBoxRect]];
+			NSRect			lr = [self labelRectInRect:fr forLabel:[self labelForDrawingInfoItem:key]];
+			NSTextStorage*	str;
+			
+			fr.origin.x += lr.size.width;
+			
+			str = [[NSTextStorage alloc] initWithString:[di objectForKey:key] attributes:[self attributesForDrawingInfoItem:key]];
+			
+			[(DKDrawingView*)view editText:str inRect: NSOffsetRect( fr, -1.5, 2.5 ) delegate:self];
+			m_editingKeyRef = key;
+			[str autorelease];
+		}
+		else
+		{
+			[[self drawing] exitTemporaryTextEditingMode];
+			m_editingKeyRef = nil;
+		}
+	}   
+    */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDown:(NSEvent*) event inView:(NSView*) view
 {

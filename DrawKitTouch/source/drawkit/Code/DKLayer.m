@@ -1421,7 +1421,15 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (BOOL)			shouldAutoActivateWithTouches:(NSSet *)touches andEvent:(UIEvent*)event
+{
+#pragma unused(touches)
+#pragma unused(event)
+
+	return ![self locked];
+}
+#else
 - (BOOL)			shouldAutoActivateWithEvent:(NSEvent*) event
 {
 	#pragma unused(event)
@@ -1494,6 +1502,15 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+#pragma unused(touches)
+#pragma unused(event)
+#pragma unused(view)
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDown:(NSEvent*) event inView:(NSView*) view
 {
@@ -1517,6 +1534,15 @@ static NSArray*	s_selectionColours = nil;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+#pragma unused(touches)
+#pragma unused(event)
+#pragma unused(view)
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDragged:(NSEvent*) event inView:(NSView*) view;
 {
@@ -1539,6 +1565,15 @@ static NSArray*	s_selectionColours = nil;
 /// notes:			override to respond to the event
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+#pragma unused(touches)
+#pragma unused(event)
+#pragma unused(view)
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseUp:(NSEvent*) event inView:(NSView*) view;

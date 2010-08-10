@@ -3099,6 +3099,21 @@ static NSRect s_oldBounds;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)       touchesBeganAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawableObject touchesBeganAtPoint!
+   twlog("implement DKDrawableObject touchesBeganAtPoint!");
+
+#pragma unused( touches, evt, partcode )
+	
+	m_mouseOffset.width = mp.x - [self location].x;
+	m_mouseOffset.height = mp.y - [self location].y;
+	[self setMouseHasMovedSinceStartOfTracking:NO];
+	[self setTrackingMouse:YES];
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
@@ -3128,6 +3143,34 @@ static NSRect s_oldBounds;
 ///					snapping temporarily.
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)			touchesMovedToPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawableObject touchesMovedToPoint!
+   twlog("implement DKDrawableObject touchesMovedToPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+   
+/*
+ #pragma unused(partcode)
+	
+	if(![self locationLocked])
+	{
+		mp.x -= [self mouseDragOffset].width;
+		mp.y -= [self mouseDragOffset].height;
+		
+		BOOL controlKey = (([evt modifierFlags] & NSControlKeyMask) != 0 );
+		mp = [self snappedMousePoint:mp forSnappingPointsWithControlFlag:controlKey];
+		
+		[self setLocation:mp];
+		[self setMouseHasMovedSinceStartOfTracking:YES];
+	}
+ */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
@@ -3164,6 +3207,32 @@ static NSRect s_oldBounds;
 /// notes:			
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)			touchesEndedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawableObject touchesEndedAtPoint!
+   twlog("implement DKDrawableObject touchesEndedAtPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+   
+	/*
+    #pragma unused(mp)
+	#pragma unused(partcode)
+	#pragma unused(evt)
+	
+	if ([self mouseHasMovedSinceStartOfTracking])
+	{
+		[[self undoManager] setActionName:NSLocalizedString( @"Move", @"undo string for move object")];
+		[self setMouseHasMovedSinceStartOfTracking:NO];
+	}
+	
+	[self setTrackingMouse:NO];
+    */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt

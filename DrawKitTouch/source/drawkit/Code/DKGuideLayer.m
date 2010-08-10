@@ -856,8 +856,11 @@ static BOOL		sWasInside = NO;
 //- (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(NSView*) aView
 - (NSRect)		guideRectOfGuide:(DKGuide*) guide forEnclosingClipViewOfView:(DKDrawingView*) aView
 {
-	//NSClipView* clipView = [[aView enclosingScrollView] contentView];
-	UIScrollView* clipView = aView;
+#if TARGET_OS_IPHONE
+	UIScrollView* clipView = aView.enclosingScrollView;
+#else
+	NSClipView* clipView = [[aView enclosingScrollView] contentView];
+#endif TARGET_OS_IPHONE
 	
 	if( clipView )
 	{
@@ -1219,6 +1222,64 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+#warning implement DKGuideLayer touchesBegan!
+   twlog("implement DKGuideLayer touchesBegan!");
+   
+   /*
+    if( ![self locked])
+	{
+		NSPoint p = [view convertPoint:[event locationInWindow] fromView:nil];
+		BOOL isNewGuide = NO;
+		
+		if( m_dragGuideRef == nil )
+		{
+			DKGuide* dg = [self nearestHorizontalGuideToPosition:p.y];
+			if ( dg )
+				m_dragGuideRef = dg;
+			else
+			{
+				dg = [self nearestVerticalGuideToPosition:p.x];
+				
+				if ( dg )
+					m_dragGuideRef = dg;
+			}
+		}
+		else
+			isNewGuide = YES;
+		
+		if ( m_dragGuideRef && [self showsDragInfoWindow])
+		{
+			[[self undoManager] beginUndoGrouping];
+			
+			if( !isNewGuide )
+				[[self undoManager] setActionName:NSLocalizedString(@"Move Guide", @"undo action for move guide")];
+			[[self drawing] invalidateCursors];
+			
+			NSPoint	gg = p;
+			
+			if ([m_dragGuideRef isVerticalGuide])
+				gg.x = [m_dragGuideRef guidePosition];
+			else
+				gg.y = [m_dragGuideRef guidePosition];
+			
+			NSPoint gp = [[[self drawing] gridLayer] gridLocationForPoint:gg];
+         
+			if ([m_dragGuideRef isVerticalGuide])
+				[self showInfoWindowWithString:[NSString stringWithFormat:@"%.2f", gp.x] atPoint:p];
+			else
+				[self showInfoWindowWithString:[NSString stringWithFormat:@"%.2f", gp.y] atPoint:p];
+		}
+	}
+    */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDown:(NSEvent*) event inView:(NSView*) view
 {
@@ -1284,6 +1345,60 @@ static BOOL		sWasInside = NO;
 /// notes:			continues the drag of a guide, if the layer isn't locked.
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+#warning implement DKGuideLayer touchesMoved!
+   twlog("implement DKGuideLayer touchesMoved!");
+   
+   /*
+    if ( ![self locked] && m_dragGuideRef != nil )
+	{
+		NSPoint p = [view convertPoint:[event locationInWindow] fromView:nil];
+		BOOL	shift = (([event modifierFlags] & NSShiftKeyMask) != 0);
+      
+		if ([self guidesSnapToGrid] || shift)
+			p = [[self drawing] snapToGrid:p ignoringUserSetting:YES];
+		
+		// change cursor if crossed from the interior to the margin or vice versa
+		
+		NSRect	ir = [self guideDeletionRect];
+		NSRect	gr = [self guideRect:m_dragGuideRef];
+		BOOL	isIn = NSIntersectsRect( gr, ir );
+		
+		if( isIn != sWasInside )
+		{
+			sWasInside = isIn;
+			
+			if( !isIn )
+				[[NSCursor disappearingItemCursor] set];
+			else
+				[[self cursor] set];
+		}
+      
+		// get the grid conversion for the guide's location:
+		
+		NSPoint gp = [[[self drawing] gridLayer] gridLocationForPoint:p];
+		[self repositionGuide:m_dragGuideRef atPoint:p inView:view];
+		
+		if ([m_dragGuideRef isVerticalGuide])
+		{
+			if([self showsDragInfoWindow])
+				[self showInfoWindowWithString:[NSString stringWithFormat:@"%.2f", gp.x] atPoint:p];		}
+		else
+		{
+			if([self showsDragInfoWindow])
+				[self showInfoWindowWithString:[NSString stringWithFormat:@"%.2f", gp.y] atPoint:p];
+		}
+	}
+    */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDragged:(NSEvent*) event inView:(NSView*) view
 {
@@ -1344,6 +1459,48 @@ static BOOL		sWasInside = NO;
 /// notes:			completes a guide drag. If the guide was dragged out of the interior of the drawing, it is deleted.
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+#warning implement DKGuideLayer touchesEnded!
+   twlog("implement DKGuideLayer touchesEnded!");
+   
+   /*
+    #pragma unused(event)
+#pragma unused(view)
+	// if the guide has been dragged outside of the interior area of the drawing, delete it.
+	
+	if( m_dragGuideRef != nil )
+	{
+		[[self drawing] invalidateCursors];
+		
+		NSRect	ir = [self guideDeletionRect];
+		NSRect	gr = [self guideRect:m_dragGuideRef];
+		
+		if ( ! NSIntersectsRect( gr, ir ))
+		{
+			[self removeGuide:m_dragGuideRef];
+			
+#if TARGET_OS_IPHONE
+         CGPoint animLoc = [view convertPoint:[event locationInWindow] toView:[view window]];
+#else
+			NSPoint animLoc = [[event window] convertBaseToScreen:[event locationInWindow]];
+#endif TARGET_OS_IPHONE
+			NSShowAnimationEffect(NSAnimationEffectDisappearingItemDefault, animLoc, NSZeroSize, nil, nil, NULL );
+		}
+		
+		m_dragGuideRef = nil;
+		[self hideInfoWindow];
+		[[self undoManager] endUndoGrouping];
+	}
+    */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseUp:(NSEvent*) event inView:(NSView*) view
 {
@@ -1392,7 +1549,15 @@ static BOOL		sWasInside = NO;
 ///
 ///********************************************************************************************************************
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (BOOL)			shouldAutoActivateWithTouches:(NSSet *)touches andEvent:(UIEvent*)event
+{
+#pragma unused(touches)
+#pragma unused(event)
+   
+	return NO;
+}
+#else
 - (BOOL)				shouldAutoActivateWithEvent:(NSEvent*) event
 {
 	#pragma unused(event)

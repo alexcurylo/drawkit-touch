@@ -261,7 +261,11 @@
 
 // mouse events:
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (void)       touchesBeganAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt;
+- (void)			touchesMovedToPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt;
+- (void)			touchesEndedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt;
+#else
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;
 - (void)				mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt;

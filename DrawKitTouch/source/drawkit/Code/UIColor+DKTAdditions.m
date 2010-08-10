@@ -747,12 +747,12 @@
 	[deviceColor getRed:&components[0] green:&components[1] blue:&components[2] alpha:&components[3]];
     */
    const CGFloat *components = CGColorGetComponents(self.CGColor);
-  
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGColorRef cgColor = CGColorCreate(colorSpace, components);
-    CGColorSpaceRelease(colorSpace);
 
-    return cgColor;
+   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+   CGColorRef cgColor = CGColorCreate(colorSpace, components);
+   CGColorSpaceRelease(colorSpace);
+
+   return cgColor;
 }
 
 
@@ -941,7 +941,7 @@
 - (UIColor *)colorUsingCalibratedRGBColorSpace
 {
    // perhaps use CGColorCreate?
-   return [[self copy] autorelease];
+   return [UIColor colorWithCGColor:self.newQuartzColor];
 }
 
 - (void)drawSwatchInRect:(CGRect)rect

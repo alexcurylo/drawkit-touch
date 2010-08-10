@@ -79,7 +79,8 @@ DKObjectStorageOptions;
 - (void)					setCanvasSize:(NSSize) size;
 
 @optional
-- (NSBezierPath*)			debugStorageDivisions;
+//- (NSBezierPath*)			debugStorageDivisions;
+- (DKBezierPath*)			debugStorageDivisions;
 
 @end
 

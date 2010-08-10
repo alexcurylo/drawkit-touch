@@ -858,7 +858,7 @@ NSString*				kDKDimensionUnitsKey		= @"DKDimensionUnits";
 {
 #if TARGET_OS_IPHONE
    (void)font;
-   twlog("implement setFont");
+   twlog("implement DKArrowStroke setFont");
 #else
 	NSMutableDictionary* dict = [[self textAttributes] mutableCopy];
 	[dict setObject:font forKey:NSFontAttributeName];

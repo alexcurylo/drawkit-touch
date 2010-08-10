@@ -28,8 +28,11 @@ static CGFloat sAngleConstraint = 0.261799387799;	// 15¡
 
 // simple partcode cracking utils:
 
-static inline NSInteger		arrayIndexForPartcode( const NSInteger pc );
-static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
+// linking doesn't work when declared static inline on iOS? ...alex
+//static inline NSInteger		arrayIndexForPartcode( const NSInteger pc );
+//static inline NSInteger		elementIndexForPartcode( const NSInteger pc );
+NSInteger		arrayIndexForPartcode( const NSInteger pc );
+NSInteger		elementIndexForPartcode( const NSInteger pc );
 
 
 #pragma mark -

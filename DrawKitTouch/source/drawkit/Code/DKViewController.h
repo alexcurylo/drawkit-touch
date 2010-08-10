@@ -26,7 +26,10 @@
 	BOOL				mEnableDKMenus;			// YES to enable all standard contextual menus provided by DK.
 #endif TARGET_OS_IPHONE
 @protected
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+	UIEvent*			mDragEvent;
+   NSSet*         mDragTouches;
+#else
 	NSEvent*			mDragEvent;				// cached drag event for autoscroll to use
 #endif TARGET_OS_IPHONE
 }
@@ -66,7 +69,11 @@
 
 // handling mouse input events from the view
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+#else
 - (void)				mouseDown:(NSEvent*) event;
 - (void)				mouseDragged:(NSEvent*) event;
 - (void)				mouseUp:(NSEvent*) event;
@@ -100,7 +107,9 @@
 - (void)				activeLayerWillChangeToLayer:(DKLayer*) aLayer;
 - (void)				activeLayerDidChangeToLayer:(DKLayer*) aLayer;
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (BOOL)				autoActivateLayerWithTouches:(NSSet *)touches andEvent:(UIEvent*)event;
+#else
 - (BOOL)				autoActivateLayerWithEvent:(NSEvent*) event;
 #endif TARGET_OS_IPHONE
 

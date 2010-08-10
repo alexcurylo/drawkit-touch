@@ -1,0 +1,38 @@
+//
+// DTPSVProjectPrefix.pch
+//
+//  Copyright 2010 Trollwerks Inc. All rights reserved.
+//
+
+#import <Availability.h>
+#import <TargetConditionals.h>
+
+#ifndef __IPHONE_3_2
+#warning "This project uses features only available in iPhone SDK 3.2 and later."
+#endif __IPHONE_3_2
+
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#endif __OBJC__
+
+// Alex's development utilities, not for shipping
+
+#import "TWDebugging.h"
+
+// temporary while we have framework files embedded in test app
+#ifdef __OBJC__
+#import <CoreGraphics/CoreGraphics.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "DKCompatibility.h"
+#endif __OBJC__
+#import "DKDrawKit_Prefix.pch"
+#ifdef __OBJC__
+#import "DKTDesktopPlaceholders.h"
+#endif __OBJC__
+
+// framework include, which is not framework currently
+#ifdef __OBJC__
+//#import <DrawKitTouch/DKDrawKit.h>
+#import "DKDrawKit.h"
+#endif __OBJC__

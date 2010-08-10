@@ -653,6 +653,39 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)       touchesBeganAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKRegularPolygonPath touchesBeganAtPoint!
+   twlog("implement DKRegularPolygonPath touchesBeganAtPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+
+	/*
+    [[self layer] setInfoWindowBackgroundColour:[[self class]infoWindowBackgroundColour]];
+
+	[self setTrackingMouse:YES];
+	DKDrawablePathCreationMode mode = [self pathCreationMode];
+	
+	switch ( mode )
+	{
+		case kDKPathCreateModeEditExisting:
+			[super mouseDownAtPoint:mp inPart:partcode event:evt];
+			break;
+			
+		case kDKRegularPolyCreationMode:
+			[self setPathCreationMode:kDKPathCreateModeEditExisting];
+			break;
+			
+		default:
+			break;
+	}
+    */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
@@ -694,6 +727,48 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 /// notes:			used when editing an existing path, but not creating one
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)			touchesMovedToPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKRegularPolygonPath touchesMovedToPoint!
+   twlog("implement DKRegularPolygonPath touchesMovedToPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+   
+   /*
+    BOOL shift	= (([evt modifierFlags] & NSShiftKeyMask ) != 0 );
+	BOOL ctrl	= (([evt modifierFlags] & NSControlKeyMask ) != 0 );
+	
+	// modifier keys change the editing of path control points thus:
+	
+	// +shift	- constrains curve control point angles to 15° intervals
+	// +ctrl	- temporarily disables snap to grid
+	
+	NSPoint smp = [self snappedMousePoint:mp withControlFlag:ctrl];
+	
+	if ( partcode == kDKRegularPolyCentrePart )
+	{
+		if(![self locationLocked])
+		{
+			[self setLocation:smp];
+			[self updateInfoForPartcode:partcode atPoint:mp];
+		}
+	}
+	else if ( partcode == kDKDrawingEntireObjectPart )
+	{
+		[super mouseDraggedAtPoint:mp inPart:kDKDrawingEntireObjectPart event:evt];
+		[self updateInfoForPartcode:partcode atPoint:mp];
+	}
+	else
+		[self movePart:partcode toPoint:smp constrainAngle:shift];
+
+	[self setMouseHasMovedSinceStartOfTracking:YES];
+    */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt

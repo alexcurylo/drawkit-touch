@@ -24,9 +24,7 @@
 	BOOL		mDidPickup;
 #endif TARGET_OS_IPHONE
 	NSPoint		mLastPoint;
-#ifndef TARGET_OS_IPHONE
 	NSInteger	mPartcode;
-#endif TARGET_OS_IPHONE
 
 @protected	
 	id			m_protoObject;

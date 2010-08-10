@@ -495,7 +495,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 	sp.y = aPoint.y - ( fr.size.height / 2.0 );
 	
 	//[self scrollPoint:sp];
-   self.contentOffset = sp;
+   [self.enclosingScrollView setContentOffset:sp];
 }
 
 
@@ -553,7 +553,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 		[[NSNotificationCenter defaultCenter] postNotificationName:kDKDrawingViewWillChangeScale object:self];
       
       // note that this is 3.0 dependent
-      [self setZoomScale:sc animated:YES];
+      [self.enclosingScrollView setZoomScale:sc animated:YES];
       
       [[NSNotificationCenter defaultCenter] postNotificationName:kDKDrawingViewWillChangeScale object:self];
 	}
@@ -576,7 +576,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 - (CGFloat)				scale
 {
 	//return m_scale;
-   return self.zoomScale;
+   return [self.enclosingScrollView zoomScale];
 }
 
 
@@ -600,7 +600,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 - (BOOL)				isChangingScale
 {
 	//return mIsChangingScale;
-   return self.zooming;
+   return [self.enclosingScrollView isZooming];
 }
 
 
@@ -620,7 +620,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 - (void)				setMinimumScale:(CGFloat) scmin
 {
 	//mMinScale = scmin;
-   self.minimumZoomScale = scmin;
+   [self.enclosingScrollView setMinimumZoomScale:scmin];
 }
 
 
@@ -640,7 +640,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 - (CGFloat)				minimumScale
 {
 	//return mMinScale;
-	return self.minimumZoomScale;
+	return [self.enclosingScrollView minimumZoomScale];
 }
 
 
@@ -660,7 +660,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 - (void)				setMaximumScale:(CGFloat) scmax
 {
 	//mMaxScale = scmax;
-   self.maximumZoomScale = scmax;
+   [self.enclosingScrollView setMaximumZoomScale:scmax];
 }
 
 
@@ -680,7 +680,7 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
 - (CGFloat)				maximumScale
 {
 	//return mMaxScale;
-   return self.maximumZoomScale;
+   return [self.enclosingScrollView maximumZoomScale];
 }
 
 
@@ -812,17 +812,20 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
    return visibleRect;
 }
 
-- (void)setBoundsSize:(CGSize)newSize
+/*
+ - (void)setBoundsSize:(CGSize)newSize
 {
    CGRect newBounds = { .origin = self.bounds.origin, .size = newSize };
    self.bounds = newBounds;
 }
-
+*/
+/*
 - (void)setFrameSize:(CGSize)newSize
 {
    CGRect newFrame = { .origin = self.frame.origin, .size = newSize };
    self.frame = newFrame;
 }
+ */
 
 - (void)setNeedsDisplay:(BOOL)flag
 {
@@ -871,6 +874,16 @@ NSString*	kDKDrawingScrollwheelSensePrefsKey				= @"kDKDrawingcrollwheelSense";	
    }
    
    return nil;
+}
+
+// to call scrollRectToVisible and like functions on as it's not exposed in UIView unlike NSView; checks only immediate superview
+- (UIScrollView *)enclosingScrollView
+{
+   UIScrollView *holder = (UIScrollView *)self.superview;
+   if ([holder isKindOfClass:[UIScrollView class]])
+      return holder;
+   else
+      return nil;
 }
 
 @end

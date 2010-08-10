@@ -1498,7 +1498,7 @@ static id	sDearchivingHelper = nil;
 - (void)				checkIfLowQualityRequired
 {
 #if TARGET_OS_IPHONE
-   twlog("implement checkIfLowQualityRequired");
+   // there is no Quartz equivalent of -isDrawingToScreen, apparently
    [self setLowRenderingQuality:NO];
 #else
 	// if this is being called frequently, set low quality and start a timer to restore high quality after a delay. If the timer is
@@ -1522,11 +1522,7 @@ static id	sDearchivingHelper = nil;
 			// start the timer:
 			
 			m_renderQualityTimer = [[NSTimer scheduledTimerWithTimeInterval:mTriggerPeriod target:self selector:@selector(qualityTimerCallback:) userInfo:nil repeats:YES] retain];
-#if TARGET_OS_IPHONE
-			[[NSRunLoop currentRunLoop] addTimer:m_renderQualityTimer forMode:NSRunLoopCommonModes];
-#else
 			[[NSRunLoop currentRunLoop] addTimer:m_renderQualityTimer forMode:NSEventTrackingRunLoopMode];
-#endif TARGET_OS_IPHONE
 		}
 		else
 		{

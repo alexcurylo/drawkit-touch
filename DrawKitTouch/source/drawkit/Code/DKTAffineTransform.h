@@ -6,8 +6,6 @@
 // CoreGraphics analogue to NSAffineTransform
 //
 
-@class NSBezierPath;
-
 @interface DKTAffineTransform : NSObject
 {
    CGAffineTransform transformStruct;

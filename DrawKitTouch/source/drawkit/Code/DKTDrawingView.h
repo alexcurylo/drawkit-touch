@@ -29,6 +29,7 @@ DKCropMarkKind;
 // while we abstract NSView references out of main DrawKit to DKDrawingView.
 
 // these are methods called by other components that should be in the abstraction
+
 // DKViewController
 - (void)				moveRulerMarkerNamed:(NSString*) markerName toLocation:(CGFloat) loc;
 - (void)				endTextEditing;
@@ -41,6 +42,7 @@ DKCropMarkKind;
 + (DKDrawingView*)		currentlyDrawingView;
 // DKObjectDrawingLayer
 //+ (NSPoint)				pointForLastContextualMenuEvent;
+
 @end
 
 @interface DKTDrawingView : DKDrawingView
@@ -59,13 +61,17 @@ DKCropMarkKind;
 	DKDrawing*			mAutoDrawing;			// the drawing we created automatically (if we did so - typically nil for doc-based apps)
 	BOOL				m_didCreateDrawing;		// YES if the window built the back end itself
 	NSRect				mEditorFrame;			// tracks current frame of text editor
-/*
- NSTimeInterval		mLastMouseDragTime;		// time of last mouseDragged: event
-*/
+
+   NSTimeInterval		mLastMouseDragTime;		// time of last mouseDragged: event
+
 	NSDictionary*		mRulerMarkersDict;		// tracks ruler markers
 }
 
+#pragma mark -
+#pragma mark As a DKTDrawingView
+
 + (DKDrawingView*)		currentlyDrawingView;
++ (void)				pushCurrentViewAndSet:(DKTDrawingView*) aView; // PRIVATE
 + (void)				pop;
 + (void)				setPageBreakColour:(UIColor*) colour;
 + (UIColor*)			pageBreakColour;
@@ -74,26 +80,30 @@ DKCropMarkKind;
 //+ (NSImage*)			imageResourceNamed:(NSString*) name;
 + (UIImage*)			imageResourceNamed:(NSString*) name;
 
-// setting the class to use for the temporary text editor
+#pragma mark -
+#pragma mark - setting the class to use for the temporary text editor
 
 + (Class)				classForTextEditor;
 + (void)				setClassForTextEditor:(Class) aClass;
 + (void)				setTextEditorAllowsTypingUndo:(BOOL) allowUndo;
 + (BOOL)				textEditorAllowsTypingUndo;
 
-// the view's controller
+#pragma mark -
+#pragma mark - the view's controller
 
 - (DKViewController*)	makeViewController;
 - (void)				setController:(DKViewController*) aController;
 - (DKViewController*)	controller;
 - (void)				replaceControllerWithController:(DKViewController*) newController;
 
-// automatic drawing info
+#pragma mark -
+#pragma mark - drawing info
 
 - (DKDrawing*)			drawing;
 - (void)				createAutomaticDrawing;
 
-// drawing page breaks & crop marks
+#pragma mark -
+#pragma mark - drawing page breaks & crop marks
 /*
 
 - (NSBezierPath*)		pageBreakPathWithExtension:(CGFloat) amount options:(DKCropMarkKind) options;
@@ -110,9 +120,8 @@ DKCropMarkKind;
 - (NSPrintInfo*)		printInfo;
 */
 
-- (void)				set;
-
-// editing text directly in the drawing:
+#pragma mark -
+#pragma mark - editing text directly in the drawing:
 /*
 - (NSTextView*)			editText:(NSAttributedString*) text inRect:(NSRect) rect delegate:(id) del;
 - (NSTextView*)			editText:(NSAttributedString*) text inRect:(NSRect) rect delegate:(id) del drawsBackground:(BOOL) drawBkGnd;
@@ -125,7 +134,9 @@ DKCropMarkKind;
 - (BOOL)				isTextBeingEdited;
 */
 
-// ruler stuff
+#pragma mark -
+#pragma mark - ruler stuff
+
 - (void)				moveRulerMarkerNamed:(NSString*) markerName toLocation:(CGFloat) loc;
 /*
 - (void)				createRulerMarkers;
@@ -136,13 +147,92 @@ DKCropMarkKind;
 // user actions
 
 - (IBAction)			toggleRuler:(id) sender;
+
+- (void)				setRulerMarkerInfo:(NSDictionary*) dict; // PRIVATE
+- (NSDictionary*)		rulerMarkerInfo; // PRIVATE
 /*
  - (IBAction)			toggleShowPageBreaks:(id) sender;
 */
 
-// window activations
+#pragma mark -
+#pragma mark - monitoring the mouse location
+
+// - (void)				postMouseLocationInfo:(NSString*) operation event:(UIEvent*) event;  // PRIVATE
+- (void)				postMouseLocationInfo:(NSString*) operation touches:(NSSet *)touches;  // PRIVATE
+
+#pragma mark -
+#pragma mark window activations
 
 - (void)				windowActiveStateChanged:(NSNotification*) note;
+
+#pragma mark -
+
+- (void)				set;
+
+// PRIVATE below this...
+
+#pragma mark -
+#pragma mark As an NSView
+
+- (void)				drawRect:(NSRect) rect;
+- (BOOL)				isFlipped;
+- (BOOL)				isOpaque;
+// - (void)				resetCursorRects;
+// - (NSMenu *)			menuForEvent:(NSEvent*) event
+//  - (BOOL)				acceptsFirstMouse:(NSEvent*) event;
+- (BOOL)				preservesContentDuringLiveResize;
+// - (void)				setFrameSize:(NSSize) newSize
+//- (BOOL)				lockFocusIfCanDraw
+- (void)layoutSubviews;
+
+#pragma mark -
+//#pragma mark As an NSResponder
+#pragma mark As an UIResponder
+
+//- (BOOL)				acceptsFirstResponder;
+- (BOOL)canBecomeFirstResponder;
+// - (void)				keyDown:(NSEvent*) event
+// - (void)				mouseDown:(NSEvent*) event
+// - (void)				mouseDragged:(NSEvent*) event
+// - (void)				mouseMoved:(NSEvent*) event
+// - (void)				mouseUp:(NSEvent*) event
+// - (void)				flagsChanged:(NSEvent*) event
+// - (void)				doCommandBySelector:(SEL) aSelector
+- (void)				insertText:(id) aString;
+
+#pragma mark -
+#pragma mark UIKit input methods
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event;
+
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event;
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event;
+- (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event;
+
+#pragma mark -
+
+//- (void)				changeAttributes:(id) sender
+
+#pragma mark -
+#pragma mark As an NSObject
+
+- (void)				dealloc;
+- (void)				forwardInvocation:(NSInvocation*) invocation;
+- (NSMethodSignature *)	methodSignatureForSelector:(SEL) aSelector;
+- (BOOL)				respondsToSelector:(SEL) aSelector;
+
+#pragma mark -
+#pragma mark As part of NSMenuValidation Protocol
+
+// - (BOOL)					validateMenuItem:(NSMenuItem*) item
+
+#pragma mark -
+#pragma mark As part of NSNibAwaking Protocol
+
+- (void)				awakeFromNib;
 
 @end
 

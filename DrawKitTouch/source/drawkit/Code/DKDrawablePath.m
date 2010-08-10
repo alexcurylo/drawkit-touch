@@ -3029,6 +3029,77 @@ finish:
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)       touchesBeganAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawablePath touchesBeganAtPoint!
+   twlog("implement DKDrawablePath touchesBeganAtPoint!");
+
+	[[self layer] setInfoWindowBackgroundColour:[[self class] infoWindowBackgroundColour]];
+
+	[self setTrackingMouse:YES];
+	NSInteger mode = [self pathCreationMode];
+	
+	if (( partcode == kDKDrawingNoPart ) && ( mode != kDKPathCreateModeEditExisting ))
+	{
+		// these loops keep control until their logic dictates otherwise, so the other
+		// mouse event handler methods won't be called
+		
+		switch( mode )
+		{
+			case kDKPathCreateModeLineCreate:
+				[self lineCreateLoop:mp];
+				break;
+				
+			case kDKPathCreateModeBezierCreate:
+				[self pathCreateLoop:mp];
+				break;
+				
+			case kDKPathCreateModePolygonCreate:
+				[self polyCreateLoop:mp];
+				break;
+#ifdef qUseCurveFit
+			case kDKPathCreateModeFreehandCreate:
+			{
+				CGFloat savedFHE = [self freehandSmoothing];
+				
+            /* no option key on iOS ...alex
+				BOOL option = ([evt modifierFlags] & NSAlternateKeyMask) != 0;
+             */
+            BOOL option = NO;
+				
+				if ( option )
+					[self setFreehandSmoothing:10 * savedFHE];
+					
+				[self freehandCreateLoop:mp];
+				[self setFreehandSmoothing:savedFHE];
+			}
+			break;
+#endif
+			case kDKPathCreateModeWedgeSegment:
+			case kDKPathCreateModeArcSegment:
+				[self arcCreateLoop:mp];
+				break;
+				
+			default:
+				break;
+		}
+		
+		[self pathCreationLoopDidEnd];
+	}
+	else
+	{
+		if ( partcode == kDKDrawingEntireObjectPart )
+			[super touchesBeganAtPoint:mp inPart:partcode touches:touches event:evt];
+		else
+		{
+			[self recordPathForUndo];
+			[self setMouseHasMovedSinceStartOfTracking:NO];
+		}
+	}
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
@@ -3112,7 +3183,35 @@ finish:
 ///********************************************************************************************************************
 
 #ifndef TARGET_OS_IPHONE
-- (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
+- (void)			touchesMovedToPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+	if (partcode == kDKDrawingEntireObjectPart )
+	{
+		[super mouseDraggedAtPoint:mp inPart:partcode event:evt];
+	}
+	else
+	{
+		BOOL ctrl	= (([evt modifierFlags] & NSControlKeyMask ) != 0 );
+		mp = [self snappedMousePoint:mp withControlFlag:ctrl];
+		[self movePathPartcode:partcode toPoint:mp event:evt];
+		
+		// if the class is set to show size info when resizing, set up an info window now to do that.
+      
+		if([[self class] displaysSizeInfoWhenDragging])
+		{			
+			NSPoint		gridPt = [self convertPointToDrawing:mp];
+			NSString*	abbrUnits = [[self drawing] abbreviatedDrawingUnits];
+			
+			[[self layer] showInfoWindowWithString:[NSString stringWithFormat:@"x: %.2f%@\ny: %.2f%@", gridPt.x, abbrUnits, gridPt.y, abbrUnits] atPoint:mp];
+		}
+		
+		[self setMouseHasMovedSinceStartOfTracking:YES];
+	}
+}
+#endif TARGET_OS_IPHONE
+
+#ifndef TARGET_OS_IPHONE
+- (void)			mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
 	if (partcode == kDKDrawingEntireObjectPart )
 	{
@@ -3155,6 +3254,35 @@ finish:
 /// notes:			used when editing an existing path, but not creating one
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)			touchesEndedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawablePath touchesEndedAtPoint!
+   twlog("implement DKDrawablePath touchesEndedAtPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+   
+	/*
+    if ( partcode == kDKDrawingEntireObjectPart )
+		[super mouseUpAtPoint:mp inPart:partcode event:evt];
+	else
+	{
+		if ([self mouseHasMovedSinceStartOfTracking] && [self undoPath])
+		{
+			[[self undoManager] registerUndoWithTarget:self selector:@selector(setPath:) object:[self undoPath]];
+			[[self undoManager] setActionName:NSLocalizedString( @"Change Path", @"undo string for change path")];
+			[self clearUndoPath];
+		}
+	}
+	[[self layer] hideInfoWindow];
+	[self notifyVisualChange];
+	[self setTrackingMouse:NO];
+    */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt

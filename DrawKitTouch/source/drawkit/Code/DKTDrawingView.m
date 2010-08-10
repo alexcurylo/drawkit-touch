@@ -17,6 +17,7 @@
 #import "LogEvent.h"
 #import "NSBezierPath+Shapes.h"
 #import "UIColor+DKTAdditions.h"
+#import "DKTRulerScrollView.h"
 
 #pragma mark Constants (Non-localized)
 
@@ -57,15 +58,69 @@ NSString* kDKTextEditorUndoesTypingPrefsKey					= @"kDKTextEditorUndoesTyping";
 
 @interface DKTDrawingView (Private)
 
-+ (void)				secondaryThreadEntryPoint:(id) obj;
-+ (BOOL)				secondaryThreadShouldRun;
-+ (void)				signalSecondaryThreadShouldDrawInRect:(NSRect) rect withView:(DKTDrawingView*) aView;
+// these aren't implemented anywhere?
+//+ (void)				secondaryThreadEntryPoint:(id) obj;
+//+ (BOOL)				secondaryThreadShouldRun;
+//+ (void)				signalSecondaryThreadShouldDrawInRect:(NSRect) rect withView:(DKTDrawingView*) aView;
 /*
  - (void)				postMouseLocationInfo:(NSString*) operation event:(UIEvent*) event;
 */
 + (void)				pushCurrentViewAndSet:(DKTDrawingView*) aView;
 - (void)				setRulerMarkerInfo:(NSDictionary*) dict;
 - (NSDictionary*)		rulerMarkerInfo;
+
+@end
+
+#pragma mark -
+
+@implementation DKDrawingView
+
+#pragma mark these are methods called by other components that should be in the abstraction
+
+- (void)				moveRulerMarkerNamed:(NSString*) markerName toLocation:(CGFloat) loc
+{
+   (void)markerName;
+   (void)loc;
+   twlog("DKDrawingView moveRulerMarkerNamed: should be calling DKTDrawingView!");
+}
+
+- (void)				endTextEditing
+{
+   twlog("DKDrawingView endTextEditing: should be calling DKTDrawingView!");
+}
+
+- (void)				setController:(DKViewController*) aController
+{
+   (void)aController;
+   twlog("DKDrawingView endTextEditing: should be calling DKTDrawingView!");
+}
+
+- (DKViewController*)	controller
+{
+   twlog("DKDrawingView controller: should be calling DKTDrawingView!");
+   return nil;
+}
+
+- (void)				set
+{
+   twlog("DKDrawingView set: should be calling DKTDrawingView!");
+}
+
+- (DKViewController*)	makeViewController
+{
+   twlog("DKDrawingView makeViewController: should be calling DKTDrawingView!");
+   return nil;
+}
+
++ (DKDrawingView*)		currentlyDrawingView
+{
+   DKDrawingView *currentView = [DKTDrawingView currentlyDrawingView];
+   if (currentView)
+      return currentView;
+      
+   twlog("DKDrawingView currentlyDrawingView: %@ should be calling DKTDrawingView!", self);
+   return nil;
+}
 
 @end
 
@@ -275,6 +330,30 @@ static Class	s_textEditorClass = Nil;
 #pragma mark -
 #pragma mark - the view's controller
 
+
+///*********************************************************************************************************************
+///
+/// method:			makeViewController
+/// scope:			public instance method
+/// overrides:
+/// description:	creates a controller for this view that can be added to a drawing
+/// 
+/// parameters:		none
+/// result:			a controller, an instance of DKViewController or one of its subclasses
+///
+/// notes:			Normally you wouldn't call this yourself unless you are building the entire DK system by hand rather
+///					than using DKDrawDocument or automatic drawing creation. You can override it to create different
+///					kinds of controller however. Th edefault controller is DKToolController so that DK provides you
+///					with a set of working drawing tools by default.
+///
+///********************************************************************************************************************
+
+- (DKViewController*)	makeViewController
+{
+	DKToolController* aController = [[DKToolController alloc] initWithView:self];
+	return [aController autorelease];
+}
+
 ///*********************************************************************************************************************
 ///
 /// method:			setController:
@@ -394,8 +473,10 @@ static Class	s_textEditorClass = Nil;
 
 - (void)				createAutomaticDrawing
 {
-	NSSize viewSize = [self bounds].size;
+	NSSize viewSize = self.bounds.size;
+   //CGSize viewSize = { .width = 600, .height = 600 };
 	
+   twlog("createAutomaticDrawing of: %@", NSStringFromCGSize(viewSize));
 	LogEvent_( kReactiveEvent, @"View automatically instantiating a drawing (size = %@)", NSStringFromSize( viewSize ));
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:kDKDrawingViewWillCreateAutoDrawing object:self];
@@ -425,31 +506,6 @@ static Class	s_textEditorClass = Nil;
 
 	NSAssert([mAutoDrawing undoManager] != nil, @"note - automatic drawing was created before an undo manager was available. Check your code!");
 }
-
-
-///*********************************************************************************************************************
-///
-/// method:			makeViewController
-/// scope:			public instance method
-/// overrides:
-/// description:	creates a controller for this view that can be added to a drawing
-/// 
-/// parameters:		none
-/// result:			a controller, an instance of DKViewController or one of its subclasses
-///
-/// notes:			Normally you wouldn't call this yourself unless you are building the entire DK system by hand rather
-///					than using DKDrawDocument or automatic drawing creation. You can override it to create different
-///					kinds of controller however. Th edefault controller is DKToolController so that DK provides you
-///					with a set of working drawing tools by default.
-///
-///********************************************************************************************************************
-
-- (DKViewController*)	makeViewController
-{
-	DKToolController* aController = [[DKToolController alloc] initWithView:self];
-	return [aController autorelease];
-}
-
 
 #pragma mark -
 #pragma mark - drawing page breaks and crop marks
@@ -1361,19 +1417,19 @@ static Class	s_textEditorClass = Nil;
 ///
 ///********************************************************************************************************************
 
-/*
-- (void)				postMouseLocationInfo:(NSString*) operation event:(UIEvent*) event
+//- (void)				postMouseLocationInfo:(NSString*) operation event:(UIEvent*) event
+- (void)				postMouseLocationInfo:(NSString*) operation touches:(NSSet *)touches
 {
 	NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:2];
-	NSPoint	p = [self convertPoint:[event locationInWindow] fromView:nil];
-	NSPoint cp = [[self drawing] convertPoint:p];
+	//CGPoint	p = [self convertPoint:[event locationInWindow] fromView:nil];
+   CGPoint p = [[touches.allObjects objectAtIndex:0] locationInView:self];
+	CGPoint cp = [[self drawing] convertPoint:p];
 	
 	[dict setObject:[NSValue valueWithPoint:p] forKey:kDKDrawingMouseLocationInView];
 	[dict setObject:[NSValue valueWithPoint:cp] forKey:kDKDrawingMouseLocationInDrawingUnits];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:operation object:self userInfo:dict];
 }
-*/
 
 #pragma mark -
 #pragma mark window activations
@@ -1669,7 +1725,8 @@ static Class	s_textEditorClass = Nil;
 
 
 #pragma mark -
-#pragma mark As an NSResponder
+//#pragma mark As an NSResponder
+#pragma mark As an UIResponder
 
 ///*********************************************************************************************************************
 ///
@@ -1685,7 +1742,8 @@ static Class	s_textEditorClass = Nil;
 ///
 ///********************************************************************************************************************
 
-- (BOOL)				acceptsFirstResponder
+//- (BOOL)				acceptsFirstResponder
+- (BOOL)canBecomeFirstResponder
 {
 	return YES;
 }
@@ -1884,6 +1942,106 @@ static Class	s_textEditorClass = Nil;
 		[(id)[self controller] insertText:aString];
 }
 
+#pragma mark -
+#pragma mark UIKit input methods
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   //twlog("DKTDrawingView touchesBegan... (%d)", touches.count);
+
+   //[self postMouseLocationInfo:kDKDrawingMouseDownLocation event:event];
+   [self postMouseLocationInfo:kDKDrawingMouseDownLocation touches:touches];
+	[self set];
+	//[[self controller] mouseDown:event];
+	[[self controller] touchesBegan:touches withEvent:event];
+   
+   //- (void)				mouseDown:(NSEvent*) event
+	//[self postMouseLocationInfo:kDKDrawingMouseDownLocation event:event];
+	//[self set];
+	//[[self controller] mouseDown:event];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   //twlog("DKTDrawingView touchesMoved... (%d)", touches.count);
+
+   NSTimeInterval t = [event timestamp];
+	if( t > mLastMouseDragTime + 0.025 )
+	{
+      mLastMouseDragTime = t;
+      //NSSet *touches = [event touchesForView:self];
+      //CGPoint p = [touches.anyObject locationInView:self];
+      //[self updateRulerMouseTracking:[event locationInWindow]];
+      //[self postMouseLocationInfo:kDKDrawingMouseDraggedLocation event:event];
+      [self postMouseLocationInfo:kDKDrawingMouseDraggedLocation touches:touches];
+      //[[self controller] mouseDragged:event];
+      [[self controller] touchesMoved:touches withEvent:event];
+	}
+   
+	//- (void)				mouseDragged:(NSEvent*) event
+   // do not process drags at more than 40 fps...
+   //NSTimeInterval t = [event timestamp];
+	//if( t > mLastMouseDragTime + 0.025 )
+	//{
+		//mLastMouseDragTime = t;
+      //[self updateRulerMouseTracking:[event locationInWindow]];
+		//[self postMouseLocationInfo:kDKDrawingMouseDraggedLocation event:event];
+		//[[self controller] mouseDragged:event];
+	//}
+   
+   // - (void)				mouseMoved:(NSEvent*) event
+	// update the ruler mouse tracking lines if the rulers are visible.
+	//[self updateRulerMouseTracking:[event locationInWindow]];
+	//[self postMouseLocationInfo:kDKDrawingMouseMovedLocation event:event];
+	//[[self controller] mouseMoved:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   //twlog("DKTDrawingView touchesEnded... (%d)", touches.count);
+
+   //[self postMouseLocationInfo:kDKDrawingMouseUpLocation event:event];
+   [self postMouseLocationInfo:kDKDrawingMouseUpLocation touches:touches];
+	//[[self controller] mouseUp:event];
+   [[self controller] touchesEnded:touches withEvent:event];
+	[[self class] pop];
+   
+   //- (void)				mouseUp:(NSEvent*) event
+   //[self postMouseLocationInfo:kDKDrawingMouseUpLocation event:event];
+	//[[self controller] mouseUp:event];
+	//[[self class] pop];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+   twlog("DKTDrawingView touchesCancelled... (%d)", touches.count);
+
+   [super touchesCancelled:touches withEvent:event];
+}
+
+// UIEventSubtypeMotionShake is probably the only one we'd be interested in here
+// don't seem to receive it with an iPad?
+
+- (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
+{
+   twlog("DKTDrawingView motionBegan (%d)...", motion);
+
+   [super motionBegan:motion withEvent:event];
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
+{
+   twlog("DKTDrawingView motionEnded (%d)...", motion);
+   
+   [super motionEnded:motion withEvent:event];
+}
+
+- (void)motionCancelled:(UIEventSubtype)motion withEvent:(UIEvent *)event
+{
+   twlog("DKTDrawingView motionCancelled (%d)...", motion);
+   
+   [super motionCancelled:motion withEvent:event];
+}
 
 #pragma mark -
 
@@ -1979,6 +2137,9 @@ static Class	s_textEditorClass = Nil;
 {
     // commands can be implemented by the layer that wants to make use of them - this makes it happen by forwarding unrecognised
 	// method calls to the active layer if possible.
+   
+   // this is called on iPad, despite not appearing in SDK headers
+   //twlog("DKTDrawingView forwardInvocation called: %@!", invocation);
 	
 	SEL aSelector = [invocation selector];
 
@@ -2109,23 +2270,36 @@ static Class	s_textEditorClass = Nil;
 - (void)				awakeFromNib
 {
 	//NSScrollView*		sv = [self enclosingScrollView];
-	// we're a DKTZoomView, currently inheriting from UIScrollView
-   UIScrollView *sv = self;
-	
+	// we're a DKTZoomView;
+   // expect to be contained in a DKTRulerScrollView
+   DKTRulerScrollView *sv = (DKTRulerScrollView *)self.enclosingScrollView;
+	if (![sv isKindOfClass:[DKTRulerScrollView class]])
+      sv = nil;
+   
 	if ( sv )
 	{
-		/*
-       [sv setHasHorizontalRuler:YES];
+      // UIKit stuff
+      
+      // assume everything is set up in nib
+      // maybe set min/maximumZoomScale here etc.?
+      sv.contentSize = self.bounds.size;
+      twlog("updating scroller from awakeFromNib: %@", NSStringFromCGSize(self.bounds.size));
+      
+      // as DKDrawingView on desktop
+      
+      [sv setHasHorizontalRuler:YES];
 		[sv setHasVerticalRuler:YES];
 		
 		BOOL rvis = [[NSUserDefaults standardUserDefaults] boolForKey:kDKDrawingRulersVisibleDefaultPrefsKey];
 		[sv setRulersVisible:rvis];
 		
-		[sv setDrawsBackground:YES];
+		/*
+       [sv setDrawsBackground:YES];
 		*/
       [sv setBackgroundColor:[[self class] backgroundColour]];
 		
-		/*
+      twlog("in DKTDrawingView awakeFromNib, finish off ruler calls...");
+      /*
        [[sv horizontalRulerView] setClientView:self];
 		[[sv horizontalRulerView] setReservedThicknessForMarkers:6.0];
 		
@@ -2141,7 +2315,6 @@ static Class	s_textEditorClass = Nil;
 	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowActiveStateChanged:) name:NSWindowDidBecomeMainNotification object:[self window]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowActiveStateChanged:) name:UIWindowDidResignKeyNotification object:[self window]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowActiveStateChanged:) name:UIWindowDidBecomeKeyNotification object:[self window]];
-
 }
 
 

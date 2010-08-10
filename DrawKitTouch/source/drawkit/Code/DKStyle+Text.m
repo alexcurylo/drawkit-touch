@@ -146,7 +146,7 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 {
 #if TARGET_OS_IPHONE
    (void)align;
-   twlog("implement setAlignment");
+   twlog("implement DKStyle setAlignment");
 #else
 	if(![self locked])
 	{
@@ -265,7 +265,7 @@ static NSString* kDKBasicTextStyleDefaultKey	= @"326CF635-7863-42C6-900D-CFFC7D5
 	{
 #if TARGET_OS_IPHONE
       (void)font;
-      twlog("implement setFont");
+      twlog("implement DKStyle setFont");
 #else
 		[self changeTextAttribute:NSFontAttributeName toValue:font];
 		[[self undoManager] setActionName:[self actionNameForTextAttribute:NSFontAttributeName]];

@@ -134,59 +134,48 @@ extern "C" {
 
 #pragma mark -
 #if TARGET_OS_IPHONE
-@interface LoggingController : UIViewController
+@interface LoggingController : NSObject
 #else
 @interface LoggingController : NSWindowController
 #endif TARGET_OS_IPHONE
 {
 @private
 	NSDictionary*		mEventTypes;
+#ifndef TARGET_OS_IPHONE
 	BOOL				mIsNibLoaded;
 	
-#if TARGET_OS_IPHONE
-	IBOutlet UIView*	window;
+	IBOutlet NSButton*	mUserActions;
+	IBOutlet NSButton*	mScriptingActions;
+	IBOutlet NSButton*	mReactiveEvents;
+	IBOutlet NSButton*	mInterfaceEvents;
+	IBOutlet NSButton*	mFileInteraction;
+	IBOutlet NSButton*	mObjectLifetime;
+	IBOutlet NSButton*	mObjectChanges;
+	IBOutlet NSButton*	mMiscInfo;
+	IBOutlet NSButton*	mKVOInfo;
+	IBOutlet NSButton*	mUndoInfo;
 #endif TARGET_OS_IPHONE
-	//IBOutlet NSButton*	mUserActions;
-	//IBOutlet NSButton*	mScriptingActions;
-	//IBOutlet NSButton*	mReactiveEvents;
-	//IBOutlet NSButton*	mInterfaceEvents;
-	//IBOutlet NSButton*	mFileInteraction;
-	//IBOutlet NSButton*	mObjectLifetime;
-	//IBOutlet NSButton*	mObjectChanges;
-	//IBOutlet NSButton*	mMiscInfo;
-	//IBOutlet NSButton*	mKVOInfo;
-	//IBOutlet NSButton*	mUndoInfo;
 	
 	// not actually referenced anywhere?? ...alex
 	//IBOutlet NSButton*	mZombiesCheckbox;
-
-	IBOutlet DKButton*	mUserActions;
-	IBOutlet DKButton*	mScriptingActions;
-	IBOutlet DKButton*	mReactiveEvents;
-	IBOutlet DKButton*	mInterfaceEvents;
-	IBOutlet DKButton*	mFileInteraction;
-	IBOutlet DKButton*	mObjectLifetime;
-	IBOutlet DKButton*	mObjectChanges;
-	IBOutlet DKButton*	mMiscInfo;
-	IBOutlet DKButton*	mKVOInfo;
-	IBOutlet DKButton*	mUndoInfo;
 }
+
 
 + (LoggingController*)sharedLoggingController;
 
+#ifndef TARGET_OS_IPHONE
 - (void)showLoggingWindow;
+#endif TARGET_OS_IPHONE
 
 - (NSDictionary*)newEventTypes; // Override if you wish to add more eventTypes; but message super.
 - (NSArray*)eventTypeNames; // An array of the event type names (NSStrings).
 
+#ifndef TARGET_OS_IPHONE
 - (IBAction)logStateChanged:(id)sender;
 	// All logging IBOutlets (NSButtons) have this as their action.
 
 - (NSString*)windowNibName; // Override to use a nib name other than "Logging".
 
-#if TARGET_OS_IPHONE
-// this appears fundamentally incompatible with iPhone ...alex
-#else
 - (IBAction)	setZombiesAction:(id) sender;
 #endif TARGET_OS_IPHONE
 

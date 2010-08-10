@@ -1231,6 +1231,152 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (NSInteger)		touchesBeganAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKSelectAndEditTool touchesBeganAtPoint!
+   twlog("implement DKSelectAndEditTool touchesBeganAtPoint!");
+   (void)p;
+   (void)obj;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   
+	#pragma unused(aDel)
+	
+	// first sanity check the layer kind - if it's not one that handles objects and selection, we can't operate.
+	
+	NSAssert( layer != nil, @"can't operate on a nil layer");
+	
+	mPartcode = kDKDrawingNoPart;
+   /*
+	
+	mPerformedUndoableTask = NO;
+	mDidCopyDragObjects = NO;
+	mMouseMoved = NO;
+	mWasInLockedObject = NO;
+	mLastPoint = p;
+	
+	LogEvent_( kUserEvent, @"S/E tool mouse down, target = %@, layer = %@, pt = %@", obj, layer, NSStringFromPoint( p ));
+	
+	NSDictionary*	userInfoDict = [NSDictionary dictionaryWithObjectsAndKeys:layer, kDKSelectionToolTargetLayer, obj, kDKSelectionToolTargetObject, nil];
+	
+	if(![self isValidTargetLayer:layer])
+	{
+		// if the layer kind is not an object layer, the tool cannot be applied so set its mode to invalid
+		
+		[self setOperationMode:kDKEditToolInvalidMode];
+	}
+	else
+	{
+		// layer type is OK. Whether we will move, select or edit depends on what was initially hit and the current selection state.
+		
+		DKObjectDrawingLayer* odl = (DKObjectDrawingLayer*)layer;
+	
+		if( obj == nil )
+		{
+			// no initial target object, so the tool simply implements a drag selection
+			
+			[self setOperationMode:kDKEditToolSelectionMode];
+			mAnchorPoint = mLastPoint = p;
+			mMarqueeRect = NSRectFromTwoPoints( p, p );
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:kDKSelectionToolWillStartSelectionDrag object:self userInfo:userInfoDict];
+		}
+		else
+		{
+			// a target object was supplied. The tool will either move it (and optionally other selected ones), or edit it by dragging its
+			// knobs. If the object is locked it can still be selected but not moved or resized, so it makes more sense to switch to a marquee drag in this case.
+			
+			if([obj locked] || [obj locationLocked])
+			{
+				[self setOperationMode:kDKEditToolSelectionMode];
+				mAnchorPoint = mLastPoint = p;
+				mMarqueeRect = NSRectFromTwoPoints( p, p );
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName:kDKSelectionToolWillStartSelectionDrag object:self userInfo:userInfoDict];
+				[self changeSelectionWithTarget:obj inLayer:odl event:event];
+				mWasInLockedObject = YES;
+				return kDKDrawingEntireObjectPart;
+			}
+		
+			mPartcode = [obj hitPart:p];
+			
+			// detect a double-click and call the target object's method for fielding it
+			
+			if([event clickCount] > 1)
+			{
+				[obj mouseDoubleClickedAtPoint:p inPart:mPartcode event:event];
+				return mPartcode;
+			}
+
+			NSUInteger sc = [odl countOfSelection];
+			
+			if ( mPartcode == kDKDrawingEntireObjectPart || (( sc > 1 ) && [self dragsAllObjectsInSelectionWhenDraggingKnob]))
+			{
+				// select the object and move it (and optionally any others in the selection)
+				
+				[self setOperationMode:kDKEditToolMoveObjectsMode];
+				[self changeSelectionWithTarget:obj inLayer:odl event:event];
+				
+				// get the objects that will be operated on:
+				// these are then cached locally so that we can perform fiendish operations on the objects without upsetting the layer.
+				// This also should yield small performance improvements.
+				
+				NSArray* selection = [odl selectedAvailableObjects];
+				[self setDraggedObjects:selection];
+				
+				if ([selection count] > 0 )
+				{
+					// if drag-copying is allowed, and the option key is down, make a copy of the selection and drag that
+					
+					if([self allowsDirectDragCopying] && ([event modifierFlags] & NSAlternateKeyMask) != 0 )
+					{
+						// this task must be grouped with the overall undo for the event, so flag that now
+						
+						[aDel toolWillPerformUndoableAction:self];
+						mPerformedUndoableTask = YES;
+						mDidCopyDragObjects = YES;
+						
+						// copy the selection and add it to the layer and select it
+						
+						selection = [odl duplicatedSelection];
+						[odl addObjectsFromArray:selection];
+						[odl exchangeSelectionWithObjectsFromArray:selection];
+					}
+					
+					// send notification:
+					
+					[[NSNotificationCenter defaultCenter] postNotificationName:kDKSelectionToolWillStartMovingObjects object:self userInfo:userInfoDict];
+					
+					// start the drag with the mouse down if there are any objects to drag
+				
+					[self dragObjectsAsGroup:selection inLayer:odl toPoint:p event:event dragPhase:kDKDragMouseDown];
+				}
+			}
+			else
+			{
+				// edit the object - select it singly and pass the initial mouse-down
+				
+				[self setOperationMode:kDKEditToolEditObjectMode];
+				[odl replaceSelectionWithObject:obj];
+				
+				// notify we are about to start:
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName:kDKSelectionToolWillStartEditingObject object:self userInfo:userInfoDict];
+
+				// setting nil here will cause the action name to be supplied by the object itself
+			
+				[self setUndoAction:nil];
+				[obj mouseDownAtPoint:p inPart:mPartcode event:event];
+			}
+		}
+	}
+	*/
+	return mPartcode;
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -1387,6 +1533,85 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)		touchesMovedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKSelectAndEditTool touchesMovedToPoint!
+   twlog("implement DKSelectAndEditTool touchesMovedToPoint!");
+   (void)p;
+   (void)pc;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   (void)aDel;
+
+	/*
+    BOOL					extended = (([event modifierFlags] & NSShiftKeyMask) != 0 );
+	DKObjectDrawingLayer*	odl = (DKObjectDrawingLayer*) layer;
+	NSArray*				sel;
+	DKDrawableObject*		obj;
+	NSAutoreleasePool*		pool = [NSAutoreleasePool new];
+	
+	// the mouse has actually been dragged, so flag that
+	
+	mMouseMoved = YES;
+	mLastPoint = p;
+	
+	// depending on the mode, carry out the operation for a mousedragged event
+	@try
+	{
+		switch([self operationMode])
+		{
+			case kDKEditToolInvalidMode:
+			default:
+				break;
+				
+			case kDKEditToolSelectionMode:
+				[self setMarqueeRect:NSRectFromTwoPoints( mAnchorPoint, p ) inLayer:odl];
+
+				sel = [odl objectsInRect:[self marqueeRect]];
+				
+				if ( extended )
+					[odl addObjectsToSelectionFromArray:sel];
+				else
+					[odl exchangeSelectionWithObjectsFromArray:sel];
+				
+				break;
+		
+			case kDKEditToolMoveObjectsMode:
+				sel = [self draggedObjects];
+				
+				if ([sel count] > 0 )
+				{
+					[aDel toolWillPerformUndoableAction:self];
+					[self dragObjectsAsGroup:sel inLayer:odl toPoint:p event:event dragPhase:kDKDragMouseDragged];
+					mPerformedUndoableTask = YES;
+				}
+				break;
+				
+			case kDKEditToolEditObjectMode:
+				obj = [odl singleSelection];
+				if ( obj != nil )
+				{
+					[aDel toolWillPerformUndoableAction:self];
+					[obj mouseDraggedAtPoint:p inPart:pc event:event];
+					mPerformedUndoableTask = YES;
+				}
+				break;
+		}
+	}
+	@catch( NSException* exception )
+	{
+      // we'll remove casts to quiet our compiler warnings ...alex
+		long opMode = [self operationMode];
+      NSLog(@"#### exception while dragging with selection tool: mode = %ld, exc = (%@) - ignored ####", opMode, exception );
+	}
+	
+	[pool drain];
+    */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -1474,6 +1699,29 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (BOOL)		touchesEndedAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKSelectAndEditTool touchesEndedAtPoint!
+   twlog("implement DKSelectAndEditTool touchesEndedAtPoint!");
+   (void)p;
+   (void)pc;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   (void)aDel;
+   return NO;
+   
+	/*
+    #pragma unused(pc)
+	
+	DKObjectDrawingLayer*	odl = (DKObjectDrawingLayer*) layer;
+	mLastPoint = p;
+	
+	return [self finishUsingToolInLayer:odl delegate:aDel event:event];
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -1483,6 +1731,7 @@ static void		dragFunction_mouseUp( const void* obj, void* context )
 	mLastPoint = p;
 	
 	return [self finishUsingToolInLayer:odl delegate:aDel event:event];
+    */
 }
 #endif TARGET_OS_IPHONE
 

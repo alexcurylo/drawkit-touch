@@ -10,6 +10,9 @@
 
 #import "UIColor+DKTAdditions.h"
 
+static CGFloat sDefaultFlatness = 0.6;
+static CGFloat sDefaultLineWidth = 1.0;
+
 /*
  static inline (NSBezierPath *) NSBezierPathFromCGPath ( CGPathRef pathRef );
  {
@@ -56,36 +59,37 @@
 
 + (CGFloat)defaultFlatness
 {
-   twlog("implement defaultFlatness");
-   return 0;
+   return sDefaultFlatness;
 }
 
 + (void)setDefaultFlatness:(CGFloat)newFlatness
 {
-   (void)newFlatness;
-   twlog("implement setDefaultFlatness");
+   sDefaultFlatness = newFlatness;
 }
 
 + (CGFloat)defaultLineWidth
 {
-   twlog("implement defaultLineWidth");
-   return 0;
+   return sDefaultLineWidth;
 }
 
 + (void)setDefaultLineWidth:(CGFloat)newLineWidth
 {
-   (void)newLineWidth;
-   twlog("implement setDefaultLineWidth");
+   sDefaultLineWidth = newLineWidth;
 }
 
 + (void)strokeRect:(CGRect)rect
 {
-   (void)rect;
-   twlog("implement strokeRect");
+   UIBezierPath *rectPath = [UIBezierPath bezierPathWithRect:rect];
+   rectPath.lineWidth = sDefaultLineWidth;
+   [rectPath stroke];
 }
 
 + (void)strokeLineFromPoint:(CGPoint)point1 toPoint:(CGPoint)point2
 {
+   /*
+    - (void)moveToPoint:(CGPoint)point;
+    - (void)addLineToPoint:(CGPoint)point;
+*/
    (void)point1;
    (void)point2;
    twlog("implement strokeLineFromPoint");

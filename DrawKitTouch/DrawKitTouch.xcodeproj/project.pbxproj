@@ -32,6 +32,10 @@
 		FA52004011A851850074DA15 /* DKDrawKit.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52003E11A851850074DA15 /* DKDrawKit.h */; };
 		FA52007D11A857E30074DA15 /* DKTDesktopPlaceholders.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52007C11A857E30074DA15 /* DKTDesktopPlaceholders.h */; };
 		FA52007E11A857E30074DA15 /* DKTDesktopPlaceholders.h in Headers */ = {isa = PBXBuildFile; fileRef = FA52007C11A857E30074DA15 /* DKTDesktopPlaceholders.h */; };
+		FA6FB5C711E39ADB00CE22AE /* DKTRulerScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6FB5C511E39ADB00CE22AE /* DKTRulerScrollView.h */; };
+		FA6FB5C811E39ADB00CE22AE /* DKTRulerScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6FB5C611E39ADB00CE22AE /* DKTRulerScrollView.m */; };
+		FA6FB5C911E39ADB00CE22AE /* DKTRulerScrollView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6FB5C511E39ADB00CE22AE /* DKTRulerScrollView.h */; };
+		FA6FB5CA11E39ADB00CE22AE /* DKTRulerScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6FB5C611E39ADB00CE22AE /* DKTRulerScrollView.m */; };
 		FA9FC53311B6BF0900064CCA /* DKTDrawingView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */; };
 		FA9FC53411B6BF0900064CCA /* DKTDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */; };
 		FA9FC53511B6BF0900064CCA /* DKTDrawingView.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */; };
@@ -637,6 +641,8 @@
 		FA52007211A856E60074DA15 /* GCZoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCZoomView.h; path = Code/GCZoomView.h; sourceTree = "<group>"; };
 		FA52007311A856E60074DA15 /* GCZoomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCZoomView.m; path = Code/GCZoomView.m; sourceTree = "<group>"; };
 		FA52007C11A857E30074DA15 /* DKTDesktopPlaceholders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DKTDesktopPlaceholders.h; sourceTree = "<group>"; };
+		FA6FB5C511E39ADB00CE22AE /* DKTRulerScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTRulerScrollView.h; path = Code/DKTRulerScrollView.h; sourceTree = "<group>"; };
+		FA6FB5C611E39ADB00CE22AE /* DKTRulerScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKTRulerScrollView.m; path = Code/DKTRulerScrollView.m; sourceTree = "<group>"; };
 		FA9FC53111B6BF0900064CCA /* DKTDrawingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTDrawingView.h; path = Code/DKTDrawingView.h; sourceTree = "<group>"; };
 		FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DKTDrawingView.m; path = Code/DKTDrawingView.m; sourceTree = "<group>"; };
 		FA9FC55011B6C12800064CCA /* DKTZoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DKTZoomView.h; path = Code/DKTZoomView.h; sourceTree = "<group>"; };
@@ -700,7 +706,6 @@
 		FADE32A911A8AE1000EF6715 /* GCThreadQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCThreadQueue.m; path = Code/GCThreadQueue.m; sourceTree = "<group>"; };
 		FADE32C811A8B06900EF6715 /* LogEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogEvent.h; sourceTree = "<group>"; };
 		FADE32C911A8B06900EF6715 /* LogEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogEvent.m; sourceTree = "<group>"; };
-		FADE32D411A8B09200EF6715 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Logging.xib; sourceTree = "<group>"; };
 		FADE32F211A8B39F00EF6715 /* NSBezierPath+Shapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSBezierPath+Shapes.h"; path = "Code/NSBezierPath+Shapes.h"; sourceTree = "<group>"; };
 		FADE32F311A8B39F00EF6715 /* NSBezierPath+Shapes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSBezierPath+Shapes.m"; path = "Code/NSBezierPath+Shapes.m"; sourceTree = "<group>"; };
 		FADE330011A8B44300EF6715 /* NSColor+DKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSColor+DKAdditions.h"; path = "Code/NSColor+DKAdditions.h"; sourceTree = "<group>"; };
@@ -1150,6 +1155,8 @@
 				FA9FC53211B6BF0900064CCA /* DKTDrawingView.m */,
 				FA9FC55011B6C12800064CCA /* DKTZoomView.h */,
 				FA9FC55111B6C12800064CCA /* DKTZoomView.m */,
+				FA6FB5C511E39ADB00CE22AE /* DKTRulerScrollView.h */,
+				FA6FB5C611E39ADB00CE22AE /* DKTRulerScrollView.m */,
 				FADE378011A9901700EF6715 /* DKSelectionPDFView.h */,
 				FADE378111A9901700EF6715 /* DKSelectionPDFView.m */,
 			);
@@ -1179,6 +1186,8 @@
 				FA52007311A856E60074DA15 /* GCZoomView.m */,
 				FADE330011A8B44300EF6715 /* NSColor+DKAdditions.h */,
 				FADE330111A8B44300EF6715 /* NSColor+DKAdditions.m */,
+				FADE3D4B11AA2A5F00EF6715 /* TestBSPStorage.h */,
+				FADE3D4C11AA2A5F00EF6715 /* TestBSPStorage.m */,
 			);
 			name = "Removed from DrawKitTouch";
 			sourceTree = "<group>";
@@ -1334,7 +1343,6 @@
 		FADE32C711A8B06900EF6715 /* LogEvent */ = {
 			isa = PBXGroup;
 			children = (
-				FADE32D311A8B09200EF6715 /* Logging.xib */,
 				FADE32C811A8B06900EF6715 /* LogEvent.h */,
 				FADE32C911A8B06900EF6715 /* LogEvent.m */,
 			);
@@ -1497,8 +1505,6 @@
 				FADE3B2911A9FE9B00EF6715 /* DKBSPObjectStorage.m */,
 				FADE3D4511AA2A4A00EF6715 /* DKBSPDirectObjectStorage.h */,
 				FADE3D4611AA2A4A00EF6715 /* DKBSPDirectObjectStorage.m */,
-				FADE3D4B11AA2A5F00EF6715 /* TestBSPStorage.h */,
-				FADE3D4C11AA2A5F00EF6715 /* TestBSPStorage.m */,
 			);
 			name = Storage;
 			sourceTree = "<group>";
@@ -1904,6 +1910,7 @@
 				FABA1E8511BE04130011301D /* DKTShadow.h in Headers */,
 				FABA23CE11C0B4A30011301D /* DKTAffineTransform.h in Headers */,
 				FABA247011C1445E0011301D /* UIBezierPath+DKTAdditions.h in Headers */,
+				FA6FB5C711E39ADB00CE22AE /* DKTRulerScrollView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2066,6 +2073,7 @@
 				FABA1E8711BE04130011301D /* DKTShadow.h in Headers */,
 				FABA23D011C0B4A30011301D /* DKTAffineTransform.h in Headers */,
 				FABA247211C1445E0011301D /* UIBezierPath+DKTAdditions.h in Headers */,
+				FA6FB5C911E39ADB00CE22AE /* DKTRulerScrollView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2139,7 +2147,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# name and build location\nFRAMEWORK_NAME=${PROJECT_NAME}  \nFRAMEWORK_BUILD_PATH=\"${PROJECT_DIR}/build/Framework-${BUILD_STYLE}\"  \n \n# these never change\nFRAMEWORK_VERSION=A  \nFRAMEWORK_CURRENT_VERSION=1  \nFRAMEWORK_COMPATIBILITY_VERSION=1\n\n# Clean any existing framework that might be there  \nif [ -d \"$FRAMEWORK_BUILD_PATH\" ]   \nthen\n\techo \"Framework: Cleaning framework...\"  \n\trm -rf \"$FRAMEWORK_BUILD_PATH\"  \nfi\n\n# Build the canonical Framework bundle directory structure  \necho \"Framework: Setting up directories...\"  \nFRAMEWORK_DIR=$FRAMEWORK_BUILD_PATH/$FRAMEWORK_NAME.framework  \nmkdir -p $FRAMEWORK_DIR  \nmkdir -p $FRAMEWORK_DIR/Versions  \nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION\nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION/Resources\nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION/Resources/English.lproj\nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION/Headers\n \necho \"Framework: Creating symlinks...\"  \nln -s $FRAMEWORK_VERSION $FRAMEWORK_DIR/Versions/Current\nln -s Versions/Current/Headers $FRAMEWORK_DIR/Headers\nln -s Versions/Current/Resources $FRAMEWORK_DIR/Resources\nln -s Versions/Current/$FRAMEWORK_NAME $FRAMEWORK_DIR/$FRAMEWORK_NAME \n\n# combine lib files for various platforms into one\necho \"Framework: Creating library...\"  \nlipo -create \"${PROJECT_DIR}/build/${BUILD_STYLE}-iphoneos/lib${PROJECT_NAME}.a\" \"${PROJECT_DIR}/build/${BUILD_STYLE}-iphonesimulator/lib${PROJECT_NAME}.a\" -o \"$FRAMEWORK_DIR/Versions/Current/$FRAMEWORK_NAME\"\n \necho \"Framework: Copying assets into current version...\"\ncp ${SRCROOT}/source/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/source/drawkit/Code/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/source/drawkit/ThirdParty/gpc/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/source/drawkit/ThirdParty/LogEvent/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/resources/images/* $FRAMEWORK_DIR/Resources/\ncp ${SRCROOT}/source/drawkit/ThirdParty/LogEvent/English.lproj/*.xib $FRAMEWORK_DIR/Resources/English.lproj/\ncp ${SRCROOT}/notes/DRAWKIT_LICENSING.TXT $FRAMEWORK_DIR/Resources/\n \n# replace placeholder in plist with project name\ncat \"${SRCROOT}/resources/framework.plist\" | sed 's/${PROJECT_NAME}/'\"${PROJECT_NAME}\"'/' > $FRAMEWORK_DIR/Resources/Info.plist\n\n# zip it up for easy distribution\n# ditto -c -k --keepParent $FRAMEWORK_DIR $FRAMEWORK_DIR.zip";
+			shellScript = "# name and build location\nFRAMEWORK_NAME=${PROJECT_NAME}  \nFRAMEWORK_BUILD_PATH=\"${PROJECT_DIR}/build/Framework-${BUILD_STYLE}\"  \n \n# these never change\nFRAMEWORK_VERSION=A  \nFRAMEWORK_CURRENT_VERSION=1  \nFRAMEWORK_COMPATIBILITY_VERSION=1\n\n# Clean any existing framework that might be there  \nif [ -d \"$FRAMEWORK_BUILD_PATH\" ]   \nthen\n\techo \"Framework: Cleaning framework...\"  \n\trm -rf \"$FRAMEWORK_BUILD_PATH\"  \nfi\n\n# Build the canonical Framework bundle directory structure  \necho \"Framework: Setting up directories...\"  \nFRAMEWORK_DIR=$FRAMEWORK_BUILD_PATH/$FRAMEWORK_NAME.framework  \nmkdir -p $FRAMEWORK_DIR  \nmkdir -p $FRAMEWORK_DIR/Versions  \nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION\nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION/Resources\nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION/Resources/English.lproj\nmkdir -p $FRAMEWORK_DIR/Versions/$FRAMEWORK_VERSION/Headers\n \necho \"Framework: Creating symlinks...\"  \nln -s $FRAMEWORK_VERSION $FRAMEWORK_DIR/Versions/Current\nln -s Versions/Current/Headers $FRAMEWORK_DIR/Headers\nln -s Versions/Current/Resources $FRAMEWORK_DIR/Resources\nln -s Versions/Current/$FRAMEWORK_NAME $FRAMEWORK_DIR/$FRAMEWORK_NAME \n\n# combine lib files for various platforms into one\necho \"Framework: Creating library...\"  \nlipo -create \"${PROJECT_DIR}/build/${BUILD_STYLE}-iphoneos/lib${PROJECT_NAME}.a\" \"${PROJECT_DIR}/build/${BUILD_STYLE}-iphonesimulator/lib${PROJECT_NAME}.a\" -o \"$FRAMEWORK_DIR/Versions/Current/$FRAMEWORK_NAME\"\n \necho \"Framework: Copying assets into current version...\"\ncp ${SRCROOT}/source/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/source/drawkit/Code/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/source/drawkit/ThirdParty/gpc/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/source/drawkit/ThirdParty/LogEvent/*.h $FRAMEWORK_DIR/Headers/\ncp ${SRCROOT}/resources/images/* $FRAMEWORK_DIR/Resources/\n#cp ${SRCROOT}/source/drawkit/ThirdParty/LogEvent/English.lproj/*.xib $FRAMEWORK_DIR/Resources/English.lproj/\ncp ${SRCROOT}/notes/DRAWKIT_LICENSING.TXT $FRAMEWORK_DIR/Resources/\n \n# replace placeholder in plist with project name\ncat \"${SRCROOT}/resources/framework.plist\" | sed 's/${PROJECT_NAME}/'\"${PROJECT_NAME}\"'/' > $FRAMEWORK_DIR/Resources/Info.plist\n\n# zip it up for easy distribution\n# ditto -c -k --keepParent $FRAMEWORK_DIR $FRAMEWORK_DIR.zip";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2282,6 +2290,7 @@
 				FABA1E8611BE04130011301D /* DKTShadow.m in Sources */,
 				FABA23CF11C0B4A30011301D /* DKTAffineTransform.m in Sources */,
 				FABA247111C1445E0011301D /* UIBezierPath+DKTAdditions.m in Sources */,
+				FA6FB5C811E39ADB00CE22AE /* DKTRulerScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2423,6 +2432,7 @@
 				FABA1E8811BE04130011301D /* DKTShadow.m in Sources */,
 				FABA23D111C0B4A30011301D /* DKTAffineTransform.m in Sources */,
 				FABA247311C1445E0011301D /* UIBezierPath+DKTAdditions.m in Sources */,
+				FA6FB5CA11E39ADB00CE22AE /* DKTRulerScrollView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2440,18 +2450,6 @@
 			targetProxy = FAA5B7EC119F673400CDD184 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		FADE32D311A8B09200EF6715 /* Logging.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FADE32D411A8B09200EF6715 /* English */,
-			);
-			name = Logging.xib;
-			path = English.lproj;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB921F08733DC00010E9CD /* Debug */ = {

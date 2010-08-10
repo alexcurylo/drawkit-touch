@@ -144,13 +144,19 @@
 
 // mouse event handling:
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (BOOL)			shouldAutoActivateWithTouches:(NSSet *)touches andEvent:(UIEvent*)event;
+#else
 - (BOOL)			shouldAutoActivateWithEvent:(NSEvent*) event;
 #endif TARGET_OS_IPHONE
 - (BOOL)			hitLayer:(NSPoint) p;
 - (DKDrawableObject*)	hitTest:(NSPoint) p;
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view;
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view;
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event inView:(UIView *)view;
+#else
 - (void)			mouseDown:(NSEvent*) event inView:(NSView*) view;
 - (void)			mouseDragged:(NSEvent*) event inView:(NSView*) view;
 - (void)			mouseUp:(NSEvent*) event inView:(NSView*) view;

@@ -706,7 +706,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 	NSAssert( font != nil, @"font was nil");
 	
 #if TARGET_OS_IPHONE
-   twlog("implement setFont");
+   twlog("implement DKTextAdornment setFont");
 #else
 	[self changeTextAttribute:NSFontAttributeName toValue:font];
 #endif TARGET_OS_IPHONE
@@ -966,7 +966,7 @@ static CGFloat s_maximumVerticalOffset = DEFAULT_BASELINE_OFFSET_MAX;
 {
 #if TARGET_OS_IPHONE
    (void)align;
-   twlog("implement setAlignment");
+   twlog("implement DKTextAdornment setAlignment");
 #else
 	NSMutableParagraphStyle* mps = [[self paragraphStyle] mutableCopy];
 	

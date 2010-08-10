@@ -2784,7 +2784,8 @@ static DKLayerCacheOption sDefaultCacheOption = kDKLayerCacheNone;
 	
 	if( mShowStorageDebugging && [[self storage] respondsToSelector:@selector(debugStorageDivisions)])
 	{
-		NSBezierPath* debug = [(id)[self storage] debugStorageDivisions];
+		//NSBezierPath* debug = [(id)[self storage] debugStorageDivisions];
+		DKBezierPath* debug = [(id)[self storage] debugStorageDivisions];
 		
 		[debug setLineWidth:0];
 		//[[NSColor redColor] set];

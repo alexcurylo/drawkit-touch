@@ -8,6 +8,8 @@
 
 - (NSString *)dktVersion;
 
+- (void)dktSetLogging:(BOOL)enabled;
+
 @end
 
 // If a UIApplication category is available at runtime,

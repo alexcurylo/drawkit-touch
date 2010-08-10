@@ -11,7 +11,7 @@
 //@class DKRetriggerableTimer;
 
 
-@interface DKTZoomView : UIScrollView
+@interface DKTZoomView : UIView
 {
 @private
    /*
@@ -69,15 +69,19 @@
 @interface UIView (DKTNSViewEmulation)
 
 - (CGRect)visibleRect;
-- (void)setBoundsSize:(CGSize)newSize;
-- (void)setFrameSize:(CGSize)newSize;
+//- (void)setBoundsSize:(CGSize)newSize;
+//- (void)setFrameSize:(CGSize)newSize;
 - (void)setNeedsDisplay:(BOOL)flag;
 - (void)getRectsBeingDrawn:(const NSRect **)rects count:(NSInteger *)count;
 - (BOOL)needsToDrawRect:(CGRect)aRect;
 
 - (NSData *)dataWithPDFInsideRect:(CGRect)rect;
 
+// -firstResponder is hidden in iPhone SDK
 - (UIView *)findFirstResponder;
+
+// to call scrollRectToVisible and like functions on as it's not exposed in UIView unlike NSView; checks only immediate superview
+- (UIScrollView *)enclosingScrollView;
 
 @end
 

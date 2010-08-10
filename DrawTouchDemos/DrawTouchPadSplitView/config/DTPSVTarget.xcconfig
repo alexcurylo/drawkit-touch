@@ -1,0 +1,13 @@
+//
+//  DTPSVTarget.xcconfig
+//
+//  Copyright 2010 Trollwerks Inc. All rights reserved.
+//
+
+PRODUCT_NAME = DrawTouchPadSplitView
+
+GCC_PREFIX_HEADER = config/DTPSVProjectPrefix.pch
+INFOPLIST_FILE = resources/DrawTouchPadSplitView-Info.plist
+
+//FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SRCROOT)/../../DrawKitTouch/build/Framework-Debug/"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SRCROOT)/../../DrawKitTouch/source/drawkit/code/"

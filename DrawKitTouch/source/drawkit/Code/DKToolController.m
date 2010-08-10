@@ -749,6 +749,83 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					ensure that autscrolling and targeting of other layer types works normally.
 ///
 ///********************************************************************************************************************
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+//#warning implement DKToolController touchesBegan!
+   //twlog("implement DKToolController touchesBegan!");
+   
+	LogEvent_( kInfoEvent, @"tool controller touchesBegan");
+	
+	mOpenedUndoGroup = NO;
+	mAbortiveTouch = NO;
+	
+	DKDrawableObject*	target = nil;
+	DKDrawingTool*		ct = [self drawingTool];
+	//NSPoint				p = [[self view] convertPoint:[event locationInWindow] fromView:nil];
+   CGPoint p = [[touches.allObjects objectAtIndex:0] locationInView:self.view];
+	
+	NSAssert( ct != nil , @"nil drawing tool for touchesBegan");
+	
+	// should the layer be auto-activated? Only do this if the tool is some kind of selection tool, because
+	// otherwise drawing a shape on top of another in another layer can cause the layer to switch unexpectedly.
+	
+	if([ct isSelectionTool])
+		[self autoActivateLayerWithTouches:touches andEvent:event];
+	
+	// can the tool be used in this layer anyway?
+   
+	if ([ct isValidTargetLayer:[self activeLayer]])
+	{
+		[self startAutoscrolling];
+		
+		BOOL isObjectLayer = [[self activeLayer] isKindOfClass:[DKObjectDrawingLayer class]];
+		
+		if( isObjectLayer )
+		{
+			// the operation we are about to do may change the selection, so record its current state so it can be undone if needed.
+			
+			[(DKObjectDrawingLayer*)[self activeLayer] recordSelectionForUndo];
+		}	
+		
+		// see if there is a target object
+      
+		target = [(DKObjectDrawingLayer*)[self activeLayer] hitTest:p];
+      
+		// start the tool:
+		
+		@try
+		{
+#if DK_ALWAYS_OPEN_UNDO_GROUP
+			[[self undoManager] setGroupsByEvent:NO];
+			[self openUndoGroup];
+#endif
+			//mPartcode = [ct mouseDownAtPoint:p targetObject:target layer:[self activeLayer] event:event delegate:self];
+			mPartcode = [ct touchesBeganAtPoint:p targetObject:target layer:[self activeLayer] touches:touches event:event delegate:self];
+		}
+		@catch( NSException* excp )
+		{
+			NSLog(@"caught exception on touchesBegan with tool - ignored (tool = %@, exception = %@)", ct, excp );
+			
+			[self closeUndoGroup];
+			[self stopAutoscrolling];
+			
+			// set flag to reject drag and up events - cleared on new mouse down. This prevents an error condition from developing
+			// if the initial mouse down is mishandled.
+			
+			mAbortiveTouch = YES;
+		}
+	}
+	else
+	{
+		// tool not applicable to the active layer - defer to the view controller. Some layers (e.g. guides) will
+		// always cause this to occur as they work the same way regardless of the current tool. So don't beep here.
+		
+		[super touchesBegan:touches withEvent:event];
+	}
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDown:(NSEvent*) event
 {
@@ -836,6 +913,54 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					ensure that other layer types work normally.
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+//#warning implement DKToolController touchesMoved!
+   //twlog("implement DKToolController touchesMoved!");
+   
+    if( mAbortiveTouch )
+		return;
+	
+	DKDrawingTool*		ct = [self drawingTool];
+	
+	if( event != mDragEvent )
+	{
+		[mDragEvent release];
+		mDragEvent = [event retain];
+		[mDragTouches release];
+		mDragTouches = [touches copy];
+	}
+
+	if([[touches.allObjects objectAtIndex:0] tapCount] <= 1 )
+	{
+		NSAssert( ct != nil , @"nil drawing tool for touchesMoved");
+		
+		//NSPoint	p = [[self view] convertPoint:[event locationInWindow] fromView:nil];
+      CGPoint p = [[touches.allObjects objectAtIndex:0] locationInView:self.view];
+		
+		@try
+		{
+			if ([ct isValidTargetLayer:[self activeLayer]])
+			{
+            //[ct mouseDraggedToPoint:p partCode:mPartcode layer:[self activeLayer] event:event delegate:self];
+            [ct touchesMovedToPoint:p partCode:mPartcode layer:[self activeLayer] touches:touches event:event delegate:self];
+			}
+         else
+				[super touchesMoved:touches withEvent:event];
+		}
+		@catch( NSException* excp )
+		{
+			NSLog(@"caught exception in touchesMoved with tool - ignored (tool = %@, exception = %@)", ct, excp );
+			
+			[self closeUndoGroup];
+			[self stopAutoscrolling];
+		}
+	}
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDragged:(NSEvent*) event
 {
@@ -889,6 +1014,80 @@ static DKDrawingTool*		sGlobalTool = nil;
 ///					ensure that other layer types work normally.
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+//#warning implement DKToolController touchesEnded!
+   //twlog("implement DKToolController touchesEnded!");
+   
+    if( mAbortiveTouch )
+		return;
+   
+	LogEvent_( kInfoEvent, @"tool controller touchesEnded");
+   
+	DKDrawingTool*		ct = [self drawingTool];
+	//NSPoint				p = [[self view] convertPoint:[event locationInWindow] fromView:nil];
+   CGPoint p = [[touches.allObjects objectAtIndex:0] locationInView:self.view];
+	
+	NSAssert( ct != nil , @"nil drawing tool for touchesEnded");
+   
+	if ([ct isValidTargetLayer:[self activeLayer]])
+	{
+		BOOL undo = NO;
+		
+		@try
+		{
+			//undo = [ct mouseUpAtPoint:p partCode:mPartcode layer:[self activeLayer] event:event delegate:self];
+			undo = [ct touchesEndedAtPoint:p partCode:mPartcode layer:[self activeLayer] touches:touches event:event delegate:self];
+		}
+		@catch( NSException* excp )
+		{
+			NSLog(@"caught exception on touchesEnded with tool - ignored (tool = %@, exception = %@)", ct, excp );
+			undo = NO;
+		}
+		
+		BOOL isObjectLayer = [[self activeLayer] isKindOfClass:[DKObjectDrawingLayer class]];
+		
+		if( isObjectLayer && undo )
+		{
+			// if the tool did something undoable, get the undo action and commit it in the active layer. This also
+			// commits the recorded selection to the undo stack if the layer treats selection changes as undoable.
+			
+			NSString* action = [ct actionName];
+			[(DKObjectDrawingLayer*)[self activeLayer] commitSelectionUndoWithActionName:action];
+		}
+		// close the undo group if one was opened applying the tool
+		
+		[self closeUndoGroup];
+		[self stopAutoscrolling];
+	}
+	else
+		[super touchesEnded:touches withEvent:event];
+	
+	// after handling mouse up, we may wish to spring back to the selection tool. This first attempts to
+	// select a registered tool with the name "Select" so if you have replaced it, that is the new default tool.
+	// Otherwise it creates an instance of the standard selection tool and sets that.
+	
+	if([self automaticallyRevertsToSelectionTool] && ![ct isKindOfClass:[DKSelectAndEditTool class]])
+	{
+		DKDrawingTool* se;
+		
+		se = [DKDrawingTool drawingToolWithName:kDKStandardSelectionToolName];
+		
+		if( se == nil )
+			se = [[[DKSelectAndEditTool alloc] init] autorelease];
+      
+		[self setDrawingTool:se];
+	}
+	
+	[mDragEvent release];
+	mDragEvent = nil;
+   [mDragTouches release];
+	mDragTouches = nil;
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseUp:(NSEvent*) event
 {

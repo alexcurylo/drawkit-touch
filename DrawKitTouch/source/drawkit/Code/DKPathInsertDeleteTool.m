@@ -122,6 +122,45 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 }
 #endif TARGET_OS_IPHONE
 
+#if TARGET_OS_IPHONE
+- (NSInteger)		touchesBeganAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKPathInsertDeleteTool touchesBeganAtPoint!
+   twlog("implement DKPathInsertDeleteTool touchesBeganAtPoint!");
+   (void)p;
+   (void)obj;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   
+	#pragma unused(layer)
+	#pragma unused(event)
+	#pragma unused(aDel)
+	
+	// the mouse down works out whether the operation can be actually done.
+	
+	NSInteger pc = kDKDrawingNoPart;
+   /*
+	m_performedAction = NO;
+	mTargetRef = nil;
+	
+	if ([obj isKindOfClass:[DKDrawablePath class]])
+	{
+		mTargetRef = (DKDrawablePath*)obj;
+		
+		pc = [obj hitPart:p];
+		
+		LogEvent_(kUserEvent, @"insert/delete tool got mouse down, target = %@, mode = %d, partcode = %d", obj, m_mode, pc );
+		
+		// if the pc was not an on-path point and we are deleting, the operation won't work so return 0
+		
+		if ( pc == kDKDrawingEntireObjectPart && [self mode] == kDKPathDeletePointMode )
+			pc = kDKDrawingNoPart;
+	}
+	*/
+	return pc;
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
@@ -154,6 +193,66 @@ NSString*	kDKDeletePathElementCursorImageName		= @"Delete Path Element";
 }
 #endif TARGET_OS_IPHONE
 
+#if TARGET_OS_IPHONE
+- (BOOL)		touchesEndedAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+#warning implement DKSelectAndEditTool touchesEndedAtPoint!
+   twlog("implement DKSelectAndEditTool touchesEndedAtPoint!");
+   (void)p;
+   (void)pc;
+   (void)layer;
+   (void)touches;
+   (void)event;
+   (void)aDel;
+   return NO;
+   
+	/*
+    #pragma unused(aDel)
+			
+	if (mTargetRef != nil)
+	{
+		if ([self mode] == kDKPathDeletePointMode)
+		{
+			// delete the point <pc>
+			
+			if ( pc != kDKDrawingNoPart )
+			{
+				m_performedAction = [mTargetRef pathDeletePointWithPartCode:pc];
+			}
+		}
+		else if([self mode] == kDKPathInsertPointMode)
+		{
+			// insert - option key will insert point type opposite to that of the element type hit
+			
+			if ( pc == kDKDrawingEntireObjectPart )
+			{ 
+				BOOL option = ([event modifierFlags] & NSAlternateKeyMask) != 0;
+				pc = [mTargetRef pathInsertPointAt:p ofType:option? kDKPathPointTypeInverseAuto : kDKPathPointTypeAuto];
+				m_performedAction = ( pc != kDKDrawingNoPart && pc != kDKDrawingEntireObjectPart );
+			}
+		}
+		else if([self mode] == kDKPathDeleteElementMode)
+		{
+			m_performedAction = [mTargetRef pathDeleteElementAtPoint:p];
+		}
+	
+#ifndef TARGET_OS_IPHONE
+		if( !m_performedAction )
+			NSBeep();
+#endif TARGET_OS_IPHONE
+
+		if(![(DKObjectDrawingLayer*)layer isSelectedObject:mTargetRef] && m_performedAction )
+		{
+			[(DKObjectDrawingLayer*)layer replaceSelectionWithObject:mTargetRef];
+		}
+		
+	}
+	
+	mTargetRef = nil;
+	return m_performedAction;
+    */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel

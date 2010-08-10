@@ -714,6 +714,41 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)       touchesBeganAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKArcPath touchesBeganAtPoint!
+   twlog("implement DKArcPath touchesBeganAtPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+	[[self layer] setInfoWindowBackgroundColour:[[self class]infoWindowBackgroundColour]];
+
+/*
+  [self setTrackingMouse:YES];
+	DKDrawablePathCreationMode mode = [self pathCreationMode];
+	
+	switch ( mode )
+	{
+		case kDKPathCreateModeEditExisting:
+			[super mouseDownAtPoint:mp inPart:partcode event:evt];
+			break;
+			
+		case kDKArcSimpleCreationMode:
+			[self setStartAngle:-22.5];
+			[self setEndAngle:22.5];
+			[self setPathCreationMode:kDKPathCreateModeEditExisting];
+			break;
+			
+		default:
+			[self arcCreateLoop:mp];
+			break;
+	}
+ */
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
@@ -758,6 +793,72 @@ static CGFloat			sAngleConstraint = 0.261799387799;	// 15°
 /// notes:			used when editing an existing path, but not creating one
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)			touchesMovedToPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKArcPath touchesMovedToPoint!
+   twlog("implement DKArcPath touchesMovedToPoint!");
+   (void)mp;
+   (void)partcode;
+   (void)touches;
+   (void)evt;
+   
+   /*
+    
+	BOOL shift	= (([evt modifierFlags] & NSShiftKeyMask ) != 0 );
+	BOOL ctrl	= (([evt modifierFlags] & NSControlKeyMask ) != 0 );
+	
+	// modifier keys change the editing of path control points thus:
+	
+	// +shift	- constrains curve control point angles to 15° intervals
+	// +ctrl	- temporarily disables snap to grid
+	
+	NSPoint smp = [self snappedMousePoint:mp withControlFlag:ctrl];
+	
+	if ( partcode == kDKArcPathCentrePointPart )
+		[self setLocation:smp];
+	else if ( partcode == kDKDrawingEntireObjectPart )
+		[super mouseDraggedAtPoint:mp inPart:kDKDrawingEntireObjectPart event:evt];
+	else
+		[self movePart:partcode toPoint:smp constrainAngle:shift];
+	
+	if([[self class] displaysSizeInfoWhenDragging])
+	{			
+		NSString*	abbrUnits = [[self drawing] abbreviatedDrawingUnits];
+		CGFloat		rad = [[self drawing] convertLength:mRadius];
+		CGFloat		angle;
+		NSString*	infoStr;
+		NSPoint		gridPt;
+		
+		switch ( partcode )
+		{
+			case kDKDrawingEntireObjectPart:
+			case kDKArcPathCentrePointPart:
+				gridPt = [self convertPointToDrawing:[self location]];
+				infoStr = [NSString stringWithFormat:@"centre x: %.2f%@\ncentre y: %.2f%@", gridPt.x, abbrUnits, gridPt.y, abbrUnits];
+				break;
+            
+			case kDKArcPathRotationKnobPart:
+				angle = [self angleInDegrees];
+				infoStr = [NSString stringWithFormat:@"radius: %.2f%@\nangle: %.1f%C", rad, abbrUnits, angle, 0xB0];
+				break;
+				
+			default:
+				angle = RADIANS_TO_DEGREES( mEndAngle - mStartAngle );
+				if ( angle < 0 )
+					angle += 360.0f;
+				infoStr = [NSString stringWithFormat:@"radius: %.2f%@\narc angle: %.1f%C", rad, abbrUnits, angle, 0xB0];
+				break;
+		}
+		
+		[[self layer] showInfoWindowWithString:infoStr atPoint:mp];
+	}
+   
+	[self setMouseHasMovedSinceStartOfTracking:YES];
+    */
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt

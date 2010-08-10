@@ -48,9 +48,7 @@ DKEditToolDragPhase;
 #endif TARGET_OS_IPHONE
 	NSRect					mMarqueeRect;				// the selection rect, while selecting
 	DKStyle*				mMarqueeStyle;				// the appearance style of the marquee
-#ifndef TARGET_OS_IPHONE
 	NSInteger				mPartcode;					// current partcode
-#endif TARGET_OS_IPHONE
 	NSString*				mUndoAction;				// the most recently performed action name
 	BOOL					mHideSelectionOnDrag;		// YES to hide knobs and jhandles while dragging an object
 	BOOL					mAllowMultiObjectDrag;		// YES to allow all objects in the selection to be moved at once

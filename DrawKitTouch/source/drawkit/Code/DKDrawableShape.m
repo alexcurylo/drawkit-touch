@@ -3029,6 +3029,38 @@ static NSSize			sTempSavedOffset;
 /// notes:			
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)		touchesBeganAtPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawableShape touchesBeganAtPoint!
+   twlog("implement DKDrawableShape touchesBeganAtPoint %@!", NSStringFromCGPoint(mp));
+
+	[super touchesBeganAtPoint:mp inPart:partcode touches:touches event:evt];
+	
+	// save the current aspect ratio in case we wish to constrain a resize:
+	// if the size is zero assume square
+	
+	if( NSEqualSizes([self size], NSZeroSize ))
+		sAspect = 1.0;
+	else
+		sAspect = fabs([self size].height / [self size].width);
+	
+	// for rotation, set up a small info window to track the angle
+	
+	if ( partcode == kDKDrawableShapeRotationHandle )
+	{
+		[self prepareRotation];
+	}
+	else if ( partcode >= kDKHotspotBasePartcode )
+	{
+		[[self hotspotForPartCode:partcode] startTouchTracking:touches event:evt inView:[self currentView]];
+	}
+	else
+		[self updateInfoForOperation:kDKShapeOperationResize atPoint:mp];
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDownAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
@@ -3073,6 +3105,98 @@ static NSSize			sTempSavedOffset;
 /// notes:			calls necessary methods to interactively drag the hit part
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)			touchesMovedToPoint:(NSPoint) mp inPart:(NSInteger) partcode touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawableShape touchesMovedToPoint!
+   twlog("implement DKDrawableShape touchesMovedToPoint %@!", NSStringFromCGPoint(mp));
+
+   // modifier keys constrain shape sizing and rotation thus:
+	
+	// +shift	- constrain rotation to 15 degree intervals when rotating
+	// +shift	- constrain aspect ratio of the shape to whatever it was at the time the mouse first went down
+	// +option	- resize the shape from the centre
+	// +option	- for rotation, snap mouse to the grid (normally not snapped for rotation operations)
+	
+	NSPoint omp = mp;
+	
+	if ( ![self mouseHasMovedSinceStartOfTracking])
+	{
+		if ( partcode >= kDKDrawableShapeLeftHandle && partcode <= kDKDrawableShapeBottomRightHandle )
+		{
+			m_hideOriginTarget = YES;
+			/* no modifier keys in iOS ...alex
+			if (([evt modifierFlags] & NSAlternateKeyMask ) != 0 )
+				[self setDragAnchorToPart:kDKDrawableShapeObjectCentre];
+			else if (([evt modifierFlags] & NSCommandKeyMask ) != 0)
+				[self setDragAnchorToPart:kDKDrawableShapeOriginTarget];
+			else
+          */
+				[self setDragAnchorToPart:[self partcodeOppositeKnob:partcode]];
+				
+		}
+	}
+	
+   /* no modifier keys in iOS ...alex
+	BOOL constrain = (([evt modifierFlags] & NSShiftKeyMask) != 0 );
+	BOOL controlKey = (([evt modifierFlags] & NSControlKeyMask) != 0 );
+	*/
+   BOOL constrain = NO;
+   BOOL controlKey = NO;
+   
+	if ( partcode == kDKDrawingEntireObjectPart )
+	{
+		if( ![self locationLocked])
+		{
+			mp.x -= [self mouseDragOffset].width;
+			mp.y -= [self mouseDragOffset].height;
+			
+			mp = [self snappedMousePoint:mp forSnappingPointsWithControlFlag:controlKey];
+			
+			[self setLocation:mp];
+			[self updateInfoForOperation:kDKShapeOperationMove atPoint:omp];
+		}
+	}
+	else if ( partcode == kDKDrawableShapeRotationHandle )
+	{
+		m_hideOriginTarget = YES;
+		
+		mp = [self snappedMousePoint:mp withControlFlag:controlKey];
+		
+		[self rotateUsingReferencePoint:mp constrain:constrain];
+		[self updateInfoForOperation:kDKShapeOperationRotate atPoint:omp];
+	}
+	else
+	{
+		if ([self operationMode] != kDKShapeTransformStandard )
+			[self moveDistortionKnob:partcode toPoint:mp];
+		else
+		{
+			// if partcode is for a hotspot, track the hotspot
+			
+			if ( partcode >= kDKHotspotBasePartcode )
+			{
+				[[self hotspotForPartCode:partcode] continueTouchTracking:touches event:evt inView:[self currentView]];
+			}
+			else
+			{
+				mp = [self snappedMousePoint:mp withControlFlag:controlKey];
+				[self moveKnob:partcode toPoint:mp allowRotate:[self allowSizeKnobsToRotateShape] constrain:constrain];
+				
+				// update the info window with size or position according to partcode
+				
+				if ( partcode == kDKDrawableShapeOriginTarget )
+					[self updateInfoForOperation:kDKShapeOperationMove atPoint:omp];
+				else
+					[self updateInfoForOperation:kDKShapeOperationResize atPoint:omp];
+			}
+		}
+	}
+	[self setMouseHasMovedSinceStartOfTracking:YES];
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {
@@ -3172,6 +3296,41 @@ static NSSize			sTempSavedOffset;
 /// notes:			cleans up after a drag operation completes
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)		touchesEndedAtPoint:(NSPoint) mp inPart:(NSInteger) partcode  touches:(NSSet*)touches event:(UIEvent*) evt
+{
+#warning implement DKDrawableShape touchesEndedAtPoint!
+   twlog("implement DKDrawableShape touchesEndedAtPoint %@!", NSStringFromCGPoint(mp));
+
+   #pragma unused(mp)
+	
+	[self setTrackingMouse:NO];
+	m_hideOriginTarget = NO;
+	
+	if ( m_inRotateOp )
+	{
+		[self notifyVisualChange];
+		sTempRotationPt = [self knobPoint:kDKDrawableShapeRotationHandle];
+		m_inRotateOp = NO;
+	}
+	
+	if ( partcode >= kDKHotspotBasePartcode )
+		[[self hotspotForPartCode:partcode] endTouchTracking:touches event:evt inView:[self currentView]];
+	
+	if ([self mouseHasMovedSinceStartOfTracking])
+	{
+		if ( partcode >= kDKDrawableShapeLeftHandle && partcode <= kDKDrawableShapeBottomRightHandle )
+			[self setOffset:sTempSavedOffset];
+
+		[[self undoManager] setActionName: [self undoActionNameForPartCode:partcode]];
+		[self setMouseHasMovedSinceStartOfTracking:NO];
+	}
+	
+	[[self layer] hideInfoWindow];
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseUpAtPoint:(NSPoint) mp inPart:(NSInteger) partcode event:(NSEvent*) evt
 {

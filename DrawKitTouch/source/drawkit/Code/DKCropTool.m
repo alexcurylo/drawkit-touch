@@ -35,6 +35,21 @@
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (NSInteger)		touchesBeganAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+	#pragma unused(obj)
+	#pragma unused(layer)
+	#pragma unused(aDel)
+   #pragma unused(touches)
+	#pragma unused(event)
+
+	mAnchor = p;
+	mZoomRect = NSZeroRect;
+	return 0;
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -42,7 +57,7 @@
 	#pragma unused(layer)
 	#pragma unused(aDel)
 	#pragma unused(event)
-	
+
 	mAnchor = p;
 	mZoomRect = NSZeroRect;
 	return 0;
@@ -67,6 +82,20 @@
 /// notes:			
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (void)		touchesMovedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+	#pragma unused(pc)
+   #pragma unused(touches)
+	#pragma unused(event)
+	#pragma unused(aDel)
+	
+	[layer setNeedsDisplayInRect:mZoomRect];
+	mZoomRect = NSRectFromTwoPoints( mAnchor, p );
+	[layer setNeedsDisplayInRect:mZoomRect];
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
@@ -99,6 +128,28 @@
 /// notes:			
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (BOOL)		touchesEndedAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+	#pragma unused(pc)
+   #pragma unused(touches)
+	#pragma unused(event)
+	#pragma unused(aDel)
+	
+	
+	mZoomRect = NSRectFromTwoPoints( mAnchor, p );
+	[layer setNeedsDisplayInRect:mZoomRect];
+	
+	DKObjectDrawingLayer* odl = (DKObjectDrawingLayer*)layer;
+	
+	[odl cropToRect:mZoomRect];
+	
+	
+	mZoomRect = NSZeroRect;
+	return NO;
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel

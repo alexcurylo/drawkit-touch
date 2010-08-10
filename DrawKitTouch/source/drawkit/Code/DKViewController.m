@@ -174,10 +174,18 @@ static NSTimer* s_autoscrollTimer = nil;
 	
 	fr.width *= [self viewScale];
 	fr.height *= [self viewScale];
-	
+#ifdef TARGET_OS_IPHONE
+   CGSize newSize = drawingSizeValue.sizeValue;
+   CGRect newBounds = { .size = newSize };
+   self.view.bounds = newBounds;
+   [self.view.enclosingScrollView setContentSize:newSize];
+   twlog("updating scroller from drawingDidChangeToSize: %@", NSStringFromCGSize(newSize));
+#else
 	[[self view] setFrameSize:fr];
 	[[self view] setBoundsSize:[drawingSizeValue sizeValue]];
-	[[self view] setNeedsDisplay:YES];
+#endif TARGET_OS_IPHONE
+   
+   [[self view] setNeedsDisplay:YES];
 }
 
 
@@ -198,7 +206,7 @@ static NSTimer* s_autoscrollTimer = nil;
 - (void)				scrollViewToRect:(NSValue*) rectValue
 {
 #if TARGET_OS_IPHONE
-	[[self view] scrollRectToVisible:[rectValue rectValue] animated:YES];
+	[self.view.enclosingScrollView scrollRectToVisible:[rectValue rectValue] animated:YES];
 #else
 	[[self view] scrollRectToVisible:[rectValue rectValue]];
 #endif TARGET_OS_IPHONE
@@ -397,6 +405,46 @@ static NSTimer* s_autoscrollTimer = nil;
 
 #pragma mark -
 #pragma mark - handling mouse input events from the view
+
+#if TARGET_OS_IPHONE
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	// if set to activate layers automatically, find the hit layer and activate it
+	
+	[self autoActivateLayerWithTouches:touches andEvent:event];
+	
+	// start the autoscroll timer:
+	
+	[self startAutoscrolling];
+	
+	// forward the click to the active layer if it is available:
+	
+	if (![[self activeLayer] lockedOrHidden])
+	{
+		[[self activeLayer] touchesBegan:touches withEvent:event inView:[self view]];
+	}
+}
+#endif TARGET_OS_IPHONE
+
+#if TARGET_OS_IPHONE
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	if (![[self activeLayer] lockedOrHidden])
+		[[self activeLayer] touchesMoved:touches withEvent:event inView:[self view]];
+}
+#endif TARGET_OS_IPHONE
+
+#if TARGET_OS_IPHONE
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	if (![[self activeLayer] lockedOrHidden])
+		[[self activeLayer] touchesEnded:touches withEvent:event inView:[self view]];
+   
+	// stop the autoscroll timer
+	
+	[self stopAutoscrolling];
+}
+#endif TARGET_OS_IPHONE
 
 ///*********************************************************************************************************************
 ///
@@ -787,7 +835,8 @@ static NSTimer* s_autoscrollTimer = nil;
 	// this invokes autoscrolling on the source view based on the current mouse point 
 	
 #if TARGET_OS_IPHONE
-   twlog("implement autoscrollTimerCallback");
+#warning implement autoscrollTimerCallback
+   //twlog("implement autoscrollTimerCallback");
 #else
 	NSEvent* event = (mDragEvent? mDragEvent : [NSApp currentEvent]);
 	
@@ -976,7 +1025,26 @@ static NSTimer* s_autoscrollTimer = nil;
 ///
 ///********************************************************************************************************************
 
-#ifndef TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
+- (BOOL)				autoActivateLayerWithTouches:(NSSet *)touches andEvent:(UIEvent*)event
+{
+	if ([self activatesLayersAutomatically])
+	{
+      CGPoint p = [[touches.allObjects objectAtIndex:0] locationInView:self.view];
+		DKLayer* layer = [self findLayer:p];
+		
+		// the layer has the final say as to whether it should be activated - it needs to return YES
+		// to both -shouldAutoActivateWithEvent: and -layerMayBecomeActive in order to be made the active layer
+		
+		if ( layer != nil && [layer shouldAutoActivateWithTouches:touches andEvent:event])
+		{
+			return [[self drawing] setActiveLayer:layer];
+		}
+	}
+   
+	return NO;
+}
+#else
 - (BOOL)				autoActivateLayerWithEvent:(NSEvent*) event
 {
 	if ([self activatesLayersAutomatically])

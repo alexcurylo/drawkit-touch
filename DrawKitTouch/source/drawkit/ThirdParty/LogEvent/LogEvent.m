@@ -82,7 +82,7 @@ void InitializePrefsForEventTypeNames(void)
 		unsigned count = [eventTypeNames count];
 		NSMutableDictionary* defaultPrefs = [NSMutableDictionary dictionaryWithCapacity:count];
 		NSNumber* defaultLoggingState = [NSNumber numberWithBool:NO];
-		
+      
 		NSEnumerator* typeNameEnumerator = [eventTypeNames objectEnumerator];
 		assert(typeNameEnumerator != nil);
 		NSString* typeName;
@@ -214,8 +214,11 @@ void LogAppNameAndVersion(void)
 	assert(mainBundle != nil);
 	NSDictionary* localInfoDict = [mainBundle localizedInfoDictionary];
 	NSDictionary* infoDictionary = [mainBundle infoDictionary];
-	
+
+#ifndef TARGET_OS_IPHONE
+   // this can be expected to be nil on iOS ...alex
 	assert(localInfoDict != nil);
+#endif TARGET_OS_IPHONE
 	NSString* appName = [localInfoDict objectForKey:@"CFBundleName"];
 	if (appName == nil)
 	{
@@ -275,7 +278,11 @@ void LogLoggingState(NSArray* eventTypeNames)
 
 #pragma mark -
 @implementation LoggingController
+
+
 #pragma mark As a LoggingController
+
+#ifndef TARGET_OS_IPHONE
 - (void)loadNib
 {
 	// If the nib hasn't been loaded yet...
@@ -285,7 +292,8 @@ void LogLoggingState(NSArray* eventTypeNames)
 		
 		NSAssert(nibName != nil, @"Expected valid nibName");
 #if TARGET_OS_IPHONE
-      [[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil];
+      NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil];
+      twcheck(topLevelObjects);(void)topLevelObjects;
 		if (!window)
           NSLog(@"***Failed to load %@.nib", nibName);
       else
@@ -310,6 +318,7 @@ void LogLoggingState(NSArray* eventTypeNames)
 #endif TARGET_OS_IPHONE
 	}
 }
+#endif TARGET_OS_IPHONE
 
 #pragma mark -
 - (void)setEventTypes:(NSDictionary*)eventTypes
@@ -326,7 +335,9 @@ void LogLoggingState(NSArray* eventTypeNames)
 {
 	if (mEventTypes == nil)
 	{
+#ifndef TARGET_OS_IPHONE
 		[self loadNib];
+#endif TARGET_OS_IPHONE
 		
 		NSDictionary* eventTypes = [[self newEventTypes] autorelease];
 		
@@ -356,6 +367,7 @@ void LogLoggingState(NSArray* eventTypeNames)
 
 
 #pragma mark -
+#ifndef TARGET_OS_IPHONE
 - (void)showLoggingWindow
 {
 	[self loadNib];
@@ -404,6 +416,7 @@ void LogLoggingState(NSArray* eventTypeNames)
 	[window makeKeyAndOrderFront:nil];
 #endif TARGET_OS_IPHONE
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -
@@ -417,96 +430,116 @@ void LogLoggingState(NSArray* eventTypeNames)
 	{
 		NSString* eventKey = nil;
 		//NSButton* eventButton = nil;
-		DKButton* eventButton = nil;
+		id eventButton = nil;
 		switch (i)
 		{
 			case 0:
 				eventKey = kUserEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mUserActions;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
 			break;
 			case 1:
 				eventKey = kScriptEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mScriptingActions;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 2:
 				eventKey = kReactiveEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mReactiveEvents;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 3:
 				eventKey = kUIEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mInterfaceEvents;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 4:
 				eventKey = kFileEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mFileInteraction;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 5:
 				eventKey = kLifeEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mObjectLifetime;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 6:
 				eventKey = kStateEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mObjectChanges;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 7:
 				eventKey = kInfoEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mMiscInfo;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 8:
 				eventKey = kKVOEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mKVOInfo;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
             break;
 			case 9:
 				eventKey = kUndoEvent;
+#if TARGET_OS_IPHONE
+				eventButton = [NSNull null];
+#else
 				eventButton = mUndoInfo;
 				NSAssert(eventKey != nil, @"Expected valid eventKey");
 				NSAssert(eventButton != nil, @"Expected valid eventButton");
-#ifndef TARGET_OS_IPHONE
 				NSAssert([eventButton action] == @selector(logStateChanged:), @"Expected every logging IBOutlet to have logStateChanged: as its action");
 #endif TARGET_OS_IPHONE
 				break;
@@ -536,6 +569,7 @@ void LogLoggingState(NSArray* eventTypeNames)
 
 
 #pragma mark -
+#ifndef TARGET_OS_IPHONE
 - (IBAction)logStateChanged:(id)sender
 {
 #pragma unused (sender)
@@ -576,11 +610,10 @@ void LogLoggingState(NSArray* eventTypeNames)
 	// Because logging is typically turned on while debugging a problem, we make an immediate note of the changes to the prefs under the assum ption the app can crash at any time.
 	[userPrefs synchronize];
 }
+#endif TARGET_OS_IPHONE
 
 
-#if TARGET_OS_IPHONE
-// this appears fundamentally incompatible with iPhone ...alex
-#else
+#ifndef TARGET_OS_IPHONE
 - (IBAction)	setZombiesAction:(id) sender
 {
 #pragma unused(sender)
@@ -614,10 +647,12 @@ void LogLoggingState(NSArray* eventTypeNames)
 
 #pragma mark -
 #pragma mark As an NSWindowController
+#ifndef TARGET_OS_IPHONE
 - (NSString*)windowNibName
 {
 	return @"Logging";
 }
+#endif TARGET_OS_IPHONE
 
 
 #pragma mark -

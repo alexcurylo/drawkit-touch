@@ -1045,7 +1045,7 @@ enum
 			[[self drawing] scrollToRect:sb];
 		else
 #if TARGET_OS_IPHONE
-         [aView scrollRectToVisible:sb animated:YES];
+         [aView.enclosingScrollView scrollRectToVisible:sb animated:YES];
 #else
          [aView scrollRectToVisible:sb];
 #endif TARGET_OS_IPHONE
@@ -3490,7 +3490,8 @@ static void	 drawFunction3( const void* value, void* context )
 
 		if( mShowStorageDebugging && [[self storage] respondsToSelector:@selector(debugStorageDivisions)])
 		{
-			NSBezierPath* debug = [(id)[self storage] debugStorageDivisions];
+			//NSBezierPath* debug = [(id)[self storage] debugStorageDivisions];
+			DKBezierPath* debug = [(id)[self storage] debugStorageDivisions];
 			
 			[debug setLineWidth:0];
 			//[[NSColor orangeColor] set];

@@ -507,6 +507,20 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (NSInteger)		touchesBeganAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+	#pragma unused(p)
+	#pragma unused(obj)
+	#pragma unused(layer)
+	#pragma unused(touches)
+	#pragma unused(event)
+	#pragma unused(aDel)
+
+	return kDKDrawingNoPart;
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (NSInteger)				mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -539,6 +553,18 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)		touchesMovedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+	#pragma unused(p)
+	#pragma unused(pc)
+	#pragma unused(layer)
+	#pragma unused(event)
+	#pragma unused(touches)
+	#pragma unused(aDel)
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)			mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -570,6 +596,20 @@ NSString*		kDKDrawingToolUserDefaultsKey			= @"DK_DrawingTool_Defaults";
 ///					tools usually return YES, tools that operate the user interface such as a zoom tool typically return NO
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (BOOL)		touchesEndedAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+	#pragma unused(p)
+	#pragma unused(pc)
+	#pragma unused(layer)
+	#pragma unused(touches)
+	#pragma unused(event)
+	#pragma unused(aDel)
+	
+	return NO;
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (BOOL)			mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel

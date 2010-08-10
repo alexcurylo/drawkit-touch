@@ -225,6 +225,20 @@
 
 
 #pragma mark -
+
+#if TARGET_OS_IPHONE
+- (void)				startTouchTracking:(NSSet*) touches event:(UIEvent*) event inView:(UIView*) view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+   if (!self.delegate)
+      return;
+
+   twlog("implement startTouchTracking (only for image shape?)!");
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				startMouseTracking:(NSEvent*) event inView:(NSView*) view
 {
@@ -235,6 +249,17 @@
 }
 #endif TARGET_OS_IPHONE
 
+#if TARGET_OS_IPHONE
+- (void)				continueTouchTracking:(NSSet*) touches event:(UIEvent*) event inView:(UIView*) view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+   if (!self.delegate)
+      return;
+   twlog("implement continueTouchTracking (only for image shape?)!");
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)				continueMouseTracking:(NSEvent*) event inView:(NSView*) view
@@ -246,6 +271,17 @@
 }
 #endif TARGET_OS_IPHONE
 
+#if TARGET_OS_IPHONE
+- (void)				endTouchTracking:(NSSet*) touches event:(UIEvent*) event inView:(UIView*) view
+{
+   (void)touches;
+   (void)event;
+   (void)view;
+   if (!self.delegate)
+      return;
+   twlog("implement endTouchTracking (only for image shape?)!");
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (void)				endMouseTracking:(NSEvent*) event inView:(NSView*) view

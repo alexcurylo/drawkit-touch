@@ -26,6 +26,8 @@
 
 
 #ifdef TARGET_OS_IPHONE
+// link checking and version retrieval
+#import "UIApplication+DKTAdditions.h"
 // UIView-based analogues to the DKXxx versions
 #import "DKTZoomView.h"
 #import "DKTDrawingView.h"

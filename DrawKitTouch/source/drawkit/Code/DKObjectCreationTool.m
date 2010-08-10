@@ -317,6 +317,7 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 		{
 #if TARGET_OS_IPHONE
          twlog("implement finishCreation mouseup equivalent");
+         [m_protoObject touchesEndedAtPoint:mLastPoint inPart:mPartcode touches:nil event:nil];
 #else
 			[m_protoObject mouseUpAtPoint:mLastPoint inPart:mPartcode event:[NSApp currentEvent]];
 #endif TARGET_OS_IPHONE
@@ -593,6 +594,97 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (NSInteger)		touchesBeganAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+//#warning implement DKObjectCreationTool touchesBeganAtPoint!
+   //twlog("implement DKObjectCreationTool touchesBeganAtPoint!");
+   
+	#pragma unused(aDel)
+	#pragma unused(obj)
+	
+	NSAssert( layer != nil, @"layer in creation tool mouse down was nil");
+	
+	mPartcode = kDKDrawingNoPart;
+   //mDidPickup = NO; no command key on iOS ...alex
+	m_protoObject = nil;
+	
+	// sanity check the layer type - in practice it shouldn't ever be anything else as this is also checked by the tool controller.
+		
+	if ([layer isKindOfClass:[DKObjectOwnerLayer class]])
+	{
+		// this tool may do a style pickup if enabled. This allows a command-click to choose the style of the clicked object
+		
+		/* no command key on iOS ...alex
+      BOOL pickUpStyle = (obj != nil) && [self stylePickupEnabled] && (([event modifierFlags] & NSCommandKeyMask) != 0);
+		if( pickUpStyle )
+		{
+			DKStyle* style = [obj style];
+			[self setStyle:style];
+			mDidPickup = YES;
+			return mPartcode;
+		}
+       */
+		
+		// because this tool creates new objects, ignore the <obj> parameter and just make a new one
+		
+		if( m_protoObject == nil )
+			m_protoObject = [[self objectFromPrototype] retain];
+		
+		NSAssert( m_protoObject != nil, @"creation tool couldn't create object from prototype");
+		
+		// turn off recording of undo until we commit the object
+		
+		[[layer undoManager] disableUndoRegistration];
+		
+		@try
+		{
+			// the object is initially added as a pending object - this allows it to be created without making undo tasks for
+			// the layer being added to. If the creation subsequently fails, the pending object can be discarded and the layer state
+			// remains as it was before.
+				
+			[(DKObjectOwnerLayer*)layer addObjectPendingCreation:m_protoObject];
+
+			// align mouse click to the grid/guides - note, no point checking for ctrl key at this point as mouseDown + ctrl = right click -> menu
+			// thus we just accept the current setting for grid snapping applied to the drawing as a whole
+			
+			p = [m_protoObject snappedMousePoint:p forSnappingPointsWithControlFlag:NO];
+			
+			// set the object's initial size and position (zero size, at the mouse point)
+			// the call below to the object's mouseDown method will set up the drag anchoring and offset as needed
+			
+			LogEvent_( kReactiveEvent, @"creating object %@ at: %@", [m_protoObject description], NSStringFromPoint(p));
+			
+			[m_protoObject setLocation:p];
+			[m_protoObject setSize:NSZeroSize];
+			
+			// let the object know we are about to start:
+			
+			[m_protoObject creationTool:self willBeginCreationAtPoint:p];
+
+			// object creation starts by dragging some part - the object class can tell us what part to use here, we shouldn't
+			// rely on hit-testing it directly because the result can be ambiguous for such a small object size:
+			
+			mPartcode = [[m_protoObject class] initialPartcodeForObjectCreation];
+			//[m_protoObject mouseDownAtPoint:p inPart:mPartcode event:event];
+			[m_protoObject touchesBeganAtPoint:p inPart:mPartcode touches:touches event:event];
+		}
+		@catch( NSException* excp )
+		{
+			[m_protoObject release];
+			m_protoObject = nil;
+			
+			[[layer undoManager] enableUndoRegistration];
+			
+			@throw;
+		}
+	}
+	// return the partcode for the new object, so that we get it passed back in subsequent calls
+
+	return mPartcode;
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (NSInteger)					mouseDownAtPoint:(NSPoint) p targetObject:(DKDrawableObject*) obj layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -698,6 +790,24 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///
 ///********************************************************************************************************************
 
+#if TARGET_OS_IPHONE
+- (void)		touchesMovedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+//#warning implement DKObjectCreationTool touchesMovedToPoint!
+   //twlog("implement DKObjectCreationTool touchesMovedToPoint!");
+   
+   #pragma unused(layer)
+	#pragma unused(aDel)
+	
+	if ( m_protoObject != nil /*&& !mDidPickup no command key on iOS ...alex */)
+	{
+		[m_protoObject touchesMovedToPoint:p inPart:pc touches:touches event:event];
+	
+		mLastPoint = p;
+	}
+}
+#endif TARGET_OS_IPHONE
+
 #ifndef TARGET_OS_IPHONE
 - (void)				mouseDraggedToPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
 {
@@ -734,6 +844,34 @@ static DKStyle*	sCreatedObjectsStyle = nil;
 ///					task is about to be made.
 ///
 ///********************************************************************************************************************
+
+#if TARGET_OS_IPHONE
+- (BOOL)		touchesEndedAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer touches:(NSSet*)touches event:(UIEvent*) event delegate:(id) aDel
+{
+//#warning implement DKObjectCreationTool touchesEndedAtPoint!
+   //twlog("implement DKObjectCreationTool touchesEndedAtPoint!");
+
+   #pragma unused(pc)
+   #pragma unused(touches)
+   #pragma unused(event)
+	NSAssert( layer != nil, @"layer was nil in creation tool mouse up");
+	
+   /* no command key on iOS ...alex
+	if( mDidPickup )
+	{
+		mDidPickup = NO;
+		return NO;
+	}
+    */
+	
+	//BOOL controlKey = ([event modifierFlags] & NSControlKeyMask) != 0; no control key on iOS ...alex
+   BOOL controlKey = NO;
+	p = [[layer drawing] snapToGrid:p withControlFlag:controlKey];
+	mLastPoint = p;
+
+	return [self finishCreation:aDel];
+}
+#endif TARGET_OS_IPHONE
 
 #ifndef TARGET_OS_IPHONE
 - (BOOL)				mouseUpAtPoint:(NSPoint) p partCode:(NSInteger) pc layer:(DKLayer*) layer event:(NSEvent*) event delegate:(id) aDel
