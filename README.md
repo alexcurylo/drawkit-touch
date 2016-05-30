@@ -1,3 +1,3 @@
 # drawkit-touch
 
-Experimental port of DrawKit to iOS.
+Experimental port of [DrawKit](https://github.com/adamwulf/DrawKit) to iOS.
